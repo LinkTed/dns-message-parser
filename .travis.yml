@@ -1,0 +1,16 @@
+language: rust
+rust:
+  - stable
+  - beta
+before_script:
+  - rustup component add rustfmt
+  - rustup component add clippy
+script:
+  - cargo build --verbose --all
+  - cargo clippy --verbose -- -D clippy::cognitive_complexity -D warnings
+  - cargo test --verbose --all
+  - cargo fmt -- --check
+os:
+  - linux
+  - osx
+  - windows
