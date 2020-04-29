@@ -1,16 +1,13 @@
 language: rust
 rust:
   - stable
-  - beta
-before_script:
-  - rustup component add rustfmt
-  - rustup component add clippy
-script:
-  - cargo build --verbose --all
-  - cargo clippy --verbose -- -D clippy::cognitive_complexity -D warnings
-  - cargo test --verbose --all
-  - cargo fmt -- --check
+  - nightly
 os:
   - linux
   - osx
   - windows
+before_script:
+  - rustup component add rustfmt
+script:
+  - cargo fmt -- --check
+  - ./.travis.sh

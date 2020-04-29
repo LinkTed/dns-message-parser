@@ -13,6 +13,8 @@ categories = [
     "encoding"
     ]
 exclude = [
+    ".travis.yml",
+    ".travis.sh",
     ".gitignore",
     ]
 
