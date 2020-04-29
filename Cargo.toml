@@ -5,6 +5,7 @@ authors = ["LinkTed <link.ted@mailbox.org>"]
 edition = "2018"
 readme = "README.md"
 keywords = ["dns", "parser"]
+description = "Libary to encode and decode DNS packets"
 license = "BSD-3-Clause"
 repository = "https://github.com/LinkTed/dns-message-parser"
 categories = [
