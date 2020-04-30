@@ -1,44 +1,14 @@
-use bytes::BytesMut;
-
 use crate::{AFSDBSubtype, Class, DomainName, SSHFPAlgorithm, SSHFPType, Type};
 
 use std::collections::HashMap;
-use std::mem::size_of;
 use std::net::{Ipv4Addr, Ipv6Addr};
 
 use super::{
     encode_ipv4_addr, encode_ipv6_addr, encode_string, encode_u16, encode_u32, encode_u8,
-    EncodeError, EncodeResult,
+    EncodeData, EncodeResult,
 };
 
-pub(super) struct EncodeData<'a> {
-    bytes: &'a mut BytesMut,
-    bytes_rdata: BytesMut,
-    class: &'a Class,
-    ttl: u32,
-}
-
 impl<'a> EncodeData<'a> {
-    pub(super) fn new(bytes: &'a mut BytesMut, class: &'a Class, ttl: u32) -> EncodeData<'a> {
-        EncodeData {
-            bytes,
-            bytes_rdata: BytesMut::new(),
-            class,
-            ttl,
-        }
-    }
-
-    fn encode_generic_rr_header(&mut self, type_: Type) -> EncodeResult {
-        type_.encode(self.bytes)?;
-        self.class.encode(self.bytes)?;
-        encode_u32(self.bytes, self.ttl);
-        Ok(())
-    }
-
-    fn get_offset(&self) -> usize {
-        self.bytes.len() + size_of::<u16>()
-    }
-
     pub(super) fn encode_a(&mut self, ipv4_addr: &Ipv4Addr) -> EncodeResult {
         self.encode_generic_rr_header(Type::A)?;
         encode_ipv4_addr(&mut self.bytes_rdata, ipv4_addr);
@@ -50,9 +20,7 @@ impl<'a> EncodeData<'a> {
         ns_d_name: &DomainName,
         compression: &mut HashMap<String, usize>,
     ) -> EncodeResult {
-        self.encode_generic_rr_header(Type::NS)?;
-        let offset = self.get_offset();
-        ns_d_name.encode(&mut self.bytes_rdata, &offset, compression)
+        self.encode_domain(Type::NS, ns_d_name, compression)
     }
 
     pub(super) fn encode_md(
@@ -60,9 +28,7 @@ impl<'a> EncodeData<'a> {
         mad_name: &DomainName,
         compression: &mut HashMap<String, usize>,
     ) -> EncodeResult {
-        self.encode_generic_rr_header(Type::MD)?;
-        let offset = self.get_offset();
-        mad_name.encode(&mut self.bytes_rdata, &offset, compression)
+        self.encode_domain(Type::MD, mad_name, compression)
     }
 
     pub(super) fn encode_mf(
@@ -70,9 +36,7 @@ impl<'a> EncodeData<'a> {
         mad_name: &DomainName,
         compression: &mut HashMap<String, usize>,
     ) -> EncodeResult {
-        self.encode_generic_rr_header(Type::MF)?;
-        let offset = self.get_offset();
-        mad_name.encode(&mut self.bytes_rdata, &offset, compression)
+        self.encode_domain(Type::MF, mad_name, compression)
     }
 
     pub(super) fn encode_cname(
@@ -80,9 +44,7 @@ impl<'a> EncodeData<'a> {
         c_name: &DomainName,
         compression: &mut HashMap<String, usize>,
     ) -> EncodeResult {
-        self.encode_generic_rr_header(Type::CNAME)?;
-        let offset = self.get_offset();
-        c_name.encode(&mut self.bytes_rdata, &offset, compression)
+        self.encode_domain(Type::CNAME, c_name, compression)
     }
 
     pub(super) fn encode_soa(
@@ -113,9 +75,7 @@ impl<'a> EncodeData<'a> {
         mad_name: &DomainName,
         compression: &mut HashMap<String, usize>,
     ) -> EncodeResult {
-        self.encode_generic_rr_header(Type::MB)?;
-        let offset = self.get_offset();
-        mad_name.encode(&mut self.bytes_rdata, &offset, compression)
+        self.encode_domain(Type::MB, mad_name, compression)
     }
 
     pub(super) fn encode_mg(
@@ -123,9 +83,7 @@ impl<'a> EncodeData<'a> {
         mgm_name: &DomainName,
         compression: &mut HashMap<String, usize>,
     ) -> EncodeResult {
-        self.encode_generic_rr_header(Type::MG)?;
-        let offset = self.get_offset();
-        mgm_name.encode(&mut self.bytes_rdata, &offset, compression)
+        self.encode_domain(Type::MG, mgm_name, compression)
     }
 
     pub(super) fn encode_mr(
@@ -133,15 +91,11 @@ impl<'a> EncodeData<'a> {
         new_name: &DomainName,
         compression: &mut HashMap<String, usize>,
     ) -> EncodeResult {
-        self.encode_generic_rr_header(Type::MR)?;
-        let offset = self.get_offset();
-        new_name.encode(&mut self.bytes_rdata, &offset, compression)
+        self.encode_domain(Type::MR, new_name, compression)
     }
 
     pub(super) fn encode_null(&mut self, vec: &[u8]) -> EncodeResult {
-        self.encode_generic_rr_header(Type::NULL)?;
-        self.bytes_rdata.extend(vec);
-        Ok(())
+        self.encode_vec(Type::NULL, vec)
     }
 
     pub(super) fn encode_wks(
@@ -162,9 +116,7 @@ impl<'a> EncodeData<'a> {
         ptr_d_name: &DomainName,
         compression: &mut HashMap<String, usize>,
     ) -> EncodeResult {
-        self.encode_generic_rr_header(Type::PTR)?;
-        let offset = self.get_offset();
-        ptr_d_name.encode(&mut self.bytes_rdata, &offset, compression)
+        self.encode_domain(Type::PTR, ptr_d_name, compression)
     }
 
     pub(super) fn encode_hinfo(&mut self, cpu: &str, os: &str) -> EncodeResult {
@@ -179,10 +131,7 @@ impl<'a> EncodeData<'a> {
         e_mail_bx: &DomainName,
         compression: &mut HashMap<String, usize>,
     ) -> EncodeResult {
-        self.encode_generic_rr_header(Type::MINFO)?;
-        let offset = self.get_offset();
-        r_mail_bx.encode(&mut self.bytes_rdata, &offset, compression)?;
-        e_mail_bx.encode(&mut self.bytes_rdata, &offset, compression)
+        self.encode_domain_domain(Type::MINFO, r_mail_bx, e_mail_bx, compression)
     }
 
     pub(super) fn encode_mx(
@@ -191,15 +140,11 @@ impl<'a> EncodeData<'a> {
         exchange: &DomainName,
         compression: &mut HashMap<String, usize>,
     ) -> EncodeResult {
-        self.encode_generic_rr_header(Type::MX)?;
-        let offset = self.get_offset();
-        encode_u16(&mut self.bytes_rdata, preference);
-        exchange.encode(&mut self.bytes_rdata, &offset, compression)
+        self.encode_u16_domain(Type::MX, preference, exchange, compression)
     }
 
     pub(super) fn encode_txt(&mut self, string: &str) -> EncodeResult {
-        self.encode_generic_rr_header(Type::TXT)?;
-        encode_string(&mut self.bytes_rdata, string)
+        self.encode_string(Type::TXT, string)
     }
 
     pub(super) fn encode_rp(
@@ -208,10 +153,7 @@ impl<'a> EncodeData<'a> {
         txt_dname: &DomainName,
         compression: &mut HashMap<String, usize>,
     ) -> EncodeResult {
-        self.encode_generic_rr_header(Type::RP)?;
-        let offset = self.get_offset();
-        mbox_dname.encode(&mut self.bytes_rdata, &offset, compression)?;
-        txt_dname.encode(&mut self.bytes_rdata, &offset, compression)
+        self.encode_domain_domain(Type::RP, mbox_dname, txt_dname, compression)
     }
 
     pub(super) fn encode_afsdb(
@@ -227,8 +169,7 @@ impl<'a> EncodeData<'a> {
     }
 
     pub(super) fn encode_x25(&mut self, psdn_address: &str) -> EncodeResult {
-        self.encode_generic_rr_header(Type::X25)?;
-        encode_string(&mut self.bytes_rdata, psdn_address)
+        self.encode_string(Type::X25, psdn_address)
     }
 
     pub(super) fn encode_isdn(&mut self, isdn_address: &str, sa: &Option<String>) -> EncodeResult {
@@ -247,16 +188,11 @@ impl<'a> EncodeData<'a> {
         intermediate_host: &DomainName,
         compression: &mut HashMap<String, usize>,
     ) -> EncodeResult {
-        self.encode_generic_rr_header(Type::RT)?;
-        let offset = self.get_offset();
-        encode_u16(&mut self.bytes_rdata, preference);
-        intermediate_host.encode(&mut self.bytes_rdata, &offset, compression)
+        self.encode_u16_domain(Type::RT, preference, intermediate_host, compression)
     }
 
     pub(super) fn encode_nsap(&mut self, nsap: &[u8]) -> EncodeResult {
-        self.encode_generic_rr_header(Type::NSAP)?;
-        self.bytes_rdata.extend(nsap);
-        Ok(())
+        self.encode_vec(Type::NSAP, nsap)
     }
 
     pub(super) fn encode_px(
@@ -313,15 +249,11 @@ impl<'a> EncodeData<'a> {
     }
 
     pub(super) fn encode_eid(&mut self, endpoint_identifier: &[u8]) -> EncodeResult {
-        self.encode_generic_rr_header(Type::EID)?;
-        self.bytes_rdata.extend(endpoint_identifier);
-        Ok(())
+        self.encode_vec(Type::EID, endpoint_identifier)
     }
 
     pub(super) fn encode_nimloc(&mut self, nimrod_locator: &[u8]) -> EncodeResult {
-        self.encode_generic_rr_header(Type::NIMLOC)?;
-        self.bytes_rdata.extend(nimrod_locator);
-        Ok(())
+        self.encode_vec(Type::NIMLOC, nimrod_locator)
     }
 
     pub(super) fn encode_srv(
@@ -346,10 +278,7 @@ impl<'a> EncodeData<'a> {
         exchanger: &DomainName,
         compression: &mut HashMap<String, usize>,
     ) -> EncodeResult {
-        self.encode_generic_rr_header(Type::KX)?;
-        let offset = self.get_offset();
-        encode_u16(&mut self.bytes_rdata, preference);
-        exchanger.encode(&mut self.bytes_rdata, &offset, compression)
+        self.encode_u16_domain(Type::KX, preference, exchanger, compression)
     }
 
     pub(super) fn encode_dname(
@@ -357,9 +286,7 @@ impl<'a> EncodeData<'a> {
         target: &DomainName,
         compression: &mut HashMap<String, usize>,
     ) -> EncodeResult {
-        self.encode_generic_rr_header(Type::DNAME)?;
-        let offset = self.get_offset();
-        target.encode(&mut self.bytes_rdata, &offset, compression)
+        self.encode_domain(Type::DNAME, target, compression)
     }
 
     pub(super) fn encode_opt(&mut self) -> EncodeResult {
@@ -380,16 +307,6 @@ impl<'a> EncodeData<'a> {
         algorihtm.encode(&mut self.bytes_rdata)?;
         type_.encode(&mut self.bytes_rdata)?;
         self.bytes_rdata.extend(fingerprint);
-        Ok(())
-    }
-
-    pub(super) fn add_rdata(&mut self) -> EncodeResult {
-        let length = self.bytes_rdata.len();
-        if (std::u16::MAX as usize) < length {
-            return Err(EncodeError::TooMuchData);
-        }
-        encode_u16(self.bytes, length as u16);
-        self.bytes.extend(&self.bytes_rdata);
         Ok(())
     }
 }

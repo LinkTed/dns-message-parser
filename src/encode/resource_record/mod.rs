@@ -1,5 +1,7 @@
+mod encode_data;
+use encode_data::EncodeData;
+
 mod encode;
-use encode::EncodeData;
 
 mod r_data;
 
