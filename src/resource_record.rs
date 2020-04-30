@@ -2,6 +2,7 @@ use crate::{
     AFSDBSubtype, Class, DomainName, QClass, QType, Question, SSHFPAlgorithm, SSHFPType, Type,
 };
 
+use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::net::{Ipv4Addr, Ipv6Addr};
 
 #[derive(Debug, PartialEq, Clone)]
@@ -90,5 +91,15 @@ impl RR {
         let qtype = QType::Type(self.rdata.get_type());
         let question = Question::new(self.domain_name, qclass, qtype);
         (question, self.ttl, self.rdata)
+    }
+}
+
+impl Display for RR {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        write!(
+            f,
+            "{}: class: {:?}, ttl: {}, data: {:?}",
+            self.domain_name, self.class, self.ttl, self.rdata
+        )
     }
 }

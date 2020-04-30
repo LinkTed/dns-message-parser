@@ -1,5 +1,7 @@
 use crate::{Class, DomainName, Type};
 
+use std::fmt::{Display, Formatter, Result as FmtResult};
+
 #[derive(Debug, Clone, FromPrimitive, ToPrimitive, PartialEq, Eq, Hash)]
 pub enum QType_ {
     AXFR = 252,
@@ -14,6 +16,15 @@ pub enum QType {
     QType(QType_),
 }
 
+impl Display for QType {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        match self {
+            QType::Type(t) => write!(f, "{:?}", t),
+            QType::QType(t) => write!(f, "{:?}", t),
+        }
+    }
+}
+
 #[derive(Debug, Clone, FromPrimitive, ToPrimitive, PartialEq, Eq, Hash)]
 pub enum QClass_ {
     ANY = 255,
@@ -23,6 +34,15 @@ pub enum QClass_ {
 pub enum QClass {
     Class(Class),
     QClass(QClass_),
+}
+
+impl Display for QClass {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        match self {
+            QClass::Class(c) => write!(f, "{:?}", c),
+            QClass::QClass(c) => write!(f, "{:?}", c),
+        }
+    }
 }
 
 #[derive(Debug, Getters, Clone, PartialEq, Eq, Hash)]
@@ -42,5 +62,15 @@ impl Question {
             qclass,
             qtype,
         }
+    }
+}
+
+impl Display for Question {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        write!(
+            f,
+            "{}: type: {}, class {}",
+            self.domain_name, self.qtype, self.qclass
+        )
     }
 }

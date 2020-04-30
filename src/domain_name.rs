@@ -1,3 +1,5 @@
+use std::fmt::{Display, Formatter, Result as FmtResult};
+
 use regex::Regex;
 
 #[derive(Debug, Getters, PartialEq, Clone, Eq, Hash)]
@@ -41,5 +43,11 @@ impl Default for DomainName {
         DomainName {
             domain_name: ".".to_string(),
         }
+    }
+}
+
+impl Display for DomainName {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        write!(f, "{}", self.domain_name)
     }
 }

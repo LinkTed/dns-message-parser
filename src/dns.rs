@@ -1,5 +1,7 @@
 use crate::{Opcode, Question, RCode, RR};
 
+use std::fmt::{Display, Formatter, Result as FmtResult};
+
 #[derive(Debug, Getters, Setters, PartialEq)]
 pub struct Flags {
     #[get = "pub with_prefix"]
@@ -48,6 +50,42 @@ impl Flags {
     }
 }
 
+impl Display for Flags {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        if self.qr {
+            write!(f, "qr ")?;
+        }
+
+        write!(f, "{:?} ", self.opcode)?;
+
+        if self.aa {
+            write!(f, "aa ")?;
+        }
+
+        if self.tc {
+            write!(f, "tc ")?;
+        }
+
+        if self.rd {
+            write!(f, "rd ")?;
+        }
+
+        if self.ra {
+            write!(f, "ra ")?;
+        }
+
+        if self.ad {
+            write!(f, "ad ")?;
+        }
+
+        if self.cd {
+            write!(f, "cd ")?;
+        }
+
+        Ok(())
+    }
+}
+
 #[derive(Debug, Getters, Setters, PartialEq)]
 pub struct Dns {
     #[get = "pub with_prefix"]
@@ -86,5 +124,25 @@ impl Dns {
 
     pub fn is_response(&self) -> bool {
         self.flags.qr
+    }
+}
+
+impl Display for Dns {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        write!(f, "id: {}, flags: {} ", self.id, self.flags)?;
+
+        if self.questions.len() != 0 {
+            write!(f, "questions: {:?}", self.questions)?;
+        }
+
+        if self.authorities.len() != 0 {
+            write!(f, "authorities: {:?}", self.authorities)?;
+        }
+
+        if self.additionals.len() != 0 {
+            write!(f, "additionals: {:?}", self.additionals)?;
+        }
+
+        Ok(())
     }
 }
