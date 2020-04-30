@@ -1,5 +1,7 @@
+mod decode_data;
+use decode_data::DecodeData;
+
 mod decode;
-use decode::DecodeData;
 
 mod r_data;
 

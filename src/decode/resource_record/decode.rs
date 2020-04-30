@@ -1,34 +1,15 @@
-use bytes::Bytes;
-
 use crate::{AFSDBSubtype, Class, DomainName, RData, SSHFPAlgorithm, SSHFPType};
 
 use num_traits::FromPrimitive;
 
 use super::{
     decode_ipv4_addr, decode_ipv6_addr, decode_string, decode_u16, decode_u32, decode_u8,
-    DecodeError, DecodeResult,
+    DecodeData, DecodeError, DecodeResult,
 };
 
 use std::mem::size_of;
 
-pub(super) struct DecodeData<'a> {
-    bytes: &'a Bytes,
-    offset: &'a mut usize,
-}
-
 impl<'a> DecodeData<'a> {
-    pub(super) fn new(bytes: &'a Bytes, offset: &'a mut usize) -> DecodeData<'a> {
-        DecodeData { bytes, offset }
-    }
-
-    fn decode_generic_rr_header(&mut self) -> DecodeResult<(Class, u32, usize)> {
-        let class = Class::decode(self.bytes, self.offset)?;
-        let ttl = decode_u32(self.bytes, self.offset)?;
-        let rdlength = decode_u16(self.bytes, self.offset)? as usize;
-
-        Ok((class, ttl, rdlength))
-    }
-
     pub(super) fn decode_a(&mut self) -> DecodeResult<(Class, u32, RData)> {
         let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
 
@@ -41,55 +22,23 @@ impl<'a> DecodeData<'a> {
     }
 
     pub(super) fn decode_ns(&mut self) -> DecodeResult<(Class, u32, RData)> {
-        let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
-        let start = *self.offset;
-
-        let ns_d_name = DomainName::decode(self.bytes, self.offset)?;
-
-        if *self.offset == (start + rdlength) {
-            Ok((class, ttl, RData::NS(ns_d_name)))
-        } else {
-            Err(DecodeError::NSError)
-        }
+        let (class, ttl, ns_d_name) = self.decode_domain()?;
+        Ok((class, ttl, RData::NS(ns_d_name)))
     }
 
     pub(super) fn decode_md(&mut self) -> DecodeResult<(Class, u32, RData)> {
-        let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
-        let start = *self.offset;
-
-        let mad_name = DomainName::decode(self.bytes, self.offset)?;
-
-        if *self.offset == (start + rdlength) {
-            Ok((class, ttl, RData::MD(mad_name)))
-        } else {
-            Err(DecodeError::MDError)
-        }
+        let (class, ttl, mad_name) = self.decode_domain()?;
+        Ok((class, ttl, RData::MD(mad_name)))
     }
 
     pub(super) fn decode_mf(&mut self) -> DecodeResult<(Class, u32, RData)> {
-        let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
-        let start = *self.offset;
-
-        let mad_name = DomainName::decode(self.bytes, self.offset)?;
-
-        if *self.offset == (start + rdlength) {
-            Ok((class, ttl, RData::MF(mad_name)))
-        } else {
-            Err(DecodeError::MFError)
-        }
+        let (class, ttl, mad_name) = self.decode_domain()?;
+        Ok((class, ttl, RData::MF(mad_name)))
     }
 
     pub(super) fn decode_cname(&mut self) -> DecodeResult<(Class, u32, RData)> {
-        let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
-        let start = *self.offset;
-
-        let c_name = DomainName::decode(self.bytes, self.offset)?;
-
-        if *self.offset == (start + rdlength) {
-            Ok((class, ttl, RData::CNAME(c_name)))
-        } else {
-            Err(DecodeError::CNAMEError)
-        }
+        let (class, ttl, c_name) = self.decode_domain()?;
+        Ok((class, ttl, RData::CNAME(c_name)))
     }
 
     pub(super) fn decode_soa(&mut self) -> DecodeResult<(Class, u32, RData)> {
@@ -126,55 +75,23 @@ impl<'a> DecodeData<'a> {
     }
 
     pub(super) fn decode_mb(&mut self) -> DecodeResult<(Class, u32, RData)> {
-        let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
-        let start = *self.offset;
-
-        let mad_name = DomainName::decode(self.bytes, self.offset)?;
-
-        if *self.offset == (start + rdlength) {
-            Ok((class, ttl, RData::MB(mad_name)))
-        } else {
-            Err(DecodeError::MBError)
-        }
+        let (class, ttl, mad_name) = self.decode_domain()?;
+        Ok((class, ttl, RData::MB(mad_name)))
     }
 
     pub(super) fn decode_mg(&mut self) -> DecodeResult<(Class, u32, RData)> {
-        let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
-        let start = *self.offset;
-
-        let mgm_name = DomainName::decode(self.bytes, self.offset)?;
-
-        if *self.offset == (start + rdlength) {
-            Ok((class, ttl, RData::MG(mgm_name)))
-        } else {
-            Err(DecodeError::MGError)
-        }
+        let (class, ttl, mgm_name) = self.decode_domain()?;
+        Ok((class, ttl, RData::MG(mgm_name)))
     }
 
     pub(super) fn decode_mr(&mut self) -> DecodeResult<(Class, u32, RData)> {
-        let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
-        let start = *self.offset;
-
-        let new_name = DomainName::decode(self.bytes, self.offset)?;
-
-        if *self.offset == (start + rdlength) {
-            Ok((class, ttl, RData::MR(new_name)))
-        } else {
-            Err(DecodeError::MRError)
-        }
+        let (class, ttl, new_name) = self.decode_domain()?;
+        Ok((class, ttl, RData::MR(new_name)))
     }
 
     pub(super) fn decode_null(&mut self) -> DecodeResult<(Class, u32, RData)> {
-        let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
-        let start = *self.offset;
-
-        *self.offset += rdlength;
-
-        if let Some(buffer) = self.bytes.get(start..*self.offset) {
-            Ok((class, ttl, RData::NULL(Vec::from(buffer))))
-        } else {
-            Err(DecodeError::NULLError)
-        }
+        let (class, ttl, data) = self.decode_vec()?;
+        Ok((class, ttl, RData::NULL(data)))
     }
 
     pub(super) fn decode_wks(&mut self) -> DecodeResult<(Class, u32, RData)> {
@@ -200,16 +117,8 @@ impl<'a> DecodeData<'a> {
     }
 
     pub(super) fn decode_ptr(&mut self) -> DecodeResult<(Class, u32, RData)> {
-        let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
-        let start = *self.offset;
-
-        let ptr_d_name = DomainName::decode(self.bytes, self.offset)?;
-
-        if *self.offset == (start + rdlength) {
-            Ok((class, ttl, RData::PTR(ptr_d_name)))
-        } else {
-            Err(DecodeError::PTRError)
-        }
+        let (class, ttl, ptr_d_name) = self.decode_domain()?;
+        Ok((class, ttl, RData::PTR(ptr_d_name)))
     }
 
     pub(super) fn decode_hinfo(&mut self) -> DecodeResult<(Class, u32, RData)> {
@@ -238,82 +147,23 @@ impl<'a> DecodeData<'a> {
     }
 
     pub(super) fn decode_minfo(&mut self) -> DecodeResult<(Class, u32, RData)> {
-        let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
-        let start = *self.offset;
-
-        if rdlength <= 1 {
-            return Err(DecodeError::MINFOError);
-        }
-
-        let end = start + rdlength;
-
-        let r_mail_bx = DomainName::decode(self.bytes, self.offset)?;
-
-        if end <= *self.offset {
-            return Err(DecodeError::MINFOError);
-        }
-
-        let e_mail_bx = DomainName::decode(self.bytes, self.offset)?;
-
-        if end == *self.offset {
-            Ok((class, ttl, RData::MINFO(r_mail_bx, e_mail_bx)))
-        } else {
-            Err(DecodeError::MINFOError)
-        }
+        let (class, ttl, (r_mail_bx, e_mail_bx)) = self.decode_domain_domain()?;
+        Ok((class, ttl, RData::MINFO(r_mail_bx, e_mail_bx)))
     }
 
     pub(super) fn decode_mx(&mut self) -> DecodeResult<(Class, u32, RData)> {
-        let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
-        let end = *self.offset + rdlength;
-
-        if rdlength < size_of::<u16>() {
-            return Err(DecodeError::MXError);
-        }
-
-        let preference = decode_u16(self.bytes, self.offset)?;
-        let exchange = DomainName::decode(self.bytes, self.offset)?;
-
-        if *self.offset == end {
-            Ok((class, ttl, RData::MX(preference, exchange)))
-        } else {
-            Err(DecodeError::MXError)
-        }
+        let (class, ttl, (preference, exchange)) = self.decode_u16_domain()?;
+        Ok((class, ttl, RData::MX(preference, exchange)))
     }
 
     pub(super) fn decode_txt(&mut self) -> DecodeResult<(Class, u32, RData)> {
-        let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
-        let start = *self.offset;
-
-        let string = decode_string(self.bytes, self.offset)?;
-
-        if *self.offset == (start + rdlength) {
-            Ok((class, ttl, RData::TXT(string)))
-        } else {
-            Err(DecodeError::TXTError)
-        }
+        let (class, ttl, string) = self.decode_string()?;
+        Ok((class, ttl, RData::TXT(string)))
     }
 
     pub(super) fn decode_rp(&mut self) -> DecodeResult<(Class, u32, RData)> {
-        let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
-        let start = *self.offset;
-
-        if 2 > rdlength {
-            return Err(DecodeError::RPError);
-        }
-
-        let mbox_dname = DomainName::decode(self.bytes, self.offset)?;
-
-        if *self.offset > (start + rdlength) {
-            return Err(DecodeError::RPError);
-        }
-
-        let txt_dname = DomainName::decode(self.bytes, self.offset)?;
-
-        if *self.offset == (start + rdlength) {
-            Ok((class, ttl, RData::RP(mbox_dname, txt_dname)))
-        } else {
-            Err(DecodeError::RPError)
-        }
+        let (class, ttl, (mbox_dname, txt_dname)) = self.decode_domain_domain()?;
+        Ok((class, ttl, RData::RP(mbox_dname, txt_dname)))
     }
 
     pub(super) fn decode_afsdb(&mut self) -> DecodeResult<(Class, u32, RData)> {
@@ -339,20 +189,13 @@ impl<'a> DecodeData<'a> {
     }
 
     pub(super) fn decode_x25(&mut self) -> DecodeResult<(Class, u32, RData)> {
-        let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
-        let start = *self.offset;
+        let (class, ttl, psdn_address) = self.decode_string()?;
 
-        if 1 > rdlength {
+        if 1 > psdn_address.len() {
             return Err(DecodeError::X25Error);
         }
 
-        let psdn_address = decode_string(self.bytes, self.offset)?;
-
-        if *self.offset == (start + rdlength) {
-            Ok((class, ttl, RData::X25(psdn_address)))
-        } else {
-            Err(DecodeError::X25Error)
-        }
+        Ok((class, ttl, RData::X25(psdn_address)))
     }
 
     pub(super) fn decode_isdn(&mut self) -> DecodeResult<(Class, u32, RData)> {
@@ -379,42 +222,22 @@ impl<'a> DecodeData<'a> {
     }
 
     pub(super) fn decode_rt(&mut self) -> DecodeResult<(Class, u32, RData)> {
-        let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
-        let start = *self.offset;
-
-        if size_of::<u16>() + 1 > rdlength {
-            return Err(DecodeError::RTError);
-        }
-
-        let preference = decode_u16(self.bytes, self.offset)?;
-        let intermediate_host = DomainName::decode(self.bytes, self.offset)?;
-
-        if *self.offset == (start + rdlength) {
-            Ok((class, ttl, RData::RT(preference, intermediate_host)))
-        } else {
-            Err(DecodeError::RTError)
-        }
+        let (class, ttl, (preference, intermediate_host)) = self.decode_u16_domain()?;
+        Ok((class, ttl, RData::RT(preference, intermediate_host)))
     }
 
     pub(super) fn decode_nsap(&mut self) -> DecodeResult<(Class, u32, RData)> {
-        let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
-        let start = *self.offset;
+        let (class, ttl, data) = self.decode_vec()?;
 
         if class != Class::IN {
             return Err(DecodeError::NSAPError);
         }
 
-        if 1 > rdlength {
+        if 1 > data.len() {
             return Err(DecodeError::NSAPError);
         }
 
-        *self.offset += rdlength;
-
-        if let Some(buffer) = self.bytes.get(start..*self.offset) {
-            Ok((class, ttl, RData::NSAP(Vec::from(buffer))))
-        } else {
-            Err(DecodeError::NSAPError)
-        }
+        Ok((class, ttl, RData::NSAP(data)))
     }
 
     pub(super) fn decode_px(&mut self) -> DecodeResult<(Class, u32, RData)> {
@@ -520,37 +343,23 @@ impl<'a> DecodeData<'a> {
     }
 
     pub(super) fn decode_eid(&mut self) -> DecodeResult<(Class, u32, RData)> {
-        let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
-        let start = *self.offset;
+        let (class, ttl, data) = self.decode_vec()?;
 
-        if 1 > rdlength {
+        if 1 > data.len() {
             return Err(DecodeError::EIDError);
         }
 
-        *self.offset += rdlength;
-
-        if let Some(buffer) = self.bytes.get(start..*self.offset) {
-            Ok((class, ttl, RData::EID(Vec::from(buffer))))
-        } else {
-            Err(DecodeError::EIDError)
-        }
+        Ok((class, ttl, RData::EID(data)))
     }
 
     pub(super) fn decode_nimloc(&mut self) -> DecodeResult<(Class, u32, RData)> {
-        let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
-        let start = *self.offset;
+        let (class, ttl, data) = self.decode_vec()?;
 
-        if 1 > rdlength {
+        if 1 > data.len() {
             return Err(DecodeError::NIMLOCError);
         }
 
-        *self.offset += rdlength;
-
-        if let Some(buffer) = self.bytes.get(start..*self.offset) {
-            Ok((class, ttl, RData::NIMLOC(Vec::from(buffer))))
-        } else {
-            Err(DecodeError::NIMLOCError)
-        }
+        Ok((class, ttl, RData::NIMLOC(data)))
     }
 
     pub(super) fn decode_srv(&mut self) -> DecodeResult<(Class, u32, RData)> {
@@ -574,34 +383,13 @@ impl<'a> DecodeData<'a> {
     }
 
     pub(super) fn decode_kx(&mut self) -> DecodeResult<(Class, u32, RData)> {
-        let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
-        let start = *self.offset;
-
-        if size_of::<u16>() + 1 > rdlength {
-            return Err(DecodeError::KXError);
-        }
-
-        let preference = decode_u16(self.bytes, self.offset)?;
-        let exchanger = DomainName::decode(self.bytes, self.offset)?;
-
-        if *self.offset == (start + rdlength) {
-            Ok((class, ttl, RData::KX(preference, exchanger)))
-        } else {
-            Err(DecodeError::KXError)
-        }
+        let (class, ttl, (preference, exchanger)) = self.decode_u16_domain()?;
+        Ok((class, ttl, RData::KX(preference, exchanger)))
     }
 
     pub(super) fn decode_dname(&mut self) -> DecodeResult<(Class, u32, RData)> {
-        let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
-        let start = *self.offset;
-
-        let target = DomainName::decode(self.bytes, self.offset)?;
-
-        if *self.offset == (start + rdlength) {
-            Ok((class, ttl, RData::DNAME(target)))
-        } else {
-            Err(DecodeError::PTRError)
-        }
+        let (class, ttl, target) = self.decode_domain()?;
+        Ok((class, ttl, RData::DNAME(target)))
     }
 
     pub(super) fn decode_opt(&mut self) -> DecodeResult<(Class, u32, RData)> {

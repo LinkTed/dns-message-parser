@@ -12,6 +12,7 @@ pub enum DecodeError {
     Utf8Error(Utf8Error),
     LabelError,
     NotYetImplemented,
+    LengthError,
 
     AError,
     NSError,
