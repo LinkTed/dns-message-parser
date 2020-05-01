@@ -3,6 +3,9 @@ use bytes::BytesMut;
 use crate::DomainName;
 
 use std::collections::HashMap;
+use std::convert::TryFrom;
+
+use super::{encode_string, EncodeError};
 
 #[test]
 fn test_domain_name_encoding_nothing() {
@@ -10,19 +13,15 @@ fn test_domain_name_encoding_nothing() {
     let offset = bytes.len();
     let mut compression = HashMap::new();
     let mut domain = DomainName::default();
-    domain.append_label("mail");
-    domain.append_label("ns");
-    domain.append_label("google");
-    domain.append_label("com");
+    domain.append_label("mail").unwrap();
+    domain.append_label("ns").unwrap();
+    domain.append_label("google").unwrap();
+    domain.append_label("com").unwrap();
 
     let result = domain.encode(&mut bytes, &offset, &mut compression);
     assert!(result.is_ok());
 
-    let mut domain = DomainName::default();
-    domain.append_label("mail");
-    domain.append_label("ns");
-    domain.append_label("google");
-    domain.append_label("org");
+    let domain = DomainName::try_from("mail.ns.google.org.").unwrap();
 
     let result = domain.encode(&mut bytes, &offset, &mut compression);
     assert!(result.is_ok());
@@ -39,16 +38,15 @@ fn test_domain_name_encoding_partially() {
     let offset = bytes.len();
     let mut compression = HashMap::new();
     let mut domain = DomainName::default();
-    domain.append_label("mail");
-    domain.append_label("ns");
-    domain.append_label("google");
-    domain.append_label("com");
+    domain.append_label("mail").unwrap();
+    domain.append_label("ns").unwrap();
+    domain.append_label("google").unwrap();
+    domain.append_label("com").unwrap();
 
     let result = domain.encode(&mut bytes, &offset, &mut compression);
     assert!(result.is_ok());
 
-    let mut domain = DomainName::default();
-    domain.append_label("com");
+    let domain = DomainName::try_from("com").unwrap();
 
     let result = domain.encode(&mut bytes, &offset, &mut compression);
     assert!(result.is_ok());
@@ -62,19 +60,15 @@ fn test_domain_name_encoding_completely() {
     let offset = bytes.len();
     let mut compression = HashMap::new();
     let mut domain = DomainName::default();
-    domain.append_label("mail");
-    domain.append_label("ns");
-    domain.append_label("google");
-    domain.append_label("com");
+    domain.append_label("mail").unwrap();
+    domain.append_label("ns").unwrap();
+    domain.append_label("google").unwrap();
+    domain.append_label("com").unwrap();
 
     let result = domain.encode(&mut bytes, &offset, &mut compression);
     assert!(result.is_ok());
 
-    let mut domain = DomainName::default();
-    domain.append_label("mail");
-    domain.append_label("ns");
-    domain.append_label("google");
-    domain.append_label("com");
+    let domain = DomainName::try_from("mail.ns.google.com.").unwrap();
 
     let result = domain.encode(&mut bytes, &offset, &mut compression);
     assert!(result.is_ok());
@@ -88,26 +82,18 @@ fn test_domain_name_encoding_recursive() {
     let offset = bytes.len();
     let mut compression = HashMap::new();
     let mut d1 = DomainName::default();
-    d1.append_label("google");
-    d1.append_label("com");
+    d1.append_label("google").unwrap();
+    d1.append_label("com").unwrap();
 
     let result = d1.encode(&mut bytes, &offset, &mut compression);
     assert!(result.is_ok());
 
-    let mut d2 = DomainName::default();
-    d2.append_label("mail1");
-    d2.append_label("ns");
-    d2.append_label("google");
-    d2.append_label("com");
+    let d2 = DomainName::try_from("mail1.ns.google.com").unwrap();
 
     let result = d2.encode(&mut bytes, &offset, &mut compression);
     assert!(result.is_ok());
 
-    let mut d3 = DomainName::default();
-    d3.append_label("mail2");
-    d3.append_label("ns");
-    d3.append_label("google");
-    d3.append_label("com");
+    let d3 = DomainName::try_from("mail2.ns.google.com.").unwrap();
 
     let result = d3.encode(&mut bytes, &offset, &mut compression);
     assert!(result.is_ok());
@@ -141,7 +127,7 @@ fn test_domain_name_encode_com() {
     let offset = bytes.len();
     let mut compression = HashMap::new();
     let mut domain_name = DomainName::default();
-    domain_name.append_label("com");
+    domain_name.append_label("com").unwrap();
     domain_name
         .encode(&mut bytes, &offset, &mut compression)
         .unwrap();
@@ -154,10 +140,21 @@ fn test_domain_name_encode_google_com() {
     let offset = bytes.len();
     let mut compression = HashMap::new();
     let mut domain_name = DomainName::default();
-    domain_name.append_label("google");
-    domain_name.append_label("com");
+    domain_name.append_label("google").unwrap();
+    domain_name.append_label("com").unwrap();
     domain_name
         .encode(&mut bytes, &offset, &mut compression)
         .unwrap();
     assert_eq!(bytes, &b"\x06google\x03com\0"[..]);
+}
+
+#[test]
+fn string_error() {
+    let mut bytes = BytesMut::new();
+    let string = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\
+    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\
+    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\
+    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    let result = encode_string(&mut bytes, string);
+    assert_eq!(result, Err(EncodeError::TooMuchData));
 }

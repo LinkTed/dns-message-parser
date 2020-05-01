@@ -2,7 +2,9 @@ use crate::{
     AFSDBSubtype, Class, DomainName, QClass, QType, Question, SSHFPAlgorithm, SSHFPType, Type,
 };
 
-use std::fmt::{Display, Formatter, Result as FmtResult};
+use hex::encode as hex_encode;
+
+use std::fmt::{Debug, Display, Formatter, Result as FmtResult};
 use std::net::{Ipv4Addr, Ipv6Addr};
 
 #[derive(Debug, PartialEq, Clone)]
@@ -64,6 +66,65 @@ impl RData {
     }
 }
 
+impl Display for RData {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        match self {
+            RData::A(ipv4_addr) => write!(f, "A {}", ipv4_addr),
+            RData::NS(ns_d_name) => write!(f, "NS {}", ns_d_name),
+            RData::CNAME(c_name) => write!(f, "CNAME {}", c_name),
+            RData::SOA(m_name, r_name, serial, refresh, retry, expire, min_ttl) => write!(
+                f,
+                "SOA {} {} ({} {} {} {} {})",
+                m_name, r_name, *serial, *refresh, *retry, *expire, *min_ttl
+            ),
+            RData::MB(mad_name) => write!(f, "MB {}", mad_name),
+            RData::MG(mgm_name) => write!(f, "MG {}", mgm_name),
+            RData::MR(new_name) => write!(f, "MR {}", new_name),
+            // TODO NULL
+            // TODO WKS protocol bit_map
+            RData::WKS(ipv4_addr, protocol, bit_map) => {
+                write!(f, "WKS {} {} ({:?})", ipv4_addr, protocol, bit_map)
+            }
+            RData::PTR(ptr_d_name) => write!(f, "PTR {}", ptr_d_name),
+            RData::HINFO(cpu, os) => write!(f, "HINFO {:?} {:?}", cpu, os),
+            RData::MINFO(r_mail_bx, e_mail_bx) => write!(f, "MINFO {} {}", r_mail_bx, e_mail_bx),
+            RData::MX(preference, exchange) => write!(f, "MX {} {}", preference, exchange),
+            RData::TXT(string) => write!(f, "TXT {:?}", string),
+            RData::RP(mbox_dname, txt_dname) => write!(f, "RP {} {}", mbox_dname, txt_dname),
+            // TODO AFSDB
+            RData::X25(psdn_address) => write!(f, "X25 {}", psdn_address),
+            RData::ISDN(isdn_address, sa) => {
+                if let Some(sa) = sa {
+                    write!(f, "ISDN {} {}", isdn_address, sa)
+                } else {
+                    write!(f, "ISDN {}", isdn_address)
+                }
+            }
+            RData::RT(preference, intermediate_host) => {
+                write!(f, "RT {} {}", preference, intermediate_host)
+            }
+            // TODO NSAP
+            RData::PX(preference, map822, mapx400) => {
+                write!(f, "PX {} {} {}", preference, map822, mapx400)
+            }
+            RData::GPOS(longitude, latitude, altitude) => {
+                write!(f, "GPOS {:?} {:?} {:?}", longitude, latitude, altitude)
+            }
+            RData::AAAA(ipv6_addr) => write!(f, "AAAA {}", ipv6_addr),
+            // TODO
+            RData::EID(data) => write!(f, "EID {}", hex_encode(data)),
+            RData::NIMLOC(data) => write!(f, "NIMLOC {}", hex_encode(data)),
+            RData::SRV(priority, weight, port, target) => {
+                write!(f, "SRV {} {} {} {}", priority, weight, port, target)
+            }
+            RData::KX(preference, exchanger) => write!(f, "KX {} {}", preference, exchanger),
+            RData::DNAME(target) => write!(f, "DNAME {}", target),
+            // TODO SSHFP
+            r_data => Debug::fmt(r_data, f),
+        }
+    }
+}
+
 #[derive(Debug, Getters, PartialEq)]
 pub struct RR {
     #[get = "pub with_prefix"]
@@ -98,8 +159,8 @@ impl Display for RR {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         write!(
             f,
-            "{}: class: {:?}, ttl: {}, data: {:?}",
-            self.domain_name, self.class, self.ttl, self.rdata
+            "{} {} {:?} {}",
+            self.domain_name, self.ttl, self.class, self.rdata
         )
     }
 }

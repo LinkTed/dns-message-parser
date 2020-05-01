@@ -1,4 +1,4 @@
-use bytes::BytesMut;
+use bytes::{Bytes, BytesMut};
 
 use dns_message_parser::{Class, DomainName, QClass, QType, Question, RData, Type, RR};
 
@@ -7,8 +7,8 @@ use std::net::Ipv4Addr;
 
 fn get_question_example_org() -> Question {
     let mut domain_name = DomainName::default();
-    domain_name.append_label("example");
-    domain_name.append_label("org");
+    domain_name.append_label("example").unwrap();
+    domain_name.append_label("org").unwrap();
 
     let qclass = QClass::Class(Class::IN);
     let qtype = QType::Type(Type::A);
@@ -37,8 +37,8 @@ fn resource_record() {
     let mut compression = HashMap::new();
 
     let mut domain_name = DomainName::default();
-    domain_name.append_label("example");
-    domain_name.append_label("org");
+    domain_name.append_label("example").unwrap();
+    domain_name.append_label("org").unwrap();
 
     let ipv_4_addr = Ipv4Addr::new(10, 0, 0, 10);
 
@@ -71,23 +71,63 @@ fn label_64() {
     let mut domain_name = DomainName::default();
     let result = domain_name
         .append_label("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    assert_eq!(result, false);
+    assert!(result.is_err());
 }
 
 #[test]
 fn domain_name_max_length() {
     let mut domain_name = DomainName::default();
-    domain_name.append_label("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    domain_name.append_label("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    domain_name.append_label("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    domain_name.append_label("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    domain_name
+        .append_label("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        .unwrap();
+    domain_name
+        .append_label("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        .unwrap();
+    domain_name
+        .append_label("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        .unwrap();
+    domain_name
+        .append_label("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        .unwrap();
     let result = domain_name.append_label("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    assert_eq!(result, false);
+    assert!(result.is_err());
 }
 
 #[test]
 fn domain_name_regex() {
     let mut domain_name = DomainName::default();
     let result = domain_name.append_label(".");
-    assert_eq!(result, false);
+    assert!(result.is_err());
+}
+
+#[test]
+fn decode_type_type() {
+    let bytes = Bytes::copy_from_slice(&b"\x00\x01"[..]);
+    let mut offset = 0;
+    let type_ = Type::decode(&bytes, &mut offset).unwrap();
+    assert_eq!(type_, Type::A);
+}
+
+#[test]
+fn decode_type_error() {
+    let bytes = Bytes::copy_from_slice(&b"\xff\xff"[..]);
+    let mut offset = 0;
+    let result = Type::decode(&bytes, &mut offset);
+    assert!(result.is_err());
+}
+
+#[test]
+fn decode_class() {
+    let bytes = Bytes::copy_from_slice(&b"\x00\x03"[..]);
+    let mut offset = 0;
+    let class = Class::decode(&bytes, &mut offset).unwrap();
+    assert_eq!(class, Class::CH);
+}
+
+#[test]
+fn decode_class_error() {
+    let bytes = Bytes::copy_from_slice(&b"\xff\xff"[..]);
+    let mut offset = 0;
+    let result = Class::decode(&bytes, &mut offset);
+    assert!(result.is_err());
 }

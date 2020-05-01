@@ -1,3 +1,4 @@
+#![feature(str_strip)]
 #[macro_use(FromPrimitive, ToPrimitive)]
 extern crate num_derive;
 #[macro_use(lazy_static)]
@@ -12,7 +13,7 @@ mod dns;
 pub use dns::{Dns, Flags};
 
 mod domain_name;
-pub use domain_name::DomainName;
+pub use domain_name::{DomainError, DomainName};
 
 mod encode;
 pub use encode::EncodeError;
@@ -143,10 +144,7 @@ pub enum Type {
     TKEY = 249,
     TSIG = 250,
     IXFR = 251,
-    AXFR = 252,
-    MAILB = 253,
-    MAILA = 254,
-    ALL = 255,
+    // TODO QType?
     URI = 256,
     CAA = 257,
     AVC = 258,

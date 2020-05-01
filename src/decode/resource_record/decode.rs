@@ -191,6 +191,7 @@ impl<'a> DecodeData<'a> {
     pub(super) fn decode_x25(&mut self) -> DecodeResult<(Class, u32, RData)> {
         let (class, ttl, psdn_address) = self.decode_string()?;
 
+        // TODO check hex
         if 1 > psdn_address.len() {
             return Err(DecodeError::X25Error);
         }
@@ -205,13 +206,14 @@ impl<'a> DecodeData<'a> {
         if 2 > rdlength {
             return Err(DecodeError::ISDNError);
         }
-
+        // TODO check hex
         let isdn_address = decode_string(self.bytes, self.offset)?;
 
-        let sa = if *self.offset == (start + rdlength) {
-            None
-        } else {
+        let sa = if *self.offset < (start + rdlength) {
+            // TODO check hex
             Some(decode_string(self.bytes, self.offset)?)
+        } else {
+            None
         };
 
         if *self.offset == (start + rdlength) {
@@ -272,6 +274,8 @@ impl<'a> DecodeData<'a> {
         if 6 > rdlength {
             return Err(DecodeError::GPOSError);
         }
+
+        // TODO String value check
 
         let longitude = decode_string(self.bytes, self.offset)?;
         let longitude_len = longitude.len();

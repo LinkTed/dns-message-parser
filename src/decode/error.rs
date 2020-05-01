@@ -1,6 +1,8 @@
+use crate::DomainError;
+
 use std::str::Utf8Error;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum DecodeError {
     NotEnoughData,
     TooMuchData,
@@ -10,7 +12,7 @@ pub enum DecodeError {
     TypeError,
     ClassError,
     Utf8Error(Utf8Error),
-    LabelError,
+    Domain(DomainError),
     NotYetImplemented,
     LengthError,
 
@@ -58,5 +60,11 @@ pub enum DecodeError {
 impl From<Utf8Error> for DecodeError {
     fn from(utf8_error: Utf8Error) -> Self {
         DecodeError::Utf8Error(utf8_error)
+    }
+}
+
+impl From<DomainError> for DecodeError {
+    fn from(domain_error: DomainError) -> Self {
+        DecodeError::Domain(domain_error)
     }
 }

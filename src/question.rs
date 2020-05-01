@@ -67,10 +67,6 @@ impl Question {
 
 impl Display for Question {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-        write!(
-            f,
-            "{}: type: {}, class {}",
-            self.domain_name, self.qtype, self.qclass
-        )
+        write!(f, "{} {} {}", self.domain_name, self.qclass, self.qtype)
     }
 }

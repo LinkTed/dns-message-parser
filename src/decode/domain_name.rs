@@ -44,9 +44,7 @@ impl DomainName {
                 *offset += length as usize;
                 if let Some(buffer) = bytes.get(start..*offset) {
                     let label = from_utf8(buffer)?;
-                    if !domain_name.append_label(label) {
-                        return Err(DecodeError::LabelError);
-                    }
+                    domain_name.append_label(label)?;
                 } else {
                     return Err(DecodeError::NotEnoughData);
                 }

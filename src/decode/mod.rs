@@ -9,6 +9,9 @@ mod question;
 
 mod resource_record;
 
+#[cfg(test)]
+mod tests;
+
 mod value;
 use value::{decode_ipv4_addr, decode_ipv6_addr, decode_string, decode_u16, decode_u32, decode_u8};
 
