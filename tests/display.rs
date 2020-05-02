@@ -1,4 +1,6 @@
-use dns_message_parser::{Class, Dns, DomainName, RData, RR};
+use dns_message_parser::{
+    Class, Dns, DomainName, QClass, QClass_, QType, QType_, Question, RData, Type, RR,
+};
 
 use std::convert::TryFrom;
 use std::fmt::Display;
@@ -221,4 +223,37 @@ fn resource_record() {
     let r_data = RData::A(ipv4_addr);
     let resource_record = RR::new(domain_name, class, ttl, r_data);
     check_output(&resource_record, "example.org. 3600 IN A 10.0.0.10");
+}
+
+#[test]
+fn q_type_type() {
+    let q_type = QType::Type(Type::A);
+    check_output(&q_type, "A");
+}
+
+#[test]
+fn q_type_q_type() {
+    let q_type = QType::QType(QType_::ALL);
+    check_output(&q_type, "ALL");
+}
+
+#[test]
+fn q_class_class() {
+    let q_type = QClass::Class(Class::IN);
+    check_output(&q_type, "IN");
+}
+
+#[test]
+fn q_class_q_class() {
+    let q_type = QClass::QClass(QClass_::ANY);
+    check_output(&q_type, "ANY");
+}
+
+#[test]
+fn question() {
+    let domain_name = DomainName::try_from("example.org.").unwrap();
+    let q_class = QClass::Class(Class::IN);
+    let q_type = QType::Type(Type::A);
+    let question = Question::new(domain_name, q_class, q_type);
+    check_output(&question, "example.org. IN A")
 }
