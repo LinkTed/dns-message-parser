@@ -3,6 +3,7 @@ use bytes::{Bytes, BytesMut};
 use dns_message_parser::{Class, DomainName, QClass, QType, Question, RData, Type, RR};
 
 use std::collections::HashMap;
+use std::convert::TryFrom;
 use std::net::Ipv4Addr;
 
 fn get_question_example_org() -> Question {
@@ -130,4 +131,27 @@ fn decode_class_error() {
     let mut offset = 0;
     let result = Class::decode(&bytes, &mut offset);
     assert!(result.is_err());
+}
+
+#[test]
+fn domain_name_eq() {
+    let domain_name_1 = DomainName::try_from("Example.OrG.").unwrap();
+    let domain_name_2 = DomainName::try_from("example.org").unwrap();
+    let domain_name_3 = DomainName::try_from("example.com.").unwrap();
+    assert_eq!(domain_name_1, domain_name_2);
+    assert_ne!(domain_name_1, domain_name_3);
+}
+
+#[test]
+fn domain_name_string_eq() {
+    let domain_name = DomainName::try_from("Example.OrG.").unwrap();
+    assert_eq!(domain_name, "example.org.");
+    assert_ne!(domain_name, "example.com.");
+}
+
+#[test]
+fn domain_name_from_string() {
+    let domain_name = DomainName::try_from("Example.OrG.").unwrap();
+    let domain_name = String::from(domain_name);
+    assert_eq!(&domain_name, "example.org.");
 }

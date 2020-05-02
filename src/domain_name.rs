@@ -1,10 +1,9 @@
 use std::convert::TryFrom;
 use std::fmt::{Display, Formatter, Result as FmtResult};
-use std::ops::Deref;
 
 use regex::Regex;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum DomainError {
     LabelLength,
     DomainNameLength,
@@ -19,7 +18,8 @@ pub struct DomainName {
 impl DomainName {
     pub fn append_label(&mut self, label: &str) -> Result<(), DomainError> {
         lazy_static! {
-            static ref LABEL_REGEX: Regex = Regex::new(r"[^-.\x00][^.\x00]*").unwrap();
+            static ref LABEL_REGEX: Regex =
+                Regex::new(r"[0-9a-zA-Z]([0-9a-zA-Z-]*[0-9a-zA-Z])?").unwrap();
         }
 
         let label_length = label.len();
@@ -33,10 +33,11 @@ impl DomainName {
         }
 
         if LABEL_REGEX.is_match(label) {
+            let label = label.to_lowercase();
             if &self.domain_name == "." {
-                self.domain_name.insert_str(0, label);
+                self.domain_name.insert_str(0, &label);
             } else {
-                self.domain_name.push_str(label);
+                self.domain_name.push_str(&label);
                 self.domain_name.push('.');
             }
             Ok(())
@@ -72,11 +73,15 @@ impl Default for DomainName {
     }
 }
 
-impl Deref for DomainName {
-    type Target = str;
+impl From<DomainName> for String {
+    fn from(domain_name: DomainName) -> Self {
+        domain_name.domain_name
+    }
+}
 
-    fn deref(&self) -> &Self::Target {
-        &self.domain_name
+impl PartialEq<&str> for DomainName {
+    fn eq(&self, other: &&str) -> bool {
+        self.domain_name == other.to_lowercase()
     }
 }
 
