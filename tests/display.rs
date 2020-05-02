@@ -1,5 +1,6 @@
 use dns_message_parser::{
-    Class, Dns, DomainName, QClass, QClass_, QType, QType_, Question, RData, Type, RR,
+    Class, Dns, DomainName, Flags, Opcode, QClass, QClass_, QType, QType_, Question, RCode, RData,
+    Type, RR,
 };
 
 use std::convert::TryFrom;
@@ -256,4 +257,60 @@ fn question() {
     let q_type = QType::Type(Type::A);
     let question = Question::new(domain_name, q_class, q_type);
     check_output(&question, "example.org. IN A")
+}
+
+#[test]
+fn flags() {
+    let opcode = Opcode::Query;
+    let rcode = RCode::NoError;
+    let flags = Flags::new(true, opcode, true, true, true, true, true, true, rcode);
+    check_output(&flags, "qr Query aa tc rd ra ad cd NoError");
+}
+
+#[test]
+fn dns() {
+    let id = 10105;
+    let opcode = Opcode::Query;
+    let rcode = RCode::NoError;
+    let flags = Flags::new(
+        false, opcode, false, false, false, false, false, false, rcode,
+    );
+    let questions = {
+        let domain_name = DomainName::try_from("cname.example.org.").unwrap();
+        let q_class = QClass::Class(Class::IN);
+        let q_type = QType::Type(Type::CNAME);
+        vec![Question::new(domain_name, q_class, q_type)]
+    };
+    let answers = {
+        let domain_name = DomainName::try_from("cname.example.org.").unwrap();
+        let class = Class::IN;
+        let ttl = 3600;
+        let cname = DomainName::try_from("example.org.").unwrap();
+        let r_data = RData::CNAME(cname);
+        vec![RR::new(domain_name, class, ttl, r_data)]
+    };
+    let authorities = {
+        let domain_name = DomainName::try_from("ns1.example.org.").unwrap();
+        let class = Class::IN;
+        let ttl = 3600;
+        let ns = DomainName::try_from("example.org.").unwrap();
+        let r_data = RData::NS(ns);
+        vec![RR::new(domain_name, class, ttl, r_data)]
+    };
+    let additionals = {
+        let domain_name = DomainName::try_from("example.org.").unwrap();
+        let class = Class::IN;
+        let ttl = 3600;
+        let ipv4_addr = "10.0.0.10".parse().unwrap();
+        let r_data = RData::A(ipv4_addr);
+        vec![RR::new(domain_name, class, ttl, r_data)]
+    };
+    let dns = Dns::new(id, flags, questions, answers, authorities, additionals);
+    check_output(
+        &dns,
+        "10105 Query NoError questions [cname.example.org. IN CNAME, ] \
+        answers [cname.example.org. 3600 IN CNAME example.org., ] \
+        authorities [ns1.example.org. 3600 IN NS example.org., ] \
+        additionals [example.org. 3600 IN A 10.0.0.10, ]",
+    );
 }

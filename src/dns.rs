@@ -82,7 +82,7 @@ impl Display for Flags {
             write!(f, "cd ")?;
         }
 
-        Ok(())
+        write!(f, "{:?}", self.rcode)
     }
 }
 
@@ -127,20 +127,43 @@ impl Dns {
     }
 }
 
+fn print_slice<T>(f: &mut Formatter<'_>, slice: &[T]) -> FmtResult
+where
+    T: Display,
+{
+    write!(f, "[")?;
+    for e in slice {
+        write!(f, "{}, ", e)?;
+    }
+    write!(f, "]")?;
+    Ok(())
+}
+
 impl Display for Dns {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-        write!(f, "id: {}, flags: {} ", self.id, self.flags)?;
+        write!(f, "{} {} ", self.id, self.flags)?;
 
-        if self.questions.len() != 0 {
-            write!(f, "questions: {:?}", self.questions)?;
+        if !self.questions.is_empty() {
+            write!(f, "questions ")?;
+            print_slice(f, &self.questions)?;
+            write!(f, " ")?;
         }
 
-        if self.authorities.len() != 0 {
-            write!(f, "authorities: {:?}", self.authorities)?;
+        if !self.answers.is_empty() {
+            write!(f, "answers ")?;
+            print_slice(f, &self.answers)?;
+            write!(f, " ")?;
         }
 
-        if self.additionals.len() != 0 {
-            write!(f, "additionals: {:?}", self.additionals)?;
+        if !self.authorities.is_empty() {
+            write!(f, "authorities ")?;
+            print_slice(f, &self.authorities)?;
+            write!(f, " ")?;
+        }
+
+        if !self.additionals.is_empty() {
+            write!(f, "additionals ")?;
+            print_slice(f, &self.additionals)?;
         }
 
         Ok(())
