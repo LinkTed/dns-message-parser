@@ -192,7 +192,7 @@ impl<'a> DecodeData<'a> {
         let (class, ttl, psdn_address) = self.decode_string()?;
 
         // TODO check hex
-        if 1 > psdn_address.len() {
+        if psdn_address.is_empty() {
             return Err(DecodeError::X25Error);
         }
 
@@ -235,7 +235,7 @@ impl<'a> DecodeData<'a> {
             return Err(DecodeError::NSAPError);
         }
 
-        if 1 > data.len() {
+        if data.is_empty() {
             return Err(DecodeError::NSAPError);
         }
 
@@ -349,7 +349,7 @@ impl<'a> DecodeData<'a> {
     pub(super) fn decode_eid(&mut self) -> DecodeResult<(Class, u32, RData)> {
         let (class, ttl, data) = self.decode_vec()?;
 
-        if 1 > data.len() {
+        if data.is_empty() {
             return Err(DecodeError::EIDError);
         }
 
@@ -359,7 +359,7 @@ impl<'a> DecodeData<'a> {
     pub(super) fn decode_nimloc(&mut self) -> DecodeResult<(Class, u32, RData)> {
         let (class, ttl, data) = self.decode_vec()?;
 
-        if 1 > data.len() {
+        if data.is_empty() {
             return Err(DecodeError::NIMLOCError);
         }
 
