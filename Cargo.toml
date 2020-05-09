@@ -18,8 +18,14 @@ exclude = [
     ".gitignore",
     ]
 
-[badges]
-travis-ci = { repository = "LinkTed/dns-message-parser" }
+[badges.travis-ci]
+repository = "LinkTed/dns-message-parser"
+branch = "master"
+
+[badges.codecov]
+repository = "LinkTed/dns-message-parser"
+branch = "master"
+service = "github"
 
 [dependencies]
 num-derive = "0.3.0"
