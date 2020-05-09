@@ -1,4 +1,4 @@
-use bytes::BytesMut;
+use bytes::{Bytes, BytesMut};
 
 use crate::{Dns, Flags};
 
@@ -79,5 +79,11 @@ impl Dns {
         }
 
         Ok(())
+    }
+
+    pub fn to_bytes(&self) -> Result<Bytes, EncodeError> {
+        let mut bytes = BytesMut::new();
+        self.encode(&mut bytes)?;
+        Ok(bytes.freeze())
     }
 }
