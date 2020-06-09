@@ -1,8 +1,7 @@
 # dns-message-parser
 A library to encode and decode DNS packets ([RFC1035](https://tools.ietf.org/html/rfc1035), [RFC2535](https://tools.ietf.org/html/rfc2535)).
 
-[![Build Status](https://travis-ci.org/LinkTed/dns-message-parser.svg?branch=master)](https://travis-ci.org/LinkTed/dns-message-parser)
-[![Dependency Status](https://deps.rs/repo/github/linkted/dns-message-parser/status.svg)](https://deps.rs/repo/github/linkted/dns-message-parser)
+[![Build status](https://travis-ci.org/LinkTed/dns-message-parser.svg?branch=master)](https://travis-ci.org/LinkTed/dns-message-parser)
 [![Latest version](https://img.shields.io/crates/v/dns-message-parser.svg)](https://crates.io/crates/dns-message-parser)
 [![License](https://img.shields.io/crates/l/dns-message-parser.svg)](https://opensource.org/licenses/BSD-3-Clause)  
 [![Coverage](https://codecov.io/gh/LinkTed/dns-message-parser/branch/master/graph/badge.svg)](https://codecov.io/gh/LinkTed/dns-message-parser)
