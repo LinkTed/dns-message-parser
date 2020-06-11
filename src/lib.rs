@@ -1,4 +1,3 @@
-#![feature(str_strip)]
 #[macro_use(FromPrimitive, ToPrimitive)]
 extern crate num_derive;
 #[macro_use(lazy_static)]
