@@ -9,14 +9,14 @@ then
     # Set environment variables
     export CARGO_INCREMENTAL=0
     export RUSTFLAGS="-Zprofile -Ccodegen-units=1 -Copt-level=0 \
-    -Clink-dead-code -Coverflow-checks=off"
+    -Clink-dead-code -Coverflow-checks=off -Zpanic_abort_tests -Cpanic=abort"
     # Create code coverage (gcno and gcda files)
     cargo test --verbose --all
     # Pack the gcno and gcda files into a zip file
     zip -0 ccov.zip `find . \( -name "dns_message_parser*.gc*" \) -print`
     # Convert gcno and gcda files into lcov
-    ./grcov ccov.zip -s . -t lcov --llvm --branch \
-    --ignore-not-existing --ignore "/*" -o lcov.info
+    ./grcov ccov.zip -s . -t lcov --branch --ignore-not-existing --ignore "/*" \
+    -o lcov.info --excl-line "#\[derive\(" --excl-br-line "#\[derive\("
     # Upload code coverage
     bash <(curl -s https://codecov.io/bash) -f lcov.info
   else
