@@ -1,12 +1,14 @@
-use bytes::{Buf, Bytes};
-
+use super::{DecodeError, DecodeResult};
+use bytes::Buf;
 use std::mem::size_of;
 use std::net::{Ipv4Addr, Ipv6Addr};
+use std::ops::Deref;
 use std::str::from_utf8;
 
-use super::{DecodeError, DecodeResult};
-
-pub(super) fn decode_u8(bytes: &Bytes, offset: &mut usize) -> DecodeResult<u8> {
+pub(super) fn decode_u8<T>(bytes: &T, offset: &mut usize) -> DecodeResult<u8>
+where
+    T: Deref<Target = [u8]>,
+{
     let start = *offset;
     *offset += size_of::<u8>();
 
@@ -17,7 +19,10 @@ pub(super) fn decode_u8(bytes: &Bytes, offset: &mut usize) -> DecodeResult<u8> {
     }
 }
 
-pub(super) fn decode_u16(bytes: &Bytes, offset: &mut usize) -> DecodeResult<u16> {
+pub(super) fn decode_u16<T>(bytes: &T, offset: &mut usize) -> DecodeResult<u16>
+where
+    T: Deref<Target = [u8]>,
+{
     let start = *offset;
     *offset += size_of::<u16>();
 
@@ -28,7 +33,10 @@ pub(super) fn decode_u16(bytes: &Bytes, offset: &mut usize) -> DecodeResult<u16>
     }
 }
 
-pub(super) fn decode_u32(bytes: &Bytes, offset: &mut usize) -> DecodeResult<u32> {
+pub(super) fn decode_u32<T>(bytes: &T, offset: &mut usize) -> DecodeResult<u32>
+where
+    T: Deref<Target = [u8]>,
+{
     let start = *offset;
     *offset += size_of::<u32>();
 
@@ -39,7 +47,10 @@ pub(super) fn decode_u32(bytes: &Bytes, offset: &mut usize) -> DecodeResult<u32>
     }
 }
 
-pub(super) fn decode_string(bytes: &Bytes, offset: &mut usize) -> DecodeResult<String> {
+pub(super) fn decode_string<T>(bytes: &T, offset: &mut usize) -> DecodeResult<String>
+where
+    T: Deref<Target = [u8]>,
+{
     let length = decode_u8(bytes, offset)? as usize;
     let start = *offset;
     *offset += length;
@@ -53,7 +64,10 @@ pub(super) fn decode_string(bytes: &Bytes, offset: &mut usize) -> DecodeResult<S
     }
 }
 
-pub(super) fn decode_ipv4_addr(bytes: &Bytes, offset: &mut usize) -> DecodeResult<Ipv4Addr> {
+pub(super) fn decode_ipv4_addr<T>(bytes: &T, offset: &mut usize) -> DecodeResult<Ipv4Addr>
+where
+    T: Deref<Target = [u8]>,
+{
     let a = decode_u8(bytes, offset)?;
     let b = decode_u8(bytes, offset)?;
     let c = decode_u8(bytes, offset)?;
@@ -62,7 +76,10 @@ pub(super) fn decode_ipv4_addr(bytes: &Bytes, offset: &mut usize) -> DecodeResul
     Ok(Ipv4Addr::new(a, b, c, d))
 }
 
-pub(super) fn decode_ipv6_addr(bytes: &Bytes, offset: &mut usize) -> DecodeResult<Ipv6Addr> {
+pub(super) fn decode_ipv6_addr<T>(bytes: &T, offset: &mut usize) -> DecodeResult<Ipv6Addr>
+where
+    T: Deref<Target = [u8]>,
+{
     let a = decode_u16(bytes, offset)?;
     let b = decode_u16(bytes, offset)?;
     let c = decode_u16(bytes, offset)?;

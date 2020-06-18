@@ -1,26 +1,29 @@
-use bytes::Bytes;
-
-use crate::DomainName;
-
 use super::{decode_u8, DecodeError, DecodeResult};
-
+use crate::DomainName;
+use std::ops::Deref;
 use std::str::from_utf8;
 
 const DOMAIN_NAME_MAX_RECURSION: usize = 16;
 
 impl DomainName {
-    pub fn decode(bytes: &Bytes, offset: &mut usize) -> DecodeResult<DomainName> {
+    pub fn decode<T>(bytes: &T, offset: &mut usize) -> DecodeResult<DomainName>
+    where
+        T: Deref<Target = [u8]>,
+    {
         let mut domain_name = DomainName::default();
         DomainName::decode_recursion(bytes, offset, &mut domain_name, 0)?;
         Ok(domain_name)
     }
 
-    fn decode_recursion(
-        bytes: &Bytes,
+    fn decode_recursion<T>(
+        bytes: &T,
         offset: &mut usize,
         domain_name: &mut DomainName,
         recursion: usize,
-    ) -> DecodeResult<()> {
+    ) -> DecodeResult<()>
+    where
+        T: Deref<Target = [u8]>,
+    {
         if recursion > DOMAIN_NAME_MAX_RECURSION {
             return Err(DecodeError::MaxRecursionError);
         }

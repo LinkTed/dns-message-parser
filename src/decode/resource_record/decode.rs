@@ -1,15 +1,16 @@
-use crate::{AFSDBSubtype, Class, DomainName, RData, SSHFPAlgorithm, SSHFPType};
-
-use num_traits::FromPrimitive;
-
 use super::{
     decode_ipv4_addr, decode_ipv6_addr, decode_string, decode_u16, decode_u32, decode_u8,
     DecodeData, DecodeError, DecodeResult,
 };
-
+use crate::{AFSDBSubtype, Class, DomainName, RData, SSHFPAlgorithm, SSHFPType};
+use num_traits::FromPrimitive;
 use std::mem::size_of;
+use std::ops::Deref;
 
-impl<'a> DecodeData<'a> {
+impl<'a, T> DecodeData<'a, T>
+where
+    T: Deref<Target = [u8]>,
+{
     pub(super) fn decode_a(&mut self) -> DecodeResult<(Class, u32, RData)> {
         let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
 

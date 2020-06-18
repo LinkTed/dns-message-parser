@@ -1,18 +1,21 @@
-use bytes::Bytes;
-
-use crate::{Class, DomainName};
-
 use super::{decode_string, decode_u16, decode_u32, DecodeError, DecodeResult};
-
+use crate::{Class, DomainName};
 use std::mem::size_of;
+use std::ops::Deref;
 
-pub(super) struct DecodeData<'a> {
-    pub(super) bytes: &'a Bytes,
+pub(super) struct DecodeData<'a, T>
+where
+    T: Deref<Target = [u8]>,
+{
+    pub(super) bytes: &'a T,
     pub(super) offset: &'a mut usize,
 }
 
-impl<'a> DecodeData<'a> {
-    pub(super) fn new(bytes: &'a Bytes, offset: &'a mut usize) -> DecodeData<'a> {
+impl<'a, T> DecodeData<'a, T>
+where
+    T: Deref<Target = [u8]>,
+{
+    pub(super) fn new(bytes: &'a T, offset: &'a mut usize) -> DecodeData<'a, T> {
         DecodeData { bytes, offset }
     }
 

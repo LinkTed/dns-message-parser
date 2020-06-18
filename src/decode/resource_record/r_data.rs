@@ -1,15 +1,16 @@
-use bytes::Bytes;
-
-use crate::{Class, RData, Type};
-
 use super::{DecodeData, DecodeError, DecodeResult};
+use crate::{Class, RData, Type};
+use std::ops::Deref;
 
 impl RData {
-    pub fn decode(
-        bytes: &Bytes,
+    pub fn decode<T>(
+        bytes: &T,
         offset: &mut usize,
         type_: &Type,
-    ) -> DecodeResult<(Class, u32, RData)> {
+    ) -> DecodeResult<(Class, u32, RData)>
+    where
+        T: Deref<Target = [u8]>,
+    {
         let mut decode_data = DecodeData::new(bytes, offset);
         match type_ {
             Type::A => decode_data.decode_a(),

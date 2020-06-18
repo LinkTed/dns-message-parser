@@ -1,13 +1,13 @@
-use bytes::Bytes;
-
-use crate::{Dns, Flags, Opcode, Question, RCode, MAXIMUM_DNS_PACKET_SIZE, RR};
-
-use num_traits::FromPrimitive;
-
 use super::{decode_u16, decode_u8, DecodeError, DecodeResult};
+use crate::{Dns, Flags, Opcode, Question, RCode, MAXIMUM_DNS_PACKET_SIZE, RR};
+use num_traits::FromPrimitive;
+use std::ops::Deref;
 
 impl Flags {
-    pub fn decode(bytes: &Bytes, offset: &mut usize) -> DecodeResult<Flags> {
+    pub fn decode<T>(bytes: &T, offset: &mut usize) -> DecodeResult<Flags>
+    where
+        T: Deref<Target = [u8]>,
+    {
         let buffer = decode_u8(bytes, offset)?;
         let qr = (buffer & 0b1000_0000) != 0;
         let opcode = if let Some(opcode) = Opcode::from_u8((buffer & 0b0111_1000) >> 3) {
@@ -34,7 +34,10 @@ impl Flags {
 }
 
 impl Dns {
-    pub fn decode(bytes: &Bytes) -> DecodeResult<Dns> {
+    pub fn decode<T>(bytes: &T) -> DecodeResult<Dns>
+    where
+        T: Deref<Target = [u8]>,
+    {
         let bytes_len = bytes.len();
         if bytes_len < 16 {
             return Err(DecodeError::NotEnoughData);

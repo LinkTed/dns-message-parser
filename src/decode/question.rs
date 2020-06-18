@@ -1,13 +1,13 @@
-use bytes::Bytes;
-
-use crate::{Class, DomainName, QClass, QClass_, QType, QType_, Question, Type};
-
-use num_traits::FromPrimitive;
-
 use super::{decode_u16, DecodeError, DecodeResult};
+use crate::{Class, DomainName, QClass, QClass_, QType, QType_, Question, Type};
+use num_traits::FromPrimitive;
+use std::ops::Deref;
 
 impl QType {
-    pub fn decode(bytes: &Bytes, offset: &mut usize) -> DecodeResult<QType> {
+    pub fn decode<T>(bytes: &T, offset: &mut usize) -> DecodeResult<QType>
+    where
+        T: Deref<Target = [u8]>,
+    {
         let buffer = decode_u16(bytes, offset)?;
         if let Some(type_) = Type::from_u16(buffer) {
             Ok(QType::Type(type_))
@@ -20,7 +20,10 @@ impl QType {
 }
 
 impl QClass {
-    pub fn decode(bytes: &Bytes, offset: &mut usize) -> DecodeResult<QClass> {
+    pub fn decode<T>(bytes: &T, offset: &mut usize) -> DecodeResult<QClass>
+    where
+        T: Deref<Target = [u8]>,
+    {
         let buffer = decode_u16(bytes, offset)?;
         if let Some(class) = Class::from_u16(buffer) {
             Ok(QClass::Class(class))
@@ -33,7 +36,10 @@ impl QClass {
 }
 
 impl Question {
-    pub fn decode(bytes: &Bytes, offset: &mut usize) -> DecodeResult<Question> {
+    pub fn decode<T>(bytes: &T, offset: &mut usize) -> DecodeResult<Question>
+    where
+        T: Deref<Target = [u8]>,
+    {
         let domain_name = DomainName::decode(bytes, offset)?;
         let qtype = QType::decode(bytes, offset)?;
         let qclass = QClass::decode(bytes, offset)?;
