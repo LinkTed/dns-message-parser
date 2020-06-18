@@ -1,6 +1,5 @@
 use bytes::{Bytes, BytesMut};
-
-use dns_message_parser::Dns;
+use dns_message_parser::{Dns, Flags, Opcode, RCode};
 
 fn decode_msg(msg: &[u8]) -> Dns {
     // Decode BytesMut to message
@@ -17,6 +16,26 @@ fn encode_test(msg: &[u8]) {
     let dns_2 = decode_msg(bytes.as_ref());
 
     assert_eq!(dns_1, dns_2);
+}
+
+#[test]
+fn flags() {
+    let flags_1 = Flags::new(
+        true,
+        Opcode::Query,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        RCode::NoError,
+    );
+
+    let mut bytes = BytesMut::new();
+    flags_1.encode(&mut bytes).unwrap();
+    let flags_2 = Flags::decode(&bytes, &mut 0).unwrap();
+    assert_eq!(flags_1, flags_2);
 }
 
 #[test]
