@@ -1,4 +1,12 @@
 #!/bin/bash -e
+prefix="target/debug/deps"
+executables=("$prefix/dns_message_parser-*.gc*"
+             "$prefix/decode-*.gc*"
+	           "$prefix/decode_error-*.gc*"
+	           "$prefix/display-*.gc*"
+	           "$prefix/encode-*.gc*"
+	           "$prefix/generic-*.gc*"
+	           "$prefix/question-*.gc*") 
 
 if [ "$TRAVIS_OS_NAME" = "linux" ]
 then
@@ -13,7 +21,7 @@ then
     # Create code coverage (gcno and gcda files)
     cargo test --verbose --all
     # Pack the gcno and gcda files into a zip file
-    zip -0 ccov.zip `find . \( -name "dns_message_parser*.gc*" \) -print`
+    zip -0 ccov.zip ${executables[@]}
     # Convert gcno and gcda files into lcov
     ./grcov ccov.zip -s . -t lcov --branch --ignore-not-existing --ignore "/*" \
     -o lcov.info --excl-line "#\[derive\(" --excl-br-line "#\[derive\("
