@@ -20,17 +20,17 @@ fn encode_test(msg: &[u8]) {
 
 #[test]
 fn flags() {
-    let flags_1 = Flags::new(
-        true,
-        Opcode::Query,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        RCode::NoError,
-    );
+    let flags_1 = Flags {
+        qr: true,
+        opcode: Opcode::Query,
+        aa: true,
+        tc: true,
+        rd: true,
+        ra: true,
+        ad: true,
+        cd: true,
+        rcode: RCode::NoError,
+    };
 
     let mut bytes = BytesMut::new();
     flags_1.encode(&mut bytes).unwrap();

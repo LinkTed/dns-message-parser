@@ -263,7 +263,17 @@ fn question() {
 fn flags() {
     let opcode = Opcode::Query;
     let rcode = RCode::NoError;
-    let flags = Flags::new(true, opcode, true, true, true, true, true, true, rcode);
+    let flags = Flags {
+        qr: true,
+        opcode,
+        aa: true,
+        tc: true,
+        rd: true,
+        ra: true,
+        ad: true,
+        cd: true,
+        rcode,
+    };
     check_output(&flags, "qr Query aa tc rd ra ad cd NoError");
 }
 
@@ -272,9 +282,17 @@ fn dns() {
     let id = 10105;
     let opcode = Opcode::Query;
     let rcode = RCode::NoError;
-    let flags = Flags::new(
-        false, opcode, false, false, false, false, false, false, rcode,
-    );
+    let flags = Flags {
+        qr: false,
+        opcode,
+        aa: false,
+        tc: false,
+        rd: false,
+        ra: false,
+        ad: false,
+        cd: false,
+        rcode,
+    };
     let questions = {
         let domain_name = DomainName::try_from("cname.example.org.").unwrap();
         let q_class = QClass::Class(Class::IN);
@@ -305,7 +323,14 @@ fn dns() {
         let r_data = RData::A(ipv4_addr);
         vec![RR::new(domain_name, class, ttl, r_data)]
     };
-    let dns = Dns::new(id, flags, questions, answers, authorities, additionals);
+    let dns = Dns {
+        id,
+        flags,
+        questions,
+        answers,
+        authorities,
+        additionals,
+    };
     check_output(
         &dns,
         "10105 Query NoError questions [cname.example.org. IN CNAME, ] \

@@ -26,7 +26,17 @@ impl Flags {
         let ad = (buffer & 0b0010_0000) != 0;
         let cd = (buffer & 0b0001_0000) != 0;
         if let Some(rcode) = RCode::from_u8(buffer & 0b0000_1111) {
-            Ok(Flags::new(qr, opcode, aa, tc, rd, ra, ad, cd, rcode))
+            Ok(Flags {
+                qr,
+                opcode,
+                aa,
+                tc,
+                rd,
+                ra,
+                ad,
+                cd,
+                rcode,
+            })
         } else {
             Err(DecodeError::RCodeError)
         }
@@ -70,13 +80,13 @@ impl Dns {
             additionals.push(RR::decode(bytes, &mut offset)?);
         }
 
-        Ok(Dns::new(
+        Ok(Dns {
             id,
             flags,
             questions,
             answers,
             authorities,
             additionals,
-        ))
+        })
     }
 }
