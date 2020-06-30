@@ -36,17 +36,17 @@ fn decode_example() {
 
 fn encode_example() {
     let id = 56092;
-    let flags = Flags::new(
-        true,
-        Opcode::Query,
-        true,
-        false,
-        true,
-        true,
-        false,
-        false,
-        RCode::NoError,
-    );
+    let flags = Flags {
+        qr: true,
+        opcode: Opcode::Query,
+        aa: true,
+        tc: false,
+        rd: true,
+        ra: true,
+        ad: false,
+        cd: false,
+        rcode: RCode::NoError,
+    };
     let question = {
         let domain_name = DomainName::try_from("example.org.").unwrap();
 
