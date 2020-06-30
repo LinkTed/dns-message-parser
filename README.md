@@ -17,10 +17,8 @@ dns-message-parser = "0.2"
 
 ## Example
 ```rust
-use bytes::{Bytes, BytesMut};
-
+se bytes::{Bytes, BytesMut};
 use std::convert::TryFrom;
-
 use dns_message_parser::{
     Class, Dns, DomainName, Flags, Opcode, QClass, QType, Question, RCode, Type,
 };
@@ -50,7 +48,7 @@ fn encode_example() {
         RCode::NoError,
     );
     let question = {
-        let domain_name = DomainName::try_from("example.org.");
+        let domain_name = DomainName::try_from("example.org.").unwrap();
 
         let qclass = QClass::Class(Class::IN);
 
@@ -63,6 +61,6 @@ fn encode_example() {
     let dns = Dns::new(id, flags, questions, Vec::new(), Vec::new(), Vec::new());
     let mut bytes = BytesMut::new();
     dns.encode(&mut bytes).unwrap();
-    println!("{:?}", dns);
+    println!("{:?}", bytes);
 }
 ```
