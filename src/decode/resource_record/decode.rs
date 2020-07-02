@@ -6,6 +6,7 @@ use crate::{AFSDBSubtype, Class, DomainName, RData, SSHFPAlgorithm, SSHFPType};
 use num_traits::FromPrimitive;
 use std::mem::size_of;
 use std::ops::Deref;
+use std::str::from_utf8;
 
 impl<'a, T> DecodeData<'a, T>
 where
@@ -401,18 +402,23 @@ where
         let requestor_payload_size = decode_u16(self.bytes, self.offset)?;
         // TODO
         let _extend_rcode = decode_u8(self.bytes, self.offset)?;
+
         let version = decode_u8(self.bytes, self.offset)?;
+
         let buffer = decode_u8(self.bytes, self.offset)?;
         let dnssec = match buffer {
             0 => false,
             1 => true,
             _ => return Err(DecodeError::OPTError),
         };
+
         let buffer = decode_u8(self.bytes, self.offset)?;
         if buffer != 0 {
             return Err(DecodeError::OPTError);
         }
+
         let rdlength = decode_u16(self.bytes, self.offset)? as usize;
+
         let start = *self.offset;
         *self.offset += rdlength;
         if let Some(buffer) = self.bytes.get(start..*self.offset) {
@@ -457,6 +463,27 @@ where
             ))
         } else {
             Err(DecodeError::SSHFPError)
+        }
+    }
+
+    pub(super) fn decode_uri(&mut self) -> DecodeResult<(Class, u32, RData)> {
+        let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
+
+        if size_of::<u16>() * 2 > rdlength {
+            return Err(DecodeError::URIError);
+        }
+
+        let priority = decode_u16(self.bytes, self.offset)?;
+
+        let weight = decode_u16(self.bytes, self.offset)?;
+
+        let start = *self.offset;
+        *self.offset += rdlength - size_of::<u16>() * 2;
+        if let Some(buffer) = self.bytes.get(start..*self.offset) {
+            let uri = from_utf8(buffer)?;
+            Ok((class, ttl, RData::URI(priority, weight, uri.to_string())))
+        } else {
+            Err(DecodeError::URIError)
         }
     }
 }

@@ -100,6 +100,8 @@ impl RData {
             }
             // TODO IPSECKEY
             // TODO
+            RData::URI(priority, weight, uri) => encode_data.encode_uri(*priority, *weight, uri)?,
+            // TODO
             _ => return Err(EncodeError::NotYetImplemented),
         }
 

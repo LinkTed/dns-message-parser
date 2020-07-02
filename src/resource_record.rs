@@ -55,6 +55,8 @@ pub enum RData {
     SSHFP(SSHFPAlgorithm, SSHFPType, Vec<u8>),
     // TODO IPSECKEY
     // TODO
+    URI(u16, u16, String),
+    // TODO
 }
 
 impl RData {
@@ -120,6 +122,7 @@ impl Display for RData {
             RData::KX(preference, exchanger) => write!(f, "KX {} {}", preference, exchanger),
             RData::DNAME(target) => write!(f, "DNAME {}", target),
             // TODO SSHFP
+            RData::URI(priority, weight, uri) => write!(f, "URI {} {} {}", priority, weight, uri),
             r_data => Debug::fmt(r_data, f),
         }
     }

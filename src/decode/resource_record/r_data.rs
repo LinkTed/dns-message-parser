@@ -52,6 +52,7 @@ impl RData {
             Type::DNAME => decode_data.decode_dname(),
             Type::OPT => decode_data.decode_opt(),
             Type::SSHFP => decode_data.decode_sshfp(),
+            Type::URI => decode_data.decode_uri(),
             // TODO Weitermachen
             _ => Err(DecodeError::NotYetImplemented),
         }
