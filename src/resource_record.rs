@@ -49,7 +49,7 @@ pub enum RData {
     // TODO A6
     DNAME(DomainName),
     // TODO SINK
-    OPT, // TODO
+    OPT(u16, u8, bool, Vec<u8>), // TODO
     // TODO APL
     // TODO DS
     SSHFP(SSHFPAlgorithm, SSHFPType, Vec<u8>),

@@ -1,4 +1,4 @@
-use crate::{AFSDBSubtype, Class, DomainName, SSHFPAlgorithm, SSHFPType, Type};
+use crate::{AFSDBSubtype, DomainName, SSHFPAlgorithm, SSHFPType, Type};
 
 use std::collections::HashMap;
 use std::net::{Ipv4Addr, Ipv6Addr};
@@ -289,11 +289,21 @@ impl<'a> EncodeData<'a> {
         self.encode_domain(Type::DNAME, target, compression)
     }
 
-    pub(super) fn encode_opt(&mut self) -> EncodeResult {
-        // TODO
+    pub(super) fn encode_opt(
+        &mut self,
+        requestor_payload_size: u16,
+        version: u8,
+        dnssec: bool,
+        rdata: &[u8],
+    ) -> EncodeResult {
+        // TODO rfc6891
         Type::OPT.encode(self.bytes)?;
-        Class::NONE.encode(self.bytes)?;
-        encode_u32(self.bytes, 0);
+        encode_u16(self.bytes, requestor_payload_size);
+        encode_u8(self.bytes, 0);
+        encode_u8(self.bytes, version);
+        encode_u8(self.bytes, dnssec as u8);
+        encode_u8(self.bytes, 0);
+        self.bytes_rdata.extend(rdata);
         Ok(())
     }
 

@@ -52,6 +52,8 @@ pub enum DecodeError {
     // TODO
     DNAMEError,
     // TODO
+    OPTError,
+    // TODO
     SSHFPError,
     // TODO
     MaxRecursionError,

@@ -90,7 +90,9 @@ impl RData {
             // TODO A6
             RData::DNAME(target) => encode_data.encode_dname(target, compression)?,
             // TODO SINK
-            RData::OPT => encode_data.encode_opt()?,
+            RData::OPT(requestor_payload_size, version, dnssec, rdata) => {
+                encode_data.encode_opt(*requestor_payload_size, *version, *dnssec, rdata)?
+            }
             // TODO APL
             // TODO DS
             RData::SSHFP(algorithm, type_, fingerprint) => {

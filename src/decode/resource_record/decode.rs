@@ -398,12 +398,33 @@ where
     }
 
     pub(super) fn decode_opt(&mut self) -> DecodeResult<(Class, u32, RData)> {
-        let _payload_size = decode_u16(self.bytes, self.offset)?;
-        let _flags = decode_u32(self.bytes, self.offset)?;
-        let rdlength = decode_u16(self.bytes, self.offset)? as usize;
-        *self.offset += rdlength;
+        let requestor_payload_size = decode_u16(self.bytes, self.offset)?;
         // TODO
-        Ok((Class::NONE, 0, RData::OPT))
+        let _extend_rcode = decode_u8(self.bytes, self.offset)?;
+        let version = decode_u8(self.bytes, self.offset)?;
+        let buffer = decode_u8(self.bytes, self.offset)?;
+        let dnssec = match buffer {
+            0 => false,
+            1 => true,
+            _ => return Err(DecodeError::OPTError),
+        };
+        let buffer = decode_u8(self.bytes, self.offset)?;
+        if buffer != 0 {
+            return Err(DecodeError::OPTError);
+        }
+        let rdlength = decode_u16(self.bytes, self.offset)? as usize;
+        let start = *self.offset;
+        *self.offset += rdlength;
+        if let Some(buffer) = self.bytes.get(start..*self.offset) {
+            let rdata = buffer.to_vec();
+            Ok((
+                Class::NONE,
+                0,
+                RData::OPT(requestor_payload_size, version, dnssec, rdata),
+            ))
+        } else {
+            Err(DecodeError::OPTError)
+        }
     }
 
     pub(super) fn decode_sshfp(&mut self) -> DecodeResult<(Class, u32, RData)> {
