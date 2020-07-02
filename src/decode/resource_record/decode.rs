@@ -435,7 +435,6 @@ where
 
     pub(super) fn decode_sshfp(&mut self) -> DecodeResult<(Class, u32, RData)> {
         let (class, ttl, rdlength) = self.decode_generic_rr_header()?;
-        let start = *self.offset;
 
         if size_of::<u8>() * 2 + 1 > rdlength {
             return Err(DecodeError::SSHFPError);
@@ -455,6 +454,8 @@ where
             return Err(DecodeError::SSHFPError);
         };
 
+        let start = *self.offset;
+        *self.offset += rdlength - size_of::<u8>() * 2;
         if let Some(buffer) = self.bytes.get(start..*self.offset) {
             Ok((
                 class,
