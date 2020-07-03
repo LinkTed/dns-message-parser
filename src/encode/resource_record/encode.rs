@@ -322,8 +322,8 @@ impl<'a> EncodeData<'a> {
 
     pub(super) fn encode_uri(&mut self, priority: u16, weight: u16, uri: &str) -> EncodeResult {
         self.encode_generic_rr_header(Type::URI)?;
-        encode_u16(self.bytes, priority);
-        encode_u16(self.bytes, weight);
+        encode_u16(&mut self.bytes_rdata, priority);
+        encode_u16(&mut self.bytes_rdata, weight);
         self.bytes_rdata.extend(uri.as_bytes());
         Ok(())
     }

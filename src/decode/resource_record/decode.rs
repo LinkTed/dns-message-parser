@@ -457,11 +457,8 @@ where
         let start = *self.offset;
         *self.offset += rdlength - size_of::<u8>() * 2;
         if let Some(buffer) = self.bytes.get(start..*self.offset) {
-            Ok((
-                class,
-                ttl,
-                RData::SSHFP(algorithm, type_, Vec::from(buffer)),
-            ))
+            let fp = buffer.to_vec();
+            Ok((class, ttl, RData::SSHFP(algorithm, type_, fp)))
         } else {
             Err(DecodeError::SSHFPError)
         }
