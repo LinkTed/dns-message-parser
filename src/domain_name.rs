@@ -7,7 +7,7 @@ use regex::Regex;
 pub enum DomainError {
     LabelLength,
     DomainNameLength,
-    Regex,
+    Regex(String),
 }
 
 #[derive(Debug, PartialEq, Clone, Eq, Hash)]
@@ -19,7 +19,7 @@ impl DomainName {
     pub fn append_label(&mut self, label: &str) -> Result<(), DomainError> {
         lazy_static! {
             static ref LABEL_REGEX: Regex =
-                Regex::new(r"[0-9a-zA-Z]([0-9a-zA-Z-]*[0-9a-zA-Z])?").unwrap();
+                Regex::new(r"^[_0-9a-zA-Z]([_0-9a-zA-Z-]*[_0-9a-zA-Z])?$").unwrap();
         }
 
         let label_length = label.len();
@@ -42,7 +42,7 @@ impl DomainName {
             }
             Ok(())
         } else {
-            Err(DomainError::Regex)
+            Err(DomainError::Regex(label.to_string()))
         }
     }
 }
