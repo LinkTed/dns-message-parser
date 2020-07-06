@@ -49,7 +49,7 @@ impl Dns {
         T: Deref<Target = [u8]>,
     {
         let bytes_len = bytes.len();
-        if bytes_len < 16 {
+        if bytes_len < 12 {
             return Err(DecodeError::NotEnoughData);
         } else if bytes_len > MAXIMUM_DNS_PACKET_SIZE {
             return Err(DecodeError::TooMuchData);
