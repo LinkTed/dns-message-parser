@@ -128,7 +128,7 @@ impl Display for RData {
     }
 }
 
-#[derive(Debug, Getters, PartialEq)]
+#[derive(Debug, Clone, Getters, PartialEq)]
 pub struct RR {
     #[get = "pub with_prefix"]
     pub(crate) domain_name: DomainName,

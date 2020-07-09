@@ -25,7 +25,7 @@ pub use question::{QClass, QClass_, QType, QType_, Question};
 
 pub const MAXIMUM_DNS_PACKET_SIZE: usize = 65536;
 
-#[derive(Debug, Clone, FromPrimitive, ToPrimitive, PartialEq)]
+#[derive(Debug, Clone, Copy, FromPrimitive, ToPrimitive, PartialEq)]
 pub enum Opcode {
     Query = 0,
     IQuery = 1,
@@ -36,7 +36,7 @@ pub enum Opcode {
     DSO = 6,
 }
 
-#[derive(Debug, Clone, FromPrimitive, ToPrimitive, PartialEq)]
+#[derive(Debug, Clone, Copy, FromPrimitive, ToPrimitive, PartialEq)]
 pub enum RCode {
     NoError = 0,
     FormErr = 1,

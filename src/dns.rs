@@ -1,7 +1,7 @@
 use crate::{Opcode, Question, RCode, RR};
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
-#[derive(Debug, Getters, Setters, PartialEq)]
+#[derive(Debug, Copy, Clone, Getters, Setters, PartialEq)]
 pub struct Flags {
     pub qr: bool,
     pub opcode: Opcode,
@@ -50,7 +50,7 @@ impl Display for Flags {
     }
 }
 
-#[derive(Debug, Getters, Setters, PartialEq)]
+#[derive(Debug, Clone, Getters, Setters, PartialEq)]
 pub struct Dns {
     pub id: u16,
     pub flags: Flags,
