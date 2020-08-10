@@ -8,6 +8,7 @@ use std::fmt::{Debug, Display, Formatter, Result as FmtResult};
 use std::net::{Ipv4Addr, Ipv6Addr};
 
 #[derive(Debug, PartialEq, Clone)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
 pub enum RData {
     A(Ipv4Addr),
     NS(DomainName),

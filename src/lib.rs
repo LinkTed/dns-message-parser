@@ -23,9 +23,13 @@ pub use resource_record::{RData, RR};
 mod question;
 pub use question::{QClass, QClass_, QType, QType_, Question};
 
+#[cfg(feature = "serde_derive")]
+use serde::{Serialize, Deserialize};
+
 pub const MAXIMUM_DNS_PACKET_SIZE: usize = 65536;
 
 #[derive(Debug, Clone, Copy, FromPrimitive, ToPrimitive, PartialEq)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
 pub enum Opcode {
     Query = 0,
     IQuery = 1,
@@ -37,6 +41,7 @@ pub enum Opcode {
 }
 
 #[derive(Debug, Clone, Copy, FromPrimitive, ToPrimitive, PartialEq)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
 pub enum RCode {
     NoError = 0,
     FormErr = 1,
@@ -62,6 +67,7 @@ pub enum RCode {
 }
 
 #[derive(Debug, Clone, FromPrimitive, ToPrimitive, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
 pub enum Type {
     A = 1,
     NS = 2,
@@ -155,6 +161,7 @@ pub enum Type {
 }
 
 #[derive(Debug, Clone, FromPrimitive, ToPrimitive, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
 pub enum Class {
     IN = 1,
 
@@ -165,12 +172,14 @@ pub enum Class {
 }
 
 #[derive(Debug, Clone, FromPrimitive, ToPrimitive, PartialEq)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
 pub enum AFSDBSubtype {
     VolumeLocationServer = 1,
     DCEAuthenticationServer = 2,
 }
 
 #[derive(Debug, Clone, FromPrimitive, ToPrimitive, PartialEq)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
 pub enum SSHFPAlgorithm {
     Reserved = 0,
     RSA = 1,
@@ -178,6 +187,7 @@ pub enum SSHFPAlgorithm {
 }
 
 #[derive(Debug, Clone, FromPrimitive, ToPrimitive, PartialEq)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
 pub enum SSHFPType {
     Reserved = 0,
     Sha1 = 1,

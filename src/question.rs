@@ -3,6 +3,7 @@ use crate::{Class, DomainName, Type};
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
 #[derive(Debug, Clone, FromPrimitive, ToPrimitive, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
 pub enum QType_ {
     AXFR = 252,
     MAILB = 253,
@@ -11,6 +12,7 @@ pub enum QType_ {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
 pub enum QType {
     Type(Type),
     QType(QType_),
@@ -26,11 +28,13 @@ impl Display for QType {
 }
 
 #[derive(Debug, Clone, FromPrimitive, ToPrimitive, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
 pub enum QClass_ {
     ANY = 255,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
 pub enum QClass {
     Class(Class),
     QClass(QClass_),

@@ -2,6 +2,7 @@ use crate::{Opcode, Question, RCode, RR};
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
 #[derive(Debug, Copy, Clone, Getters, Setters, PartialEq)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
 pub struct Flags {
     pub qr: bool,
     pub opcode: Opcode,
