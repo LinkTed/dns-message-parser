@@ -3,6 +3,8 @@ use crate::{
 };
 
 use hex::encode as hex_encode;
+#[cfg(feature = "serde_derive")]
+use serde::{Deserialize, Serialize};
 
 use std::fmt::{Debug, Display, Formatter, Result as FmtResult};
 use std::net::{Ipv4Addr, Ipv6Addr};

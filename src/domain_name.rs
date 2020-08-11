@@ -2,6 +2,8 @@ use std::convert::TryFrom;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
 use regex::Regex;
+#[cfg(feature = "serde_derive")]
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum DomainError {
@@ -11,6 +13,7 @@ pub enum DomainError {
 }
 
 #[derive(Debug, PartialEq, Clone, Eq, Hash)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
 pub struct DomainName {
     pub(crate) domain_name: String,
 }

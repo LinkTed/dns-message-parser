@@ -1,5 +1,8 @@
 use crate::{Class, DomainName, Type};
 
+#[cfg(feature = "serde_derive")]
+use serde::{Deserialize, Serialize};
+
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
 #[derive(Debug, Clone, FromPrimitive, ToPrimitive, PartialEq, Eq, Hash)]

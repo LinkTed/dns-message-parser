@@ -24,7 +24,7 @@ mod question;
 pub use question::{QClass, QClass_, QType, QType_, Question};
 
 #[cfg(feature = "serde_derive")]
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 pub const MAXIMUM_DNS_PACKET_SIZE: usize = 65536;
 

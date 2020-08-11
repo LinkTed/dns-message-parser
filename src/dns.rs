@@ -1,4 +1,8 @@
 use crate::{Opcode, Question, RCode, RR};
+
+#[cfg(feature = "serde_derive")]
+use serde::{Deserialize, Serialize};
+
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
 #[derive(Debug, Copy, Clone, Getters, Setters, PartialEq)]
