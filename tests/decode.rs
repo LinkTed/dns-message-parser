@@ -1,11 +1,20 @@
 use bytes::Bytes;
-use dns_message_parser::Dns;
+use dns_message_parser::{DecodeError, Dns, DomainError, DomainName};
 
 fn decode_msg(msg: &[u8]) -> Dns {
     // Decode BytesMut to message
     let bytes = Bytes::copy_from_slice(&msg[..]);
     // Decode the DNS message
     Dns::decode(&bytes).unwrap()
+}
+
+#[test]
+fn domain_name() {
+    let data = b"\x03\x61\x2e\x74\x00";
+    let bytes = Bytes::copy_from_slice(&data[..]);
+    let mut offset = 0;
+    let error = Err(DecodeError::Domain(DomainError::Regex("a.t".to_string())));
+    assert_eq!(DomainName::decode(&bytes, &mut offset), error,)
 }
 
 #[test]
