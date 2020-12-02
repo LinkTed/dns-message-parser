@@ -1,72 +1,225 @@
-use crate::{Class, DomainName, Type};
-
+use crate::DomainName;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
 #[derive(Debug, Clone, FromPrimitive, ToPrimitive, PartialEq, Eq, Hash)]
-pub enum QType_ {
+pub enum QType {
+    A = 1,
+    NS = 2,
+    MD = 3,
+    MF = 4,
+    CNAME = 5,
+    SOA = 6,
+    MB = 7,
+    MG = 8,
+    MR = 9,
+    NULL = 10,
+    WKS = 11,
+    PTR = 12,
+    HINFO = 13,
+    MINFO = 14,
+    MX = 15,
+    TXT = 16,
+    RP = 17,
+    AFSDB = 18,
+    X25 = 19,
+    ISDN = 20,
+    RT = 21,
+    NSAP = 22,
+    NSAP_PTR = 23,
+    SIG = 24,
+    KEY = 25,
+    PX = 26,
+    GPOS = 27,
+    AAAA = 28,
+    LOC = 29,
+    NXT = 30,
+    EID = 31,
+    NIMLOC = 32,
+    SRV = 33,
+    ATMA = 34,
+    NAPTR = 35,
+    KX = 36,
+    CERT = 37,
+    A6 = 38,
+    DNAME = 39,
+    SINK = 40,
+    // OPT = 41,
+    APL = 42,
+    DS = 43,
+    SSHFP = 44,
+    IPSECKEY = 45,
+    RRSIG = 46,
+    NSEC = 47,
+    DNSKEY = 48,
+    DHCID = 49,
+    NSEC3 = 50,
+    NSEC3PARAM = 51,
+    TLSA = 52,
+    SMIMEA = 53,
+
+    HIP = 55,
+    NINFO = 56,
+    RKEY = 57,
+    TALINK = 58,
+    CDS = 59,
+    CDNSKEY = 60,
+    OPENPGPKEY = 61,
+    CSYNC = 62,
+    ZONEMD = 63,
+
+    SPF = 99,
+    UINFO = 100,
+    UID = 101,
+    GID = 102,
+    UNSPEC = 103,
+    NID = 104,
+    L32 = 105,
+    L64 = 106,
+    LP = 107,
+    EUI48 = 108,
+    EUI64 = 109,
+
+    TKEY = 249,
+    TSIG = 250,
+    IXFR = 251,
+    // TODO QType?
+    URI = 256,
+    CAA = 257,
+    AVC = 258,
+    DOA = 259,
+    AMTRELAY = 260,
+
+    TA = 32768,
+    DLV = 32769,
     AXFR = 252,
     MAILB = 253,
     MAILA = 254,
     ALL = 255,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub enum QType {
-    Type(Type),
-    QType(QType_),
-}
-
 impl Display for QType {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         match self {
-            QType::Type(t) => write!(f, "{:?}", t),
-            QType::QType(t) => write!(f, "{:?}", t),
+            QType::A => write!(f, "A"),
+            QType::NS => write!(f, "NS"),
+            QType::MD => write!(f, "MD"),
+            QType::MF => write!(f, "MF"),
+            QType::CNAME => write!(f, "CNAME"),
+            QType::SOA => write!(f, "SOA"),
+            QType::MB => write!(f, "MB"),
+            QType::MG => write!(f, "MG"),
+            QType::MR => write!(f, "MR"),
+            QType::NULL => write!(f, "NULL"),
+            QType::WKS => write!(f, "WKS"),
+            QType::PTR => write!(f, "PTR"),
+            QType::HINFO => write!(f, "HINFO"),
+            QType::MINFO => write!(f, "MINFO"),
+            QType::MX => write!(f, "MX"),
+            QType::TXT => write!(f, "TXT"),
+            QType::RP => write!(f, "RP"),
+            QType::AFSDB => write!(f, "AFSDB"),
+            QType::X25 => write!(f, "X25"),
+            QType::ISDN => write!(f, "ISDN"),
+            QType::RT => write!(f, "RT"),
+            QType::NSAP => write!(f, "NSAP"),
+            QType::NSAP_PTR => write!(f, "NSAP-PTR"),
+            QType::SIG => write!(f, "SIG"),
+            QType::KEY => write!(f, "KEY"),
+            QType::PX => write!(f, "PX"),
+            QType::GPOS => write!(f, "GPOS"),
+            QType::AAAA => write!(f, "AAAA"),
+            QType::LOC => write!(f, "LOC"),
+            QType::NXT => write!(f, "NXT"),
+            QType::EID => write!(f, "EID"),
+            QType::NIMLOC => write!(f, "NIMLOC"),
+            QType::SRV => write!(f, "SRV"),
+            QType::ATMA => write!(f, "ATMA"),
+            QType::NAPTR => write!(f, "NAPTR"),
+            QType::KX => write!(f, "KX"),
+            QType::CERT => write!(f, "CERT"),
+            QType::A6 => write!(f, "A6"),
+            QType::DNAME => write!(f, "DNAME"),
+            QType::SINK => write!(f, "SINK"),
+            QType::APL => write!(f, "APL"),
+            QType::DS => write!(f, "DS"),
+            QType::SSHFP => write!(f, "SSHFP"),
+            QType::IPSECKEY => write!(f, "IPSECKEY"),
+            QType::RRSIG => write!(f, "RRSIG"),
+            QType::NSEC => write!(f, "NSEC"),
+            QType::DNSKEY => write!(f, "DNSKEY"),
+            QType::DHCID => write!(f, "DHCID"),
+            QType::NSEC3 => write!(f, "NSEC3"),
+            QType::NSEC3PARAM => write!(f, "NSEC3PARAM"),
+            QType::TLSA => write!(f, "TLSA"),
+            QType::SMIMEA => write!(f, "SMIMEA"),
+            QType::HIP => write!(f, "HIP"),
+            QType::NINFO => write!(f, "NIFO"),
+            QType::RKEY => write!(f, "RKEY"),
+            QType::TALINK => write!(f, "TALINK"),
+            QType::CDS => write!(f, "CDS"),
+            QType::CDNSKEY => write!(f, "CDNSKEY"),
+            QType::OPENPGPKEY => write!(f, "OPENPGPKEY"),
+            QType::CSYNC => write!(f, "CSYNC"),
+            QType::ZONEMD => write!(f, "ZONEMD"),
+            QType::SPF => write!(f, "SPF"),
+            QType::UINFO => write!(f, "UINFO"),
+            QType::UID => write!(f, "UID"),
+            QType::GID => write!(f, "GID"),
+            QType::UNSPEC => write!(f, "UNSPEC"),
+            QType::NID => write!(f, "NID"),
+            QType::L32 => write!(f, "L32"),
+            QType::L64 => write!(f, "L64"),
+            QType::LP => write!(f, "LP"),
+            QType::EUI48 => write!(f, "EUI48"),
+            QType::EUI64 => write!(f, "EUI64"),
+            QType::TKEY => write!(f, "TKEY"),
+            QType::TSIG => write!(f, "TSIG"),
+            QType::IXFR => write!(f, "IXFR"),
+            QType::URI => write!(f, "URI"),
+            QType::CAA => write!(f, "CAA"),
+            QType::AVC => write!(f, "AVC"),
+            QType::DOA => write!(f, "DOA"),
+            QType::AMTRELAY => write!(f, "AMTRELAY"),
+            QType::TA => write!(f, "TA"),
+            QType::DLV => write!(f, "DLV"),
+            QType::AXFR => write!(f, "AXFR"),
+            QType::MAILB => write!(f, "MAILB"),
+            QType::MAILA => write!(f, "MAILA"),
+            QType::ALL => write!(f, "ALL"),
         }
     }
 }
 
 #[derive(Debug, Clone, FromPrimitive, ToPrimitive, PartialEq, Eq, Hash)]
-pub enum QClass_ {
-    ANY = 255,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum QClass {
-    Class(Class),
-    QClass(QClass_),
+    IN = 1,
+    CS = 2,
+    CH = 3,
+    HS = 4,
+    ANY = 255,
 }
 
 impl Display for QClass {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         match self {
-            QClass::Class(c) => write!(f, "{:?}", c),
-            QClass::QClass(c) => write!(f, "{:?}", c),
+            QClass::IN => write!(f, "IN"),
+            QClass::CS => write!(f, "CS"),
+            QClass::CH => write!(f, "CH"),
+            QClass::HS => write!(f, "HS"),
+            QClass::ANY => write!(f, "ANY"),
         }
     }
 }
 
-#[derive(Debug, Getters, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Question {
-    #[get = "pub with_prefix"]
-    pub(crate) domain_name: DomainName,
-    #[get = "pub with_prefix"]
-    pub(crate) qtype: QType,
-    #[get = "pub with_prefix"]
-    pub(crate) qclass: QClass,
-}
-
-impl Question {
-    pub fn new(domain_name: DomainName, qclass: QClass, qtype: QType) -> Question {
-        Question {
-            domain_name,
-            qclass,
-            qtype,
-        }
-    }
+    pub domain_name: DomainName,
+    pub q_class: QClass,
+    pub q_type: QType,
 }
 
 impl Display for Question {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-        write!(f, "{} {} {}", self.domain_name, self.qclass, self.qtype)
+        write!(f, "{} {} {}", self.domain_name, self.q_class, self.q_type)
     }
 }

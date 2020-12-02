@@ -12,16 +12,14 @@ A library to encode and decode DNS packets ([RFC1035](https://tools.ietf.org/htm
 Add this to your `Cargo.toml`:
 ```toml
 [dependencies]
-dns-message-parser = "0.3"
+dns-message-parser = "0.4"
 ```
 
 ## Example
 ```rust
-se bytes::{Bytes, BytesMut};
+use bytes::Bytes;
+use dns_message_parser::{Dns, DomainName, Flags, Opcode, QClass, QType, Question, RCode};
 use std::convert::TryFrom;
-use dns_message_parser::{
-    Class, Dns, DomainName, Flags, Opcode, QClass, QType, Question, RCode, Type,
-};
 
 fn decode_example() {
     let msg = b"\xdb\x1c\x85\x80\x00\x01\x00\x01\x00\x00\x00\x00\x07\x65\x78\x61\x6d\x70\x6c\x65\
@@ -30,7 +28,7 @@ fn decode_example() {
 
     let bytes = Bytes::copy_from_slice(&msg[..]);
 
-    let dns = Dns::decode(&bytes).unwrap();
+    let dns = Dns::decode(bytes).unwrap();
     println!("{:?}", dns);
 }
 
@@ -49,18 +47,26 @@ fn encode_example() {
     };
     let question = {
         let domain_name = DomainName::try_from("example.org.").unwrap();
+        let q_class = QClass::IN;
+        let q_type = QType::A;
 
-        let qclass = QClass::Class(Class::IN);
-
-        let qtype = QType::Type(Type::A);
-
-        Question::new(domain_name, qclass, qtype)
+        Question {
+            domain_name,
+            q_class,
+            q_type,
+        }
     };
 
     let questions = vec![question];
-    let dns = Dns::new(id, flags, questions, Vec::new(), Vec::new(), Vec::new());
-    let mut bytes = BytesMut::new();
-    dns.encode(&mut bytes).unwrap();
+    let dns = Dns {
+        id,
+        flags,
+        questions,
+        answers: Vec::new(),
+        authorities: Vec::new(),
+        additionals: Vec::new(),
+    };
+    let bytes = dns.encode().unwrap();
     println!("{:?}", bytes);
 }
 ```

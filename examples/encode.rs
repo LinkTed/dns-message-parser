@@ -1,7 +1,4 @@
-use bytes::BytesMut;
-use dns_message_parser::{
-    Class, Dns, DomainName, Flags, Opcode, QClass, QType, Question, RCode, Type,
-};
+use dns_message_parser::{Dns, DomainName, Flags, Opcode, QClass, QType, Question, RCode};
 use std::convert::TryFrom;
 
 fn main() {
@@ -19,12 +16,14 @@ fn main() {
     };
     let question = {
         let domain_name = DomainName::try_from("example.org.").unwrap();
+        let q_class = QClass::IN;
+        let q_type = QType::A;
 
-        let qclass = QClass::Class(Class::IN);
-
-        let qtype = QType::Type(Type::A);
-
-        Question::new(domain_name, qclass, qtype)
+        Question {
+            domain_name,
+            q_class,
+            q_type,
+        }
     };
 
     let questions = vec![question];
@@ -36,7 +35,6 @@ fn main() {
         authorities: Vec::new(),
         additionals: Vec::new(),
     };
-    let mut bytes = BytesMut::new();
-    dns.encode(&mut bytes).unwrap();
+    let bytes = dns.encode().unwrap();
     println!("{:?}", bytes);
 }

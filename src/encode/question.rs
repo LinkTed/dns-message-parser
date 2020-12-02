@@ -1,62 +1,36 @@
-use bytes::BytesMut;
-
-use crate::{QClass, QClass_, QType, QType_, Question};
-
+use crate::encode::Encoder;
+use crate::{EncodeError, EncodeResult, QClass, QType, Question};
 use num_traits::ToPrimitive;
 
-use super::{encode_u16, EncodeError};
-
-use std::collections::HashMap;
-
-impl QType_ {
-    pub fn encode(&self, bytes: &mut BytesMut) -> Result<(), EncodeError> {
-        if let Some(n) = self.to_u16() {
-            encode_u16(bytes, n);
+impl Encoder {
+    fn question_type(&mut self, q_type: &QType) -> EncodeResult<()> {
+        if let Some(buffer) = q_type.to_u16() {
+            self.u16(buffer);
             Ok(())
         } else {
-            Err(EncodeError::QTypeError)
+            Err(EncodeError::QTypeError(q_type.clone()))
         }
     }
-}
 
-impl QType {
-    pub fn encode(&self, bytes: &mut BytesMut) -> Result<(), EncodeError> {
-        match self {
-            QType::Type(type_) => type_.encode(bytes),
-            QType::QType(qtype_) => qtype_.encode(bytes),
-        }
-    }
-}
-
-impl QClass_ {
-    pub fn encode(&self, bytes: &mut BytesMut) -> Result<(), EncodeError> {
-        if let Some(n) = self.to_u16() {
-            encode_u16(bytes, n);
+    fn question_class(&mut self, q_class: &QClass) -> EncodeResult<()> {
+        if let Some(buffer) = q_class.to_u16() {
+            self.u16(buffer);
             Ok(())
         } else {
-            Err(EncodeError::QClassError)
+            Err(EncodeError::QClassError(q_class.clone()))
         }
+    }
+
+    pub(super) fn question(&'_ mut self, question: &Question) -> EncodeResult<()> {
+        // TODO CHECK A only A
+        self.domain_name(&question.domain_name)?;
+        self.question_type(&question.q_type)?;
+        self.question_class(&question.q_class)
     }
 }
 
-impl QClass {
-    pub fn encode(&self, bytes: &mut BytesMut) -> Result<(), EncodeError> {
-        match self {
-            QClass::Class(class) => class.encode(bytes),
-            QClass::QClass(qclass) => qclass.encode(bytes),
-        }
-    }
-}
+impl_encode!(QType, question_type);
 
-impl Question {
-    pub fn encode(
-        &self,
-        bytes: &mut BytesMut,
-        compression: &mut HashMap<String, usize>,
-    ) -> Result<(), EncodeError> {
-        let offset = 0;
-        self.domain_name.encode(bytes, &offset, compression)?;
-        self.qtype.encode(bytes)?;
-        self.qclass.encode(bytes)
-    }
-}
+impl_encode!(QClass, question_class);
+
+impl_encode!(Question, question);

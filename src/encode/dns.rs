@@ -1,89 +1,77 @@
-use bytes::{Bytes, BytesMut};
-
-use crate::{Dns, Flags};
-
+use crate::encode::Encoder;
+use crate::{Dns, EncodeError, EncodeResult, Flags};
 use num_traits::ToPrimitive;
 
-use super::{encode_u16, encode_u8, EncodeError, EncodeResult};
-
-use std::collections::HashMap;
-
-impl Flags {
-    pub fn encode(&self, bytes: &mut BytesMut) -> EncodeResult {
+impl Encoder {
+    pub(super) fn flags(&mut self, flags: &Flags) -> EncodeResult<()> {
         let mut buffer = 0u8;
-        if self.qr {
+        if flags.qr {
             buffer |= 0b1000_0000;
         }
-        if let Some(opcode) = self.opcode.to_u8() {
+        if let Some(opcode) = flags.opcode.to_u8() {
             buffer |= opcode << 3;
         } else {
             return Err(EncodeError::OpcodeError);
         }
-        if self.aa {
+        if flags.aa {
             buffer |= 0b0000_0100;
         }
-        if self.tc {
+        if flags.tc {
             buffer |= 0b0000_0010;
         }
-        if self.rd {
+        if flags.rd {
             buffer |= 0b0000_0001;
         }
-        encode_u8(bytes, buffer);
+        self.u8(buffer);
 
         buffer = 0;
-        if self.ra {
+        if flags.ra {
             buffer |= 0b1000_0000;
         }
-        if self.ad {
+        if flags.ad {
             buffer |= 0b0010_0000;
         }
-        if self.cd {
+        if flags.cd {
             buffer |= 0b0001_0000;
         }
-        if let Some(rcode) = self.rcode.to_u8() {
+        if let Some(rcode) = flags.rcode.to_u8() {
             buffer |= rcode;
         } else {
             return Err(EncodeError::RCodeError);
         }
-        encode_u8(bytes, buffer);
+        self.u8(buffer);
+
+        Ok(())
+    }
+
+    pub(super) fn dns(&mut self, dns: &Dns) -> EncodeResult<()> {
+        self.u16(dns.id);
+        self.flags(&dns.flags)?;
+        self.u16(dns.questions.len() as u16);
+        self.u16(dns.answers.len() as u16);
+        self.u16(dns.authorities.len() as u16);
+        self.u16(dns.additionals.len() as u16);
+
+        for question in &dns.questions {
+            self.question(question)?;
+        }
+
+        for answer in &dns.answers {
+            self.rr(answer)?;
+        }
+
+        for authority in &dns.authorities {
+            self.rr(authority)?;
+        }
+
+        for additional in &dns.additionals {
+            self.rr(additional)?;
+        }
 
         Ok(())
     }
 }
 
-impl Dns {
-    pub fn encode(&self, bytes: &mut BytesMut) -> EncodeResult {
-        encode_u16(bytes, self.id);
-        self.flags.encode(bytes)?;
-        encode_u16(bytes, self.questions.len() as u16);
-        encode_u16(bytes, self.answers.len() as u16);
-        encode_u16(bytes, self.authorities.len() as u16);
-        encode_u16(bytes, self.additionals.len() as u16);
+impl_encode!(Flags, flags);
 
-        let mut compression = HashMap::new();
-
-        for question in &self.questions {
-            question.encode(bytes, &mut compression)?;
-        }
-
-        for answer in &self.answers {
-            answer.encode(bytes, &mut compression)?;
-        }
-
-        for authority in &self.authorities {
-            authority.encode(bytes, &mut compression)?;
-        }
-
-        for additional in &self.additionals {
-            additional.encode(bytes, &mut compression)?;
-        }
-
-        Ok(())
-    }
-
-    pub fn to_bytes(&self) -> Result<Bytes, EncodeError> {
-        let mut bytes = BytesMut::new();
-        self.encode(&mut bytes)?;
-        Ok(bytes.freeze())
-    }
-}
+impl_encode!(Dns, dns);

@@ -1,7 +1,8 @@
-use crate::{Opcode, Question, RCode, RR};
+use crate::rr::RR;
+use crate::{Opcode, Question, RCode};
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
-#[derive(Debug, Getters, Setters, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Flags {
     pub qr: bool,
     pub opcode: Opcode,
@@ -50,7 +51,7 @@ impl Display for Flags {
     }
 }
 
-#[derive(Debug, Getters, Setters, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Dns {
     pub id: u16,
     pub flags: Flags,
@@ -61,11 +62,13 @@ pub struct Dns {
 }
 
 impl Dns {
+    #[inline]
     pub fn is_response(&self) -> bool {
         self.flags.qr
     }
 }
 
+#[inline]
 fn print_slice<T>(f: &mut Formatter<'_>, slice: &[T]) -> FmtResult
 where
     T: Display,

@@ -1,0 +1,20 @@
+[package]
+name = "fuzz-afl"
+version = "0.1.0"
+authors = ["LinkTed <link.ted@mailbox.org>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+afl = "0.8.0"
+bytes = "0.6.0"
+
+[dependencies.dns-message-parser]
+path = ".."
+
+[[bin]]
+name = "decode_encode_decode"
+path = "src/decode_encode_decode.rs"
+test = false
+doc = false

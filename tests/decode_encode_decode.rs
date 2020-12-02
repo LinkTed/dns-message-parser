@@ -1,18 +1,17 @@
-use bytes::{Bytes, BytesMut};
+use bytes::Bytes;
 use dns_message_parser::{Dns, Flags, Opcode, RCode};
 
 fn decode_msg(msg: &[u8]) -> Dns {
     // Decode BytesMut to message
     let bytes = Bytes::copy_from_slice(&msg[..]);
     // Decode the DNS message
-    Dns::decode(&bytes).unwrap()
+    Dns::decode(bytes).unwrap()
 }
 
 fn decode_encode_decode(msg: &[u8]) {
     let dns_1 = decode_msg(msg);
     // Check the result
-    let mut bytes = BytesMut::new();
-    dns_1.encode(&mut bytes).unwrap();
+    let bytes = dns_1.encode().unwrap();
     let dns_2 = decode_msg(bytes.as_ref());
     // Check if is equal
     assert_eq!(dns_1, dns_2);
@@ -32,9 +31,8 @@ fn flags() {
         rcode: RCode::NoError,
     };
 
-    let mut bytes = BytesMut::new();
-    flags_1.encode(&mut bytes).unwrap();
-    let flags_2 = Flags::decode(&bytes, &mut 0).unwrap();
+    let bytes = flags_1.encode().unwrap();
+    let flags_2 = Flags::decode(bytes.freeze()).unwrap();
     assert_eq!(flags_1, flags_2);
 }
 
@@ -506,5 +504,22 @@ fn uri_example_org_response() {
     \x63\x70\x07\x65\x78\x61\x6d\x70\x6c\x65\x03\x6f\x72\x67\x00\x01\x00\x00\x01\xc0\x0c\x01\x00\
     \x00\x01\x00\x00\x0e\x10\x00\x1a\x00\x0a\x00\x01\x66\x74\x70\x3a\x2f\x2f\x66\x74\x70\x2e\x65\
     \x78\x61\x6d\x70\x6c\x65\x2e\x6f\x72\x67\x2f";
+    decode_encode_decode(&msg[..]);
+}
+
+#[test]
+fn opt_ecs_example_org_request() {
+    let msg = b"\x46\xfd\x01\x20\x00\x01\x00\x00\x00\x00\x00\x01\x07\x65\x78\x61\x6d\x70\x6c\x65\
+    \x03\x6f\x72\x67\x00\x00\x01\x00\x01\x00\x00\x29\x10\x00\x00\x00\x00\x00\x00\x0b\x00\x08\x00\
+    \x07\x00\x01\x18\x00\x0a\x00\x00";
+    decode_encode_decode(&msg[..]);
+}
+
+#[test]
+fn opt_ecs_example_org_response() {
+    let msg = b"\x46\xfd\x85\x80\x00\x01\x00\x01\x00\x00\x00\x01\x07\x65\x78\x61\x6d\x70\x6c\x65\
+    \x03\x6f\x72\x67\x00\x00\x01\x00\x01\xc0\x0c\x00\x01\x00\x01\x00\x00\x0e\x10\x00\x04\x0a\x00\
+    \x00\x0a\x00\x00\x29\x10\x00\x00\x00\x00\x00\x00\x0b\x00\x08\x00\x07\x00\x01\x18\x00\x0a\x00\
+    \x00";
     decode_encode_decode(&msg[..]);
 }

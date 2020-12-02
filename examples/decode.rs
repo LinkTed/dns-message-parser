@@ -8,6 +8,6 @@ fn main() {
 
     let bytes = Bytes::copy_from_slice(&msg[..]);
 
-    let dns = Dns::decode(&bytes).unwrap();
+    let dns = Dns::decode(bytes).unwrap();
     println!("{:?}", dns);
 }

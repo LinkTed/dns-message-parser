@@ -1,22 +1,21 @@
+use regex::Regex;
 use std::convert::TryFrom;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
-use regex::Regex;
+pub(crate) const DOMAIN_NAME_MAX_RECURSION: usize = 16;
 
 #[derive(Debug, PartialEq, Eq)]
-pub enum DomainError {
-    LabelLength,
+pub enum DomainNameError {
+    LabelLength(usize),
     DomainNameLength,
     Regex(String),
 }
 
 #[derive(Debug, PartialEq, Clone, Eq, Hash)]
-pub struct DomainName {
-    pub(crate) domain_name: String,
-}
+pub struct DomainName(pub(super) String);
 
 impl DomainName {
-    pub fn append_label(&mut self, label: &str) -> Result<(), DomainError> {
+    pub fn append_label(&mut self, label: &str) -> Result<(), DomainNameError> {
         lazy_static! {
             static ref LABEL_REGEX: Regex =
                 Regex::new(r"^[_0-9a-zA-Z]([_0-9a-zA-Z-]*[_0-9a-zA-Z])?$").unwrap();
@@ -24,33 +23,33 @@ impl DomainName {
 
         let label_length = label.len();
         if label_length >= 64 {
-            return Err(DomainError::LabelLength);
+            return Err(DomainNameError::LabelLength(label_length));
         }
 
-        let domain_name_length = self.domain_name.len();
+        let domain_name_length = self.0.len();
         if domain_name_length + label_length >= 256 {
-            return Err(DomainError::DomainNameLength);
+            return Err(DomainNameError::DomainNameLength);
         }
 
         if LABEL_REGEX.is_match(label) {
             let label = label.to_lowercase();
-            if &self.domain_name == "." {
-                self.domain_name.insert_str(0, &label);
+            if &self.0 == "." {
+                self.0.insert_str(0, &label);
             } else {
-                self.domain_name.push_str(&label);
-                self.domain_name.push('.');
+                self.0.push_str(&label);
+                self.0.push('.');
             }
             Ok(())
         } else {
-            Err(DomainError::Regex(label.to_string()))
+            Err(DomainNameError::Regex(label.to_string()))
         }
     }
 }
 
 impl TryFrom<&str> for DomainName {
-    type Error = DomainError;
+    type Error = DomainNameError;
 
-    fn try_from(string: &str) -> Result<Self, DomainError> {
+    fn try_from(string: &str) -> Result<Self, DomainNameError> {
         let string_relativ = if let Some(string_relativ) = string.strip_suffix('.') {
             string_relativ
         } else {
@@ -67,26 +66,24 @@ impl TryFrom<&str> for DomainName {
 
 impl Default for DomainName {
     fn default() -> Self {
-        DomainName {
-            domain_name: ".".to_string(),
-        }
+        DomainName(".".to_string())
     }
 }
 
 impl From<DomainName> for String {
     fn from(domain_name: DomainName) -> Self {
-        domain_name.domain_name
+        domain_name.0
     }
 }
 
 impl PartialEq<&str> for DomainName {
     fn eq(&self, other: &&str) -> bool {
-        self.domain_name == other.to_lowercase()
+        self.0 == other.to_lowercase()
     }
 }
 
 impl Display for DomainName {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-        write!(f, "{}", self.domain_name)
+        write!(f, "{}", self.0)
     }
 }

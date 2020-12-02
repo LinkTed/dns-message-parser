@@ -1,53 +1,41 @@
-use super::{decode_u16, DecodeError, DecodeResult};
-use crate::{Class, DomainName, QClass, QClass_, QType, QType_, Question, Type};
+use crate::decode::Decoder;
+use crate::{DecodeError, DecodeResult, QClass, QType, Question};
 use num_traits::FromPrimitive;
-use std::ops::Deref;
 
-impl QType {
-    pub fn decode<T>(bytes: &T, offset: &mut usize) -> DecodeResult<QType>
-    where
-        T: Deref<Target = [u8]>,
-    {
-        let buffer = decode_u16(bytes, offset)?;
-        if let Some(type_) = Type::from_u16(buffer) {
-            Ok(QType::Type(type_))
-        } else if let Some(qtype_) = QType_::from_u16(buffer) {
-            Ok(QType::QType(qtype_))
+impl<'a, 'b: 'a> Decoder<'a, 'b> {
+    pub fn q_type(&mut self) -> DecodeResult<QType> {
+        let buffer = self.u16()?;
+        if let Some(q_type) = QType::from_u16(buffer) {
+            Ok(q_type)
         } else {
-            Err(DecodeError::TypeError)
+            Err(DecodeError::QTypeError(buffer))
         }
     }
-}
 
-impl QClass {
-    pub fn decode<T>(bytes: &T, offset: &mut usize) -> DecodeResult<QClass>
-    where
-        T: Deref<Target = [u8]>,
-    {
-        let buffer = decode_u16(bytes, offset)?;
-        if let Some(class) = Class::from_u16(buffer) {
-            Ok(QClass::Class(class))
-        } else if let Some(qclass_) = QClass_::from_u16(buffer) {
-            Ok(QClass::QClass(qclass_))
+    pub fn q_class(&mut self) -> DecodeResult<QClass> {
+        let buffer = self.u16()?;
+        if let Some(q_class) = QClass::from_u16(buffer) {
+            Ok(q_class)
         } else {
-            Err(DecodeError::ClassError)
+            Err(DecodeError::QClassError(buffer))
         }
     }
-}
 
-impl Question {
-    pub fn decode<T>(bytes: &T, offset: &mut usize) -> DecodeResult<Question>
-    where
-        T: Deref<Target = [u8]>,
-    {
-        let domain_name = DomainName::decode(bytes, offset)?;
-        let qtype = QType::decode(bytes, offset)?;
-        let qclass = QClass::decode(bytes, offset)?;
+    pub fn question(&mut self) -> DecodeResult<Question> {
+        let domain_name = self.domain_name()?;
+        let q_type = self.q_type()?;
+        let q_class = self.q_class()?;
 
         Ok(Question {
             domain_name,
-            qtype,
-            qclass,
+            q_type,
+            q_class,
         })
     }
 }
+
+impl_decode!(QType, q_type);
+
+impl_decode!(QClass, q_class);
+
+impl_decode!(Question, question);

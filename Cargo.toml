@@ -1,21 +1,25 @@
 [package]
 name = "dns-message-parser"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["LinkTed <link.ted@mailbox.org>"]
 edition = "2018"
 readme = "README.md"
-keywords = ["dns", "parser"]
+keywords = ["dns", "parser", "encode", "decode"]
 description = "Libary to encode and decode DNS packets"
 license = "BSD-3-Clause"
 repository = "https://github.com/LinkTed/dns-message-parser"
+include = [
+    "src/**/*.rs",
+    "tests/*.rs",
+    "examples/*.rs", 
+    "Cargo.toml",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+    ]
 categories = [
     "parser-implementations",
     "encoding"
-    ]
-exclude = [
-    ".travis.yml",
-    ".travis.sh",
-    ".gitignore",
     ]
 
 [badges.travis-ci]
@@ -28,10 +32,9 @@ branch = "master"
 service = "github"
 
 [dependencies]
-num-derive = "0.3.0"
-num-traits = "0.2.12"
-bytes = "0.5.5"
-regex = "1.3.9"
+num-derive = "0.3.3"
+num-traits = "0.2.14"
+bytes = "0.6.0"
+regex = "1.4.2"
 lazy_static = "1.4.0"
-getset = "0.1.1"
 hex = "0.4.2"
