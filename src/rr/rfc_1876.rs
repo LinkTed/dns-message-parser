@@ -2,6 +2,9 @@ use super::Class;
 use crate::DomainName;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
+/// The [location information] resource record type.
+///
+/// [location information]: https://tools.ietf.org/html/rfc1876#section-2
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct LOC {
     pub domain_name: DomainName,

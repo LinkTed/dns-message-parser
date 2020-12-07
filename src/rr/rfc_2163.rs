@@ -2,6 +2,9 @@ use super::Class;
 use crate::DomainName;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
+/// The [X.400 pointer] resource record type.
+///
+/// [X.400 pointer]: https://tools.ietf.org/html/rfc2163#section-4
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct PX {
     pub domain_name: DomainName,

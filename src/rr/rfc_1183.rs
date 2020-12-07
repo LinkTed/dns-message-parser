@@ -10,7 +10,14 @@ lazy_static! {
     static ref ISDN_SA_REGEX: Regex = Regex::new(r"^[[:xdigit:]]*$").unwrap();
 }
 
-struct_domain_name_domain_name!(RP, mbox_dname, txt_dname);
+struct_domain_name_domain_name!(
+    /// The [responsible person] resource record type.
+    ///
+    /// [responsible person]: https://tools.ietf.org/html/rfc1183#section-2
+    RP,
+    mbox_dname,
+    txt_dname
+);
 
 #[derive(Debug, Clone, Eq, Hash, FromPrimitive, ToPrimitive, PartialEq)]
 pub enum AFSDBSubtype {
@@ -27,6 +34,9 @@ impl Display for AFSDBSubtype {
     }
 }
 
+/// The [AFS Data base location] resource record type:
+///
+/// [AFS Data base location]: https://tools.ietf.org/html/rfc1183#section-1
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct AFSDB {
     pub domain_name: DomainName,
@@ -77,6 +87,9 @@ impl Display for PSDNAddress {
     }
 }
 
+/// The [X25] resource record type.
+///
+/// [X25]: https://tools.ietf.org/html/rfc1183#section-3.1
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum X25Error {
     PSDNAddress(String),
@@ -160,6 +173,9 @@ impl Deref for SA {
     }
 }
 
+/// The [ISDN] resource record type.
+///
+/// [ISDN]: https://tools.ietf.org/html/rfc1183#section-3.2
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct ISDN {
     pub domain_name: DomainName,
@@ -185,4 +201,11 @@ impl Display for ISDN {
     }
 }
 
-struct_u16_domain_name!(RT, preference, intermediate_host);
+struct_u16_domain_name!(
+    /// The [route through] resource record type.
+    ///
+    /// [route through]: https://tools.ietf.org/html/rfc1183#section-3.3
+    RT,
+    preference,
+    intermediate_host
+);

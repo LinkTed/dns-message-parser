@@ -2,6 +2,9 @@ use super::Class;
 use crate::DomainName;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
+/// The [geographical location] resource record type.
+///
+/// [geographical location]: https://tools.ietf.org/html/rfc1712#section-4
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct GPOS {
     pub domain_name: DomainName,

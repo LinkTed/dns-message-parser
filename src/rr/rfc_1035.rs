@@ -3,6 +3,10 @@ use crate::DomainName;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::net::Ipv4Addr;
 
+/// The [IPv4] [host address] resource record type.
+///
+/// [IPv4]: https://tools.ietf.org/html/rfc791
+/// [host address]: https://tools.ietf.org/html/rfc1035#section-3.4.1
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct A {
     pub domain_name: DomainName,
@@ -22,14 +26,41 @@ impl Display for A {
     }
 }
 
-struct_domain_name!(NS, ns_d_name);
+struct_domain_name!(
+    /// The [authoritative name server] resource record type.
+    ///
+    /// [authoritative name server]: https://tools.ietf.org/html/rfc1035#section-3.3.11
+    NS,
+    ns_d_name
+);
 
-struct_domain_name!(MD, mad_name);
+struct_domain_name!(
+    /// The [mail destination] resource record type. (obsolete)
+    ///
+    /// [mail destination]: https://tools.ietf.org/html/rfc1035#section-3.3.4
+    MD,
+    mad_name
+);
 
-struct_domain_name!(MF, mad_name);
+struct_domain_name!(
+    /// The [mail forwarder] resource record type. (obsolete)
+    ///
+    /// [mail forwarder]: https://tools.ietf.org/html/rfc1035#section-3.3.5
+    MF,
+    mad_name
+);
 
-struct_domain_name!(CNAME, c_name);
+struct_domain_name!(
+    /// The [canonical name] resource record type.
+    ///
+    /// [canonical name]: https://tools.ietf.org/html/rfc1035#section-3.3.1
+    CNAME,
+    c_name
+);
 
+/// The [start of a zone of authority] resource record type.
+///
+/// [start of a zone of authority]: https://tools.ietf.org/html/rfc1035#section-3.3.13
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct SOA {
     pub domain_name: DomainName,
@@ -65,14 +96,41 @@ impl Display for SOA {
     }
 }
 
-struct_domain_name!(MB, mad_name);
+struct_domain_name!(
+    /// The [mailbox domain name] resource record type.
+    ///
+    /// [mailbox domain name]: https://tools.ietf.org/html/rfc1035#section-3.3.3
+    MB,
+    mad_name
+);
 
-struct_domain_name!(MG, mgm_name);
+struct_domain_name!(
+    /// The [mail group member] resource record type.
+    ///
+    /// [mail group member]: https://tools.ietf.org/html/rfc1035#section-3.3.6
+    MG,
+    mgm_name
+);
 
-struct_domain_name!(MR, new_name);
+struct_domain_name!(
+    /// The [mail rename domain name] resource record type.
+    ///
+    /// [mail rename domain name]: https://tools.ietf.org/html/rfc1035#section-3.3.8
+    MR,
+    new_name
+);
 
-struct_vec!(NULL, data);
+struct_vec!(
+    /// The [null] type.
+    ///
+    /// [null]: https://tools.ietf.org/html/rfc1035#section-3.3.10
+    NULL,
+    data
+);
 
+/// The [well known service] description resource record type.
+///
+/// [well known service]: https://tools.ietf.org/html/rfc1035#section-3.4.2
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct WKS {
     pub domain_name: DomainName,
@@ -95,8 +153,17 @@ impl Display for WKS {
     }
 }
 
-struct_domain_name!(PTR, ptr_d_name);
+struct_domain_name!(
+    /// The [domain name pointer] resource record type.
+    ///
+    /// [domain name pointer]: https://tools.ietf.org/html/rfc1035#section-3.3.12
+    PTR,
+    ptr_d_name
+);
 
+/// The [host information] resource record type.
+///
+/// [host information]: https://tools.ietf.org/html/rfc1035#section-3.3.2
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct HINFO {
     pub domain_name: DomainName,
@@ -119,8 +186,28 @@ impl Display for HINFO {
     }
 }
 
-struct_domain_name_domain_name!(MINFO, r_mail_bx, e_mail_bx);
+struct_domain_name_domain_name!(
+    /// The [mailbox or mail list information] resource record type.
+    ///
+    /// [mailbox or mail list information]: https://tools.ietf.org/html/rfc1035#section-3.3.7
+    MINFO,
+    r_mail_bx,
+    e_mail_bx
+);
 
-struct_u16_domain_name!(MX, preference, exchange);
+struct_u16_domain_name!(
+    /// The [mail exchange] resource record type.
+    ///
+    /// [mail exchange]: https://tools.ietf.org/html/rfc1035#section-3.3.9
+    MX,
+    preference,
+    exchange
+);
 
-struct_string!(TXT, string);
+struct_string!(
+    /// The [text] resource record type.
+    ///
+    /// [text]: https://tools.ietf.org/html/rfc1035#section-3.3.14
+    TXT,
+    string
+);

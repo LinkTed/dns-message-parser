@@ -2,6 +2,9 @@ use super::Class;
 use crate::DomainName;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
+/// The [location of services] resource record type.
+///
+/// [location of services]: https://tools.ietf.org/html/rfc2782
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct SRV {
     pub domain_name: DomainName,

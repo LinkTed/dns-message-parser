@@ -9,7 +9,8 @@ macro_rules! impl_to_type {
 }
 
 macro_rules! struct_domain_name {
-    ($i:ident, $n:ident) => {
+    ($(#[$doc_comment:meta])* $i:ident, $n:ident) => {
+        $(#[$doc_comment])*
         #[derive(Debug, Clone, PartialEq, Eq, Hash)]
         pub struct $i {
             pub domain_name: crate::DomainName,
@@ -37,7 +38,8 @@ macro_rules! struct_domain_name {
 }
 
 macro_rules! struct_vec {
-    ($i:ident, $n:ident) => {
+    ($(#[$doc_comment:meta])* $i:ident, $n:ident) => {
+        $(#[$doc_comment])*
         #[derive(Debug, Clone, PartialEq, Eq, Hash)]
         pub struct $i {
             pub domain_name: crate::DomainName,
@@ -65,7 +67,8 @@ macro_rules! struct_vec {
 }
 
 macro_rules! struct_domain_name_domain_name {
-    ($i:ident, $n:ident, $m:ident) => {
+    ($(#[$doc_comment:meta])* $i:ident, $n:ident, $m:ident) => {
+        $(#[$doc_comment])*
         #[derive(Debug, Clone, PartialEq, Eq, Hash)]
         pub struct $i {
             pub domain_name: crate::DomainName,
@@ -95,7 +98,8 @@ macro_rules! struct_domain_name_domain_name {
 }
 
 macro_rules! struct_u16_domain_name {
-    ($i:ident, $n:ident, $m:ident) => {
+    ($(#[$doc_comment:meta])* $i:ident, $n:ident, $m:ident) => {
+        $(#[$doc_comment])*
         #[derive(Debug, Clone, PartialEq, Eq, Hash)]
         pub struct $i {
             pub domain_name: crate::DomainName,
@@ -125,7 +129,8 @@ macro_rules! struct_u16_domain_name {
 }
 
 macro_rules! struct_string {
-    ($i:ident, $n:ident) => {
+    ($(#[$doc_comment:meta])* $i:ident, $n:ident) => {
+        $(#[$doc_comment])*
         #[derive(Debug, Clone, PartialEq, Eq, Hash)]
         pub struct $i {
             pub domain_name: crate::DomainName,
