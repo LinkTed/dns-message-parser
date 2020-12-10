@@ -100,23 +100,35 @@ fn check_ipv6_addr(ipv6_addr: &Ipv6Addr, prefix_length: u8) -> Result<(), ECSErr
 }
 
 impl ECS {
+    fn check_addr(&self) -> Result<(), ECSError> {
+        let prefix_length = self.get_prefix_length();
+        match &self.address {
+            Address::Ipv4(ipv4_addr) => check_ipv4_addr(ipv4_addr, prefix_length)?,
+            Address::Ipv6(ipv6_addr) => check_ipv6_addr(ipv6_addr, prefix_length)?,
+        }
+
+        Ok(())
+    }
+
     pub fn new(
         source_prefix_length: u8,
         scope_prefix_length: u8,
         address: Address,
     ) -> Result<ECS, ECSError> {
-        let prefix_length = max(source_prefix_length, scope_prefix_length);
-        match &address {
-            Address::Ipv4(ipv4_addr) => check_ipv4_addr(ipv4_addr, prefix_length)?,
-            Address::Ipv6(ipv6_addr) => check_ipv6_addr(ipv6_addr, prefix_length)?,
-        }
-
         let ecs = ECS {
             source_prefix_length,
             scope_prefix_length,
             address,
         };
+
+        ecs.check_addr()?;
+
         Ok(ecs)
+    }
+
+    #[inline]
+    pub fn get_prefix_length(&self) -> u8 {
+        max(self.source_prefix_length, self.scope_prefix_length)
     }
 }
 

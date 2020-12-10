@@ -17,15 +17,15 @@ impl Encoder {
     fn rr_edns_ecs_address_ipv4(
         &mut self,
         ipv4_addr: &Ipv4Addr,
-        mut source_prefix_length: u8,
+        mut prefix_length: u8,
     ) -> EncodeResult<()> {
         let ipv4_addr = ipv4_addr.octets();
         for b in &ipv4_addr {
             self.u8(*b);
-            if source_prefix_length < 8 {
+            if prefix_length < 8 {
                 break;
             } else {
-                source_prefix_length -= 8;
+                prefix_length -= 8;
             }
         }
         Ok(())
@@ -34,32 +34,24 @@ impl Encoder {
     fn rr_edns_ecs_address_ipv6(
         &mut self,
         ipv6_addr: &Ipv6Addr,
-        mut source_prefix_length: u8,
+        mut prefix_length: u8,
     ) -> EncodeResult<()> {
         let ipv6_addr = ipv6_addr.octets();
         for b in &ipv6_addr {
             self.u8(*b);
-            if source_prefix_length < 8 {
+            if prefix_length < 8 {
                 break;
             } else {
-                source_prefix_length -= 8;
+                prefix_length -= 8;
             }
         }
         Ok(())
     }
 
-    fn rr_edns_ecs_address(
-        &mut self,
-        address: &Address,
-        source_prefix_length: u8,
-    ) -> EncodeResult<()> {
+    fn rr_edns_ecs_address(&mut self, address: &Address, prefix_length: u8) -> EncodeResult<()> {
         match address {
-            Address::Ipv4(ipv4_addr) => {
-                self.rr_edns_ecs_address_ipv4(ipv4_addr, source_prefix_length)
-            }
-            Address::Ipv6(ipv6_addr) => {
-                self.rr_edns_ecs_address_ipv6(ipv6_addr, source_prefix_length)
-            }
+            Address::Ipv4(ipv4_addr) => self.rr_edns_ecs_address_ipv4(ipv4_addr, prefix_length),
+            Address::Ipv6(ipv6_addr) => self.rr_edns_ecs_address_ipv6(ipv6_addr, prefix_length),
         }
     }
 
@@ -69,7 +61,7 @@ impl Encoder {
         self.rr_edns_ecs_address_number(&ecs.address.get_address_number())?;
         self.u8(ecs.source_prefix_length);
         self.u8(ecs.scope_prefix_length);
-        self.rr_edns_ecs_address(&ecs.address, ecs.source_prefix_length)?;
+        self.rr_edns_ecs_address(&ecs.address, ecs.get_prefix_length())?;
         self.set_length_index(length_index)
     }
 }
