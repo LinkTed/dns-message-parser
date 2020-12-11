@@ -14,7 +14,7 @@ impl Header {
         if let Some(class) = Class::from_u16(self.class) {
             Ok(class)
         } else {
-            Err(DecodeError::ClassError(self.class))
+            Err(DecodeError::Class(self.class))
         }
     }
 }
@@ -64,7 +64,7 @@ impl<'a, 'b: 'a> Decoder<'b, 'b> {
             Type::URI => RR::URI(r_data.rr_uri(header)?),
             Type::EID => RR::EID(r_data.rr_eid(header)?),
             Type::NIMLOC => RR::NIMLOC(r_data.rr_nimloc(header)?),
-            _ => return Err(DecodeError::NotYetImplemented),
+            type_ => return Err(DecodeError::NotYetImplemented(type_)),
         };
         r_data.finished()?;
         Ok(rr)
@@ -90,7 +90,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         if let Some(class) = Class::from_u16(buffer) {
             Ok(class)
         } else {
-            Err(DecodeError::ClassError(buffer))
+            Err(DecodeError::Class(buffer))
         }
     }
 
@@ -99,7 +99,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         if let Some(type_) = Type::from_u16(buffer) {
             Ok(type_)
         } else {
-            Err(DecodeError::TypeError(buffer))
+            Err(DecodeError::Type(buffer))
         }
     }
 }

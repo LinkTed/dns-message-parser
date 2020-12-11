@@ -12,7 +12,7 @@ impl Encoder {
         if let Some((index, recursion)) = self.domain_name_index.get(domain_name_str) {
             let index = *index;
             if MAX_OFFSET < index {
-                return Err(EncodeError::CompressionError(index));
+                return Err(EncodeError::Compression(index));
             }
 
             let recursion = *recursion;
@@ -43,7 +43,7 @@ impl Encoder {
         recursion: usize,
     ) -> EncodeResult<()> {
         if recursion > DOMAIN_NAME_MAX_RECURSION {
-            return Err(EncodeError::MaxRecursionError(recursion));
+            return Err(EncodeError::MaxRecursion(recursion));
         }
 
         for (domain_name_str, index) in domain_name_index {

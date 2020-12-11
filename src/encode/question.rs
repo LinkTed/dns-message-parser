@@ -8,7 +8,7 @@ impl Encoder {
             self.u16(buffer);
             Ok(())
         } else {
-            Err(EncodeError::QTypeError(q_type.clone()))
+            Err(EncodeError::QType(q_type.clone()))
         }
     }
 
@@ -17,7 +17,7 @@ impl Encoder {
             self.u16(buffer);
             Ok(())
         } else {
-            Err(EncodeError::QClassError(q_class.clone()))
+            Err(EncodeError::QClass(q_class.clone()))
         }
     }
 

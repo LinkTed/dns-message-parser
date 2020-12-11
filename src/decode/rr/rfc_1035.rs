@@ -15,7 +15,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
                 };
                 Ok(a)
             }
-            class => Err(DecodeError::AError(class)),
+            class => Err(DecodeError::AClass(class)),
         }
     }
 
@@ -76,7 +76,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
                 };
                 Ok(wks)
             }
-            class => Err(DecodeError::WKSError(class)),
+            class => Err(DecodeError::WKSClass(class)),
         }
     }
 

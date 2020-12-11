@@ -11,7 +11,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         if let Some(address_number) = AddressNumber::from_u16(buffer) {
             Ok(address_number)
         } else {
-            Err(DecodeError::EcsAddressNumberError(buffer))
+            Err(DecodeError::EcsAddressNumber(buffer))
         }
     }
 

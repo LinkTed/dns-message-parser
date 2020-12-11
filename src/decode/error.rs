@@ -1,86 +1,80 @@
-use crate::rr::{Class, ECSError, ISDNError, X25Error};
-use crate::{DomainName, DomainNameError};
+use crate::rr::{Class, ECSError, ISDNError, Type, X25Error};
+use crate::{Dns, DomainName, DomainNameError};
 use hex::FromHexError;
 use std::str::Utf8Error;
 use std::string::FromUtf8Error;
+use thiserror::Error;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Error)]
 pub enum DecodeError {
-    NotEnoughData,
-    TooMuchData,
-    OpcodeError,
-    ZNotZeroes,
-    RCodeError,
-    TypeError(u16),
-    ClassError(u16),
-    QTypeError(u16),
-    QClassError(u16),
-    Utf8Error(Utf8Error),
-    FromUtf8Error(FromUtf8Error),
-    Domain(DomainNameError),
-    NotYetImplemented,
-    FromHexError(FromHexError),
-    OffsetError(usize),
-
-    AError(Class),
-    WKSError(Class),
-    AFSDBSubtypeError(u16),
-    X25Error(X25Error),
-    ISDNError(ISDNError),
-    GPOSError,
-    AAAAError(Class),
-    OPTDomainNameError(DomainName),
-    OPTZeroError(u8),
-    EDNSOptionCodeError(u16),
-    ECSError(ECSError),
-    EcsAddressNumberError(u16),
+    #[error("Not enough bytes to decode: got {0} offset {1}")]
+    NotEnoughBytes(usize, usize),
+    #[error("Too many bytes to decode: got {0} parsed {1}")]
+    TooManyBytes(usize, usize),
+    #[error("DNS packet is too big: {0}")]
+    DnsPacketTooBig(usize),
+    #[error("Could not decode Opcode: {0}")]
+    Opcode(u8),
+    #[error("Z bit is not zero: {0}")]
+    ZNotZeroes(u8),
+    #[error("Could not decode RCode: {0}")]
+    RCode(u8),
+    #[error("Could not decode Type: {0}")]
+    Type(u16),
+    #[error("Could not decode Class: {0}")]
+    Class(u16),
+    #[error("Could not decode QType: {0}")]
+    QType(u16),
+    #[error("Could not decode QClass: {0}")]
+    QClass(u16),
+    #[error("Could not decode string as UTF-8: {0}")]
+    Utf8Error(#[from] Utf8Error),
+    #[error("Could not decode string as UTF-8: {0}")]
+    FromUtf8Error(#[from] FromUtf8Error),
+    #[error("Could not decode domain name: {0}")]
+    DomainNameError(#[from] DomainNameError),
+    #[error("Decode of type {0} is not yet implemented")]
+    NotYetImplemented(Type),
+    #[error("Could not decode hex string: {0}")]
+    FromHexError(#[from] FromHexError),
+    #[error("Offset is not zero: {0}")]
+    Offset(usize),
+    #[error("Class is not IN for A record: {0}")]
+    AClass(Class),
+    #[error("Class is not IN for WKS record: {0}")]
+    WKSClass(Class),
+    #[error("Could not decode AFSDBSubtype: {0}")]
+    AFSDBSubtype(u16),
+    #[error("Could not decode X25: {0}")]
+    X25Error(#[from] X25Error),
+    #[error("Could not decode ISDN: {0}")]
+    ISDNError(#[from] ISDNError),
+    #[error("Could not decode GPOS")]
+    GPOS,
+    #[error("Class is not IN for AAAA record: {0}")]
+    AAAAClass(Class),
+    #[error("Domain name is not root: {0}")]
+    OPTDomainName(DomainName),
+    #[error("OPT header bits is not zero: {0}")]
+    OPTZero(u8),
+    #[error("Could not decode ENDSOptionCode: {0}")]
+    EDNSOptionCode(u16),
+    #[error("Could not decode ECS: {0}")]
+    ECSError(#[from] ECSError),
+    #[error("Could not decode AddressNumber: {0}")]
+    EcsAddressNumber(u16),
+    #[error("The IPv4 Address is too big: {0}")]
     EcsTooBigIpv4Address(usize),
+    #[error("The IPv6 Address is too big: {0}")]
     EcsTooBigIpv6Address(usize),
-    CookieLengthError(usize),
-    SSHFPAlgorithmError(u8),
-    SSHFPTypeError(u8),
-    MaxRecursionError(usize),
-    RemainingBytes(usize),
-}
-
-impl From<FromUtf8Error> for DecodeError {
-    fn from(from_utf8_error: FromUtf8Error) -> Self {
-        DecodeError::FromUtf8Error(from_utf8_error)
-    }
-}
-
-impl From<Utf8Error> for DecodeError {
-    fn from(utf8_error: Utf8Error) -> Self {
-        DecodeError::Utf8Error(utf8_error)
-    }
-}
-
-impl From<DomainNameError> for DecodeError {
-    fn from(domain_name_error: DomainNameError) -> Self {
-        DecodeError::Domain(domain_name_error)
-    }
-}
-
-impl From<FromHexError> for DecodeError {
-    fn from(from_hex_error: FromHexError) -> Self {
-        DecodeError::FromHexError(from_hex_error)
-    }
-}
-
-impl From<ECSError> for DecodeError {
-    fn from(ecs_error: ECSError) -> Self {
-        DecodeError::ECSError(ecs_error)
-    }
-}
-
-impl From<X25Error> for DecodeError {
-    fn from(x25_error: X25Error) -> Self {
-        DecodeError::X25Error(x25_error)
-    }
-}
-
-impl From<ISDNError> for DecodeError {
-    fn from(isdn_error: ISDNError) -> Self {
-        DecodeError::ISDNError(isdn_error)
-    }
+    #[error("The cookie length is not 8 or between 16 and 40 bytes: {0}")]
+    CookieLength(usize),
+    #[error("Could not decode SSHFPAlgorithm: {0}")]
+    SSHFPAlgorithm(u8),
+    #[error("Could not decode SSHFPType: {0}")]
+    SSHFPType(u8),
+    #[error("Could not decode the domain name, the because maximum recursion is reached: {0}")]
+    MaxRecursion(usize),
+    #[error("The are remaining bytes, which was not parsed")]
+    RemainingBytes(usize, Dns),
 }

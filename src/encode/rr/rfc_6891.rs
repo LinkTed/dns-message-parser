@@ -20,7 +20,7 @@ impl Encoder {
             self.u16(buffer);
             Ok(())
         } else {
-            Err(EncodeError::EDNSOptionCodeError(edns_option_code.clone()))
+            Err(EncodeError::EDNSOptionCode(edns_option_code.clone()))
         }
     }
 

@@ -10,15 +10,11 @@ impl Encoder {
             self.u16(buffer);
             Ok(())
         } else {
-            Err(EncodeError::ECSAddressNumberError(address_number.clone()))
+            Err(EncodeError::ECSAddressNumber(address_number.clone()))
         }
     }
 
-    fn rr_edns_ecs_address_ipv4(
-        &mut self,
-        ipv4_addr: &Ipv4Addr,
-        mut prefix_length: u8,
-    ) -> EncodeResult<()> {
+    fn rr_edns_ecs_address_ipv4(&mut self, ipv4_addr: &Ipv4Addr, mut prefix_length: u8) {
         let ipv4_addr = ipv4_addr.octets();
         for b in &ipv4_addr {
             self.u8(*b);
@@ -28,14 +24,9 @@ impl Encoder {
                 prefix_length -= 8;
             }
         }
-        Ok(())
     }
 
-    fn rr_edns_ecs_address_ipv6(
-        &mut self,
-        ipv6_addr: &Ipv6Addr,
-        mut prefix_length: u8,
-    ) -> EncodeResult<()> {
+    fn rr_edns_ecs_address_ipv6(&mut self, ipv6_addr: &Ipv6Addr, mut prefix_length: u8) {
         let ipv6_addr = ipv6_addr.octets();
         for b in &ipv6_addr {
             self.u8(*b);
@@ -45,10 +36,9 @@ impl Encoder {
                 prefix_length -= 8;
             }
         }
-        Ok(())
     }
 
-    fn rr_edns_ecs_address(&mut self, address: &Address, prefix_length: u8) -> EncodeResult<()> {
+    fn rr_edns_ecs_address(&mut self, address: &Address, prefix_length: u8) {
         match address {
             Address::Ipv4(ipv4_addr) => self.rr_edns_ecs_address_ipv4(ipv4_addr, prefix_length),
             Address::Ipv6(ipv6_addr) => self.rr_edns_ecs_address_ipv6(ipv6_addr, prefix_length),
@@ -61,7 +51,7 @@ impl Encoder {
         self.rr_edns_ecs_address_number(&ecs.address.get_address_number())?;
         self.u8(ecs.source_prefix_length);
         self.u8(ecs.scope_prefix_length);
-        self.rr_edns_ecs_address(&ecs.address, ecs.get_prefix_length())?;
+        self.rr_edns_ecs_address(&ecs.address, ecs.get_prefix_length());
         self.set_length_index(length_index)
     }
 }

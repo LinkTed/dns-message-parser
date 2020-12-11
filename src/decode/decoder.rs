@@ -53,14 +53,14 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         match self.offset.cmp(&bytes_len) {
             Ordering::Less => Ok(false),
             Ordering::Equal => Ok(true),
-            Ordering::Greater => Err(DecodeError::NotEnoughData),
+            Ordering::Greater => Err(DecodeError::NotEnoughBytes(bytes_len, self.offset)),
         }
     }
 
     pub(super) fn finished(self) -> DecodeResult<()> {
         match self.is_finished()? {
             true => Ok(()),
-            false => Err(DecodeError::TooMuchData),
+            false => Err(DecodeError::TooManyBytes(self.bytes.len(), self.offset)),
         }
     }
 
@@ -70,7 +70,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         if self.offset <= self.bytes.len() {
             Ok(self.bytes.slice(start..self.offset))
         } else {
-            Err(DecodeError::NotEnoughData)
+            Err(DecodeError::NotEnoughBytes(self.bytes.len(), self.offset))
         }
     }
 }

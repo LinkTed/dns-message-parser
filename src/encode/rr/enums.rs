@@ -9,7 +9,7 @@ impl Encoder {
             self.u16(buffer);
             Ok(())
         } else {
-            Err(EncodeError::TypeError(type_.clone()))
+            Err(EncodeError::Type(type_.clone()))
         }
     }
 
@@ -18,7 +18,7 @@ impl Encoder {
             self.u16(buffer);
             Ok(())
         } else {
-            Err(EncodeError::ClassError(class.clone()))
+            Err(EncodeError::Class(class.clone()))
         }
     }
 

@@ -1,6 +1,7 @@
 use std::cmp::max;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::net::{Ipv4Addr, Ipv6Addr};
+use thiserror::Error;
 
 const MASK: u8 = 0b1111_1111;
 
@@ -34,12 +35,25 @@ pub enum AddressNumber {
     Ipv6 = 0x0002,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+impl Display for AddressNumber {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        match self {
+            AddressNumber::Ipv4 => write!(f, "IPv4"),
+            AddressNumber::Ipv6 => write!(f, "IPv6"),
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Error)]
 pub enum ECSError {
-    Ipv4PrefixError(u8),
-    Ipv4MaskError(Ipv4Addr, u8),
-    Ipv6PrefixError(u8),
-    Ipv6MaskError(Ipv6Addr, u8),
+    #[error("Prefix length is not between 0 and 32: {0}")]
+    Ipv4Prefix(u8),
+    #[error("IPv4 {0} does not fit {1} mask")]
+    Ipv4Mask(Ipv4Addr, u8),
+    #[error("Prefix length is not between 0 and 128: {0}")]
+    Ipv6Prefix(u8),
+    #[error("IPv6 {0} does not fit {1} mask")]
+    Ipv6Mask(Ipv6Addr, u8),
 }
 
 #[derive(Debug, PartialEq, Clone, Eq, Hash)]
@@ -51,7 +65,7 @@ pub struct ECS {
 
 fn check_ipv4_addr(ipv4_addr: &Ipv4Addr, prefix_length: u8) -> Result<(), ECSError> {
     if 32 < prefix_length {
-        return Err(ECSError::Ipv4PrefixError(prefix_length));
+        return Err(ECSError::Ipv4Prefix(prefix_length));
     } else if 32 == prefix_length {
         return Ok(());
     }
@@ -61,13 +75,13 @@ fn check_ipv4_addr(ipv4_addr: &Ipv4Addr, prefix_length: u8) -> Result<(), ECSErr
     let remain = prefix_length % 8;
 
     if (octects[index] & (MASK >> remain)) != 0 {
-        return Err(ECSError::Ipv4MaskError(*ipv4_addr, prefix_length));
+        return Err(ECSError::Ipv4Mask(*ipv4_addr, prefix_length));
     }
 
     let (_, octects_right) = octects.split_at(index + 1);
     for b in octects_right {
         if *b != 0 {
-            return Err(ECSError::Ipv4MaskError(*ipv4_addr, prefix_length));
+            return Err(ECSError::Ipv4Mask(*ipv4_addr, prefix_length));
         }
     }
 
@@ -76,7 +90,7 @@ fn check_ipv4_addr(ipv4_addr: &Ipv4Addr, prefix_length: u8) -> Result<(), ECSErr
 
 fn check_ipv6_addr(ipv6_addr: &Ipv6Addr, prefix_length: u8) -> Result<(), ECSError> {
     if 128 < prefix_length {
-        return Err(ECSError::Ipv6PrefixError(prefix_length));
+        return Err(ECSError::Ipv6Prefix(prefix_length));
     } else if 128 == prefix_length {
         return Ok(());
     }
@@ -86,13 +100,13 @@ fn check_ipv6_addr(ipv6_addr: &Ipv6Addr, prefix_length: u8) -> Result<(), ECSErr
     let remain = prefix_length % 8;
 
     if (octects[index] & (MASK >> remain)) != 0 {
-        return Err(ECSError::Ipv6MaskError(*ipv6_addr, prefix_length));
+        return Err(ECSError::Ipv6Mask(*ipv6_addr, prefix_length));
     }
 
     let (_, octects_right) = octects.split_at(index + 1);
     for b in octects_right {
         if *b != 0 {
-            return Err(ECSError::Ipv6MaskError(*ipv6_addr, prefix_length));
+            return Err(ECSError::Ipv6Mask(*ipv6_addr, prefix_length));
         }
     }
 

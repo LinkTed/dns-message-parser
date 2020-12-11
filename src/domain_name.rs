@@ -1,13 +1,18 @@
+use lazy_static::lazy_static;
 use regex::Regex;
 use std::convert::TryFrom;
 use std::fmt::{Display, Formatter, Result as FmtResult};
+use thiserror::Error;
 
 pub(crate) const DOMAIN_NAME_MAX_RECURSION: usize = 16;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Error)]
 pub enum DomainNameError {
+    #[error("Label is too big: {0}]")]
     LabelLength(usize),
-    DomainNameLength,
+    #[error("Domain name is too big: {0}")]
+    DomainNameLength(usize),
+    #[error("Domain name contains illegal character: {0}")]
     Regex(String),
 }
 
@@ -26,9 +31,9 @@ impl DomainName {
             return Err(DomainNameError::LabelLength(label_length));
         }
 
-        let domain_name_length = self.0.len();
-        if domain_name_length + label_length >= 256 {
-            return Err(DomainNameError::DomainNameLength);
+        let domain_name_length = self.0.len() + label_length;
+        if domain_name_length >= 256 {
+            return Err(DomainNameError::DomainNameLength(domain_name_length));
         }
 
         if LABEL_REGEX.is_match(label) {

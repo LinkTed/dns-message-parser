@@ -11,11 +11,11 @@ fn rr_opt_ttl(ttl: u32) -> DecodeResult<(u8, u8, bool)> {
     let dnssec = match buffer {
         0 => false,
         1 => true,
-        buffer => return Err(DecodeError::OPTZeroError(buffer)),
+        buffer => return Err(DecodeError::OPTZero(buffer)),
     };
     let buffer = (ttl & 0xff) as u8;
     if buffer != 0 {
-        return Err(DecodeError::OPTZeroError(buffer));
+        return Err(DecodeError::OPTZero(buffer));
     }
     Ok((extend_rcode, version, dnssec))
 }
@@ -35,7 +35,7 @@ impl<'a, 'b: 'a> Decoder<'b, 'b> {
 
     pub(super) fn rr_opt(&'a mut self, header: Header) -> DecodeResult<OPT> {
         if header.domain_name != "." {
-            return Err(DecodeError::OPTDomainNameError(header.domain_name));
+            return Err(DecodeError::OPTDomainName(header.domain_name));
         }
         let requestor_payload_size = header.class;
         // TODO
@@ -61,7 +61,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         if let Some(ends_option_code) = EDNSOptionCode::from_u16(buffer) {
             Ok(ends_option_code)
         } else {
-            Err(DecodeError::EDNSOptionCodeError(buffer))
+            Err(DecodeError::EDNSOptionCode(buffer))
         }
     }
 }

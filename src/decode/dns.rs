@@ -6,22 +6,25 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
     fn flags(&mut self) -> DecodeResult<Flags> {
         let buffer = self.u8()?;
         let qr = (buffer & 0b1000_0000) != 0;
-        let opcode = if let Some(opcode) = Opcode::from_u8((buffer & 0b0111_1000) >> 3) {
+        let opcode = (buffer & 0b0111_1000) >> 3;
+        let opcode = if let Some(opcode) = Opcode::from_u8(opcode) {
             opcode
         } else {
-            return Err(DecodeError::OpcodeError);
+            return Err(DecodeError::Opcode(opcode));
         };
         let aa = (buffer & 0b0000_0100) != 0;
         let tc = (buffer & 0b0000_0010) != 0;
         let rd = (buffer & 0b0000_0001) != 0;
         let buffer = self.u8()?;
         let ra = (buffer & 0b1000_0000) != 0;
-        if (buffer & 0b0100_0000) != 0 {
-            return Err(DecodeError::ZNotZeroes);
+        let z = buffer & 0b0100_0000;
+        if z != 0 {
+            return Err(DecodeError::ZNotZeroes(z));
         }
         let ad = (buffer & 0b0010_0000) != 0;
         let cd = (buffer & 0b0001_0000) != 0;
-        if let Some(rcode) = RCode::from_u8(buffer & 0b0000_1111) {
+        let rcode = buffer & 0b0000_1111;
+        if let Some(rcode) = RCode::from_u8(rcode) {
             Ok(Flags {
                 qr,
                 opcode,
@@ -34,7 +37,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
                 rcode,
             })
         } else {
-            Err(DecodeError::RCodeError)
+            Err(DecodeError::RCode(rcode))
         }
     }
 }
@@ -42,14 +45,14 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
 impl<'a, 'b: 'a> Decoder<'b, 'b> {
     fn dns(&'a mut self) -> DecodeResult<Dns> {
         if self.offset != 0 {
-            return Err(DecodeError::OffsetError(self.offset));
+            return Err(DecodeError::Offset(self.offset));
         }
 
         let bytes_len = self.bytes.len();
         if bytes_len < 12 {
-            return Err(DecodeError::NotEnoughData);
+            return Err(DecodeError::NotEnoughBytes(bytes_len, 12));
         } else if bytes_len > MAXIMUM_DNS_PACKET_SIZE {
-            return Err(DecodeError::TooMuchData);
+            return Err(DecodeError::DnsPacketTooBig(bytes_len));
         }
 
         let id = self.u16()?;
@@ -76,14 +79,21 @@ impl<'a, 'b: 'a> Decoder<'b, 'b> {
             additionals.push(self.rr()?);
         }
 
-        Ok(Dns {
+        let is_finished = self.is_finished()?;
+        let dns = Dns {
             id,
             flags,
             questions,
             answers,
             authorities,
             additionals,
-        })
+        };
+
+        if is_finished {
+            Ok(dns)
+        } else {
+            Err(DecodeError::RemainingBytes(self.offset, dns))
+        }
     }
 }
 

@@ -18,12 +18,13 @@ impl Encoder {
 
     fn set_u16(&mut self, n: u16, index: usize) -> EncodeResult<()> {
         let bytes = n.to_be_bytes();
-        if index + size_of::<u16>() - 1 < self.bytes.len() {
+        let bytes_len = self.bytes.len();
+        if index + size_of::<u16>() - 1 < bytes_len {
             self.bytes[index] = bytes[0];
             self.bytes[index + 1] = bytes[1];
             Ok(())
         } else {
-            Err(EncodeError::NotEnoughData)
+            Err(EncodeError::NotEnoughBytes(bytes_len, index))
         }
     }
 
@@ -65,7 +66,7 @@ impl Encoder {
     pub(super) fn string(&mut self, s: &str) -> EncodeResult<()> {
         let length = s.len();
         if length > 255 {
-            return Err(EncodeError::StringError(length));
+            return Err(EncodeError::String(length));
         }
 
         self.u8(length as u8);
@@ -91,7 +92,7 @@ impl Encoder {
         if let Ok(length) = length.try_into() {
             self.set_u16(length, length_index)
         } else {
-            Err(EncodeError::OffsetError(length))
+            Err(EncodeError::Length(length))
         }
     }
 }

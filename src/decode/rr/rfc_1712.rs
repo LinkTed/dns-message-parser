@@ -11,19 +11,19 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         let longitude = self.string()?;
         let longitude_len = longitude.len();
         if !(1..=256).contains(&longitude_len) {
-            return Err(DecodeError::GPOSError);
+            return Err(DecodeError::GPOS);
         }
 
         let latitude = self.string()?;
         let latitude_len = latitude.len();
         if !(1..=256).contains(&latitude_len) {
-            return Err(DecodeError::GPOSError);
+            return Err(DecodeError::GPOS);
         }
 
         let altitude = self.string()?;
         let altitude_len = altitude.len();
         if !(1..=256).contains(&altitude_len) {
-            return Err(DecodeError::GPOSError);
+            return Err(DecodeError::GPOS);
         }
 
         let gpos = GPOS {

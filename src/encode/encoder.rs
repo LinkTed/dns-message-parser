@@ -15,7 +15,7 @@ impl Encoder {
         if let Ok(offset) = bytes_len.try_into() {
             Ok(offset)
         } else {
-            Err(EncodeError::OffsetError(bytes_len))
+            Err(EncodeError::Length(bytes_len))
         }
     }
 }

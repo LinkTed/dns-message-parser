@@ -8,7 +8,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         if let Some(q_type) = QType::from_u16(buffer) {
             Ok(q_type)
         } else {
-            Err(DecodeError::QTypeError(buffer))
+            Err(DecodeError::QType(buffer))
         }
     }
 
@@ -17,7 +17,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         if let Some(q_class) = QClass::from_u16(buffer) {
             Ok(q_class)
         } else {
-            Err(DecodeError::QClassError(buffer))
+            Err(DecodeError::QClass(buffer))
         }
     }
 

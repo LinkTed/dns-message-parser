@@ -15,7 +15,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
                 };
                 Ok(aaaa)
             }
-            class => Err(DecodeError::AAAAError(class)),
+            class => Err(DecodeError::AAAAClass(class)),
         }
     }
 }

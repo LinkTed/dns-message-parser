@@ -56,7 +56,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
             let vec = buffer.to_vec();
             Ok(vec)
         } else {
-            Err(DecodeError::NotEnoughData)
+            Err(DecodeError::NotEnoughBytes(bytes_len, self.offset))
         }
     }
 }

@@ -13,7 +13,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         if let Some(afs_db_subtype) = AFSDBSubtype::from_u16(buffer) {
             Ok(afs_db_subtype)
         } else {
-            Err(DecodeError::AFSDBSubtypeError(buffer))
+            Err(DecodeError::AFSDBSubtype(buffer))
         }
     }
 

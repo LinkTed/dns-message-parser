@@ -24,7 +24,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
             };
             Ok(cookie)
         } else {
-            Err(DecodeError::CookieLengthError(vec_len))
+            Err(DecodeError::CookieLength(vec_len))
         }
     }
 }

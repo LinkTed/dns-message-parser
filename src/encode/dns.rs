@@ -11,7 +11,7 @@ impl Encoder {
         if let Some(opcode) = flags.opcode.to_u8() {
             buffer |= opcode << 3;
         } else {
-            return Err(EncodeError::OpcodeError);
+            return Err(EncodeError::Opcode(flags.opcode.clone()));
         }
         if flags.aa {
             buffer |= 0b0000_0100;
@@ -37,7 +37,7 @@ impl Encoder {
         if let Some(rcode) = flags.rcode.to_u8() {
             buffer |= rcode;
         } else {
-            return Err(EncodeError::RCodeError);
+            return Err(EncodeError::RCode(flags.rcode.clone()));
         }
         self.u8(buffer);
 

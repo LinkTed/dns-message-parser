@@ -1,9 +1,10 @@
-use super::Class;
+use crate::rr::Class;
 use crate::DomainName;
 use regex::Regex;
 use std::convert::TryFrom;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::ops::Deref;
+use thiserror::Error;
 
 lazy_static! {
     static ref ADDRESS_REGEX: Regex = Regex::new(r"^[[:digit:]]*$").unwrap();
@@ -90,8 +91,9 @@ impl Display for PSDNAddress {
 /// The [X25] resource record type.
 ///
 /// [X25]: https://tools.ietf.org/html/rfc1183#section-3.1
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Error)]
 pub enum X25Error {
+    #[error("PSDN address contains illegal character: {0}")]
     PSDNAddress(String),
 }
 
@@ -115,10 +117,12 @@ impl Display for X25 {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Error)]
 pub enum ISDNError {
-    AddressError(String),
-    SaError(String),
+    #[error("Address contains illegal character: {0}")]
+    Address(String),
+    #[error("SA contains illegal character: {0}")]
+    SA(String),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -131,7 +135,7 @@ impl TryFrom<String> for ISDNAddress {
         if ADDRESS_REGEX.is_match(&isdn_address) {
             Ok(ISDNAddress(isdn_address))
         } else {
-            Err(ISDNError::AddressError(isdn_address))
+            Err(ISDNError::Address(isdn_address))
         }
     }
 }
@@ -160,7 +164,7 @@ impl TryFrom<String> for SA {
         if ISDN_SA_REGEX.is_match(&sa) {
             Ok(SA(sa))
         } else {
-            Err(ISDNError::AddressError(sa))
+            Err(ISDNError::Address(sa))
         }
     }
 }

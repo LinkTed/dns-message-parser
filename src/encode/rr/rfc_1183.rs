@@ -1,6 +1,6 @@
 use crate::encode::Encoder;
 use crate::rr::{AFSDBSubtype, ISDNAddress, PSDNAddress, Type, AFSDB, ISDN, SA, X25};
-use crate::EncodeResult;
+use crate::{EncodeError, EncodeResult};
 use num_traits::ToPrimitive;
 
 impl Encoder {
@@ -11,7 +11,7 @@ impl Encoder {
             self.u16(buffer);
             Ok(())
         } else {
-            Err(crate::EncodeError::AFSDBSubtypeError(afsdb_subtype.clone()))
+            Err(EncodeError::AFSDBSubtype(afsdb_subtype.clone()))
         }
     }
 

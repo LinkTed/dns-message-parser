@@ -29,7 +29,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         recursion: usize,
     ) -> DecodeResult<()> {
         if recursion > DOMAIN_NAME_MAX_RECURSION {
-            return Err(DecodeError::MaxRecursionError(recursion));
+            return Err(DecodeError::MaxRecursion(recursion));
         }
 
         let mut length = self.u8()?;

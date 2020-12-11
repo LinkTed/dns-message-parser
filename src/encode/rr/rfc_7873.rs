@@ -12,7 +12,7 @@ impl Encoder {
             if (8..=32).contains(&server_cookie_len) {
                 self.vec(&cookie.server_cookie);
             } else {
-                return Err(EncodeError::CookieServerLengthError(server_cookie_len));
+                return Err(EncodeError::CookieServerLength(server_cookie_len));
             }
         }
         self.set_length_index(length_index)

@@ -9,7 +9,7 @@ impl Encoder {
             self.u8(buffer);
             Ok(())
         } else {
-            Err(EncodeError::SSHFPAlgorithmError(algorihtm.clone()))
+            Err(EncodeError::SSHFPAlgorithm(algorihtm.clone()))
         }
     }
 
@@ -18,7 +18,7 @@ impl Encoder {
             self.u8(buffer);
             Ok(())
         } else {
-            Err(EncodeError::SSHFPTypeError(type_.clone()))
+            Err(EncodeError::SSHFPType(type_.clone()))
         }
     }
 

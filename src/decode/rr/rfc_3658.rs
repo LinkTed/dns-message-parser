@@ -10,7 +10,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         if let Some(algorithm) = SSHFPAlgorithm::from_u8(buffer) {
             Ok(algorithm)
         } else {
-            Err(DecodeError::SSHFPAlgorithmError(buffer))
+            Err(DecodeError::SSHFPAlgorithm(buffer))
         }
     }
 
@@ -19,7 +19,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         if let Some(algorithm) = SSHFPType::from_u8(buffer) {
             Ok(algorithm)
         } else {
-            Err(DecodeError::SSHFPTypeError(buffer))
+            Err(DecodeError::SSHFPType(buffer))
         }
     }
 
