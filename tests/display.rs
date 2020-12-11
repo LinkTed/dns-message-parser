@@ -462,7 +462,7 @@ fn rr_uri() {
 }
 
 #[test]
-fn rr_opt_ecs() {
+fn rr_opt_ecs_1() {
     let address = Address::Ipv4("10.0.0.0".parse().unwrap());
     let ecs = ECS::new(24, 24, address).unwrap();
     let rr = RR::OPT(OPT {
@@ -473,6 +473,20 @@ fn rr_opt_ecs() {
         edns_options: vec![EDNSOption::ECS(ecs)],
     });
     check_output(&rr, ". 0 IN OPT 1024 0 0 false 24 24 10.0.0.0");
+}
+
+#[test]
+fn rr_opt_ecs_2() {
+    let address = Address::Ipv6("10::".parse().unwrap());
+    let ecs = ECS::new(24, 24, address).unwrap();
+    let rr = RR::OPT(OPT {
+        requestor_payload_size: 1024,
+        dnssec: false,
+        version: 0,
+        extend_rcode: 0,
+        edns_options: vec![EDNSOption::ECS(ecs)],
+    });
+    check_output(&rr, ". 0 IN OPT 1024 0 0 false 24 24 10::");
 }
 
 #[test]
