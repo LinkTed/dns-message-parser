@@ -1,4 +1,5 @@
 use std::cmp::max;
+use std::cmp::Ordering;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::net::{Ipv4Addr, Ipv6Addr};
 use thiserror::Error;
@@ -67,53 +68,53 @@ pub struct ECS {
 }
 
 fn check_ipv4_addr(ipv4_addr: &Ipv4Addr, prefix_length: u8) -> Result<(), ECSError> {
-    if 32 < prefix_length {
-        return Err(ECSError::Ipv4Prefix(prefix_length));
-    } else if 32 == prefix_length {
-        return Ok(());
-    }
+    match 32.cmp(&prefix_length) {
+        Ordering::Less => Err(ECSError::Ipv4Prefix(prefix_length)),
+        Ordering::Equal => Ok(()),
+        Ordering::Greater => {
+            let octects = ipv4_addr.octets();
+            let index = (prefix_length / 8) as usize;
+            let remain = prefix_length % 8;
 
-    let octects = ipv4_addr.octets();
-    let index = (prefix_length / 8) as usize;
-    let remain = prefix_length % 8;
+            if (octects[index] & (MASK >> remain)) != 0 {
+                return Err(ECSError::Ipv4Mask(*ipv4_addr, prefix_length));
+            }
 
-    if (octects[index] & (MASK >> remain)) != 0 {
-        return Err(ECSError::Ipv4Mask(*ipv4_addr, prefix_length));
-    }
+            let (_, octects_right) = octects.split_at(index + 1);
+            for b in octects_right {
+                if *b != 0 {
+                    return Err(ECSError::Ipv4Mask(*ipv4_addr, prefix_length));
+                }
+            }
 
-    let (_, octects_right) = octects.split_at(index + 1);
-    for b in octects_right {
-        if *b != 0 {
-            return Err(ECSError::Ipv4Mask(*ipv4_addr, prefix_length));
+            Ok(())
         }
     }
-
-    Ok(())
 }
 
 fn check_ipv6_addr(ipv6_addr: &Ipv6Addr, prefix_length: u8) -> Result<(), ECSError> {
-    if 128 < prefix_length {
-        return Err(ECSError::Ipv6Prefix(prefix_length));
-    } else if 128 == prefix_length {
-        return Ok(());
-    }
+    match 128.cmp(&prefix_length) {
+        Ordering::Less => Err(ECSError::Ipv6Prefix(prefix_length)),
+        Ordering::Equal => Ok(()),
+        Ordering::Greater => {
+            let octects = ipv6_addr.octets();
+            let index = (prefix_length / 8) as usize;
+            let remain = prefix_length % 8;
 
-    let octects = ipv6_addr.octets();
-    let index = (prefix_length / 8) as usize;
-    let remain = prefix_length % 8;
+            if (octects[index] & (MASK >> remain)) != 0 {
+                return Err(ECSError::Ipv6Mask(*ipv6_addr, prefix_length));
+            }
 
-    if (octects[index] & (MASK >> remain)) != 0 {
-        return Err(ECSError::Ipv6Mask(*ipv6_addr, prefix_length));
-    }
+            let (_, octects_right) = octects.split_at(index + 1);
+            for b in octects_right {
+                if *b != 0 {
+                    return Err(ECSError::Ipv6Mask(*ipv6_addr, prefix_length));
+                }
+            }
 
-    let (_, octects_right) = octects.split_at(index + 1);
-    for b in octects_right {
-        if *b != 0 {
-            return Err(ECSError::Ipv6Mask(*ipv6_addr, prefix_length));
+            Ok(())
         }
     }
-
-    Ok(())
 }
 
 impl ECS {

@@ -1,13 +1,13 @@
 use crate::encode::Encoder;
 use crate::{Dns, EncodeResult, Flags};
+use bytes::BytesMut;
 
 impl Encoder {
-    pub(super) fn flags(&mut self, flags: &Flags) -> EncodeResult<()> {
+    pub(super) fn flags(&mut self, flags: &Flags) {
         let mut buffer = 0u8;
         if flags.qr {
             buffer |= 0b1000_0000;
         }
-
         let opcode = flags.opcode.clone() as u8;
         buffer |= opcode << 3;
         if flags.aa {
@@ -21,7 +21,7 @@ impl Encoder {
         }
         self.u8(buffer);
 
-        buffer = 0;
+        let mut buffer = 0u8;
         if flags.ra {
             buffer |= 0b1000_0000;
         }
@@ -34,13 +34,11 @@ impl Encoder {
         let rcode = flags.rcode.clone() as u8;
         buffer |= rcode;
         self.u8(buffer);
-
-        Ok(())
     }
 
     pub(super) fn dns(&mut self, dns: &Dns) -> EncodeResult<()> {
         self.u16(dns.id);
-        self.flags(&dns.flags)?;
+        self.flags(&dns.flags);
         self.u16(dns.questions.len() as u16);
         self.u16(dns.answers.len() as u16);
         self.u16(dns.authorities.len() as u16);
@@ -66,6 +64,12 @@ impl Encoder {
     }
 }
 
-impl_encode!(Flags, flags);
+impl Flags {
+    pub fn encode(&self) -> BytesMut {
+        let mut encoder = Encoder::default();
+        encoder.flags(self);
+        encoder.bytes
+    }
+}
 
 impl_encode!(Dns, dns);
