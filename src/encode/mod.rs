@@ -1,7 +1,8 @@
 #[macro_use]
-mod encoder;
+mod macros;
 mod dns;
 mod domain_name;
+mod encoder;
 mod error;
 mod helpers;
 mod question;

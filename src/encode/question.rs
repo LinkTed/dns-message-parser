@@ -1,6 +1,5 @@
 use crate::encode::Encoder;
 use crate::{EncodeResult, QClass, QType, Question};
-use bytes::BytesMut;
 
 impl Encoder {
     #[inline]
@@ -22,20 +21,8 @@ impl Encoder {
     }
 }
 
-impl QType {
-    pub fn encode(&self) -> BytesMut {
-        let mut encoder = Encoder::default();
-        encoder.question_type(self);
-        encoder.bytes
-    }
-}
+impl_encode_without_result!(QType, question_type);
 
-impl QClass {
-    pub fn encode(&self) -> BytesMut {
-        let mut encoder = Encoder::default();
-        encoder.question_class(self);
-        encoder.bytes
-    }
-}
+impl_encode_without_result!(QClass, question_class);
 
 impl_encode!(Question, question);

@@ -28,15 +28,3 @@ impl Default for Encoder {
         }
     }
 }
-
-macro_rules! impl_encode {
-    ($i:path, $m:ident) => {
-        impl $i {
-            pub fn encode(&self) -> crate::EncodeResult<bytes::BytesMut> {
-                let mut encoder = crate::encode::Encoder::default();
-                encoder.$m(self)?;
-                Ok(encoder.bytes)
-            }
-        }
-    };
-}

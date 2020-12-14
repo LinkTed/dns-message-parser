@@ -1,7 +1,6 @@
 use crate::encode::Encoder;
 use crate::rr::{Class, Type, RR};
 use crate::EncodeResult;
-use bytes::BytesMut;
 
 impl Encoder {
     #[inline]
@@ -54,20 +53,8 @@ impl Encoder {
     }
 }
 
-impl Type {
-    pub fn encode(&self) -> BytesMut {
-        let mut encoder = Encoder::default();
-        encoder.rr_type(self);
-        encoder.bytes
-    }
-}
+impl_encode_without_result!(Type, rr_type);
 
-impl Class {
-    pub fn encode(&self) -> BytesMut {
-        let mut encoder = Encoder::default();
-        encoder.rr_class(self);
-        encoder.bytes
-    }
-}
+impl_encode_without_result!(Class, rr_class);
 
 impl_encode!(RR, rr);

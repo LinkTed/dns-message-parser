@@ -1,6 +1,5 @@
 use crate::encode::Encoder;
 use crate::{Dns, EncodeResult, Flags};
-use bytes::BytesMut;
 
 impl Encoder {
     pub(super) fn flags(&mut self, flags: &Flags) {
@@ -64,12 +63,6 @@ impl Encoder {
     }
 }
 
-impl Flags {
-    pub fn encode(&self) -> BytesMut {
-        let mut encoder = Encoder::default();
-        encoder.flags(self);
-        encoder.bytes
-    }
-}
+impl_encode_without_result!(Flags, flags);
 
 impl_encode!(Dns, dns);
