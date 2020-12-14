@@ -1,3 +1,47 @@
+//! This module contains struct for [resource records] handling.
+//!
+//! The [RR] enum represents arbitrary a resource record. Each type has a dedicated struct (for
+//! example the [A] record), which has a variant in the [RR] enum.
+//!
+//! The [Class] enum represents the [class] field of the resource record.
+//!
+//! The [Type] enum represents the [type] field of the resource record.
+//!
+//! *Yet there are some missing resource records and types*
+//!
+//! # Example
+//! ```rust
+//! use dns_message_parser::rr::{RR, A};
+//! use std::convert::TryInto;
+//!
+//! // Init A record
+//! let a = A {
+//!     // The domain name of the A record
+//!     domain_name: "example.org".try_into().unwrap(),
+//!     // The time to live of the A record
+//!     ttl: 1000,
+//!     // The address of the A record
+//!     ipv4_addr: "10.0.0.1".parse(),
+//! }
+//!
+//! // Convert the resource record into a RR
+//! let rr = RR::A(a);
+//!
+//! // Encode the A record into bytes::BytesMut
+//! let bytes = rr.encode().unwrap();
+//!
+//! // Decode the A record into a RR enum
+//! let rr = RR::decode(bytes.freeze()).unwrap();
+//! ```
+//!
+//! [A]: crate::rr::A
+//! [RR]: crate::rr::RR
+//! [Class]: crate::rr::Class
+//! [Type]: crate::rr::Type
+//! [resource records]: https://tools.ietf.org/html/rfc1035#section-3.2
+//! [class]: https://tools.ietf.org/html/rfc1035#section-3.2.4
+//! [type]: https://tools.ietf.org/html/rfc1035#section-3.2.2
+
 #[macro_use]
 mod macros;
 mod enums;
