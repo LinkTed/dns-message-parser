@@ -22,15 +22,6 @@ categories = [
     "encoding"
     ]
 
-[badges.travis-ci]
-repository = "LinkTed/dns-message-parser"
-branch = "master"
-
-[badges.codecov]
-repository = "LinkTed/dns-message-parser"
-branch = "master"
-service = "github"
-
 [dependencies]
 bytes = "0.6.0"
 regex = "1.4.2"
