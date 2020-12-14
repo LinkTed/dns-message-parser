@@ -31,7 +31,7 @@ fn flags() {
         rcode: RCode::NoError,
     };
 
-    let bytes = flags_1.encode().unwrap();
+    let bytes = flags_1.encode();
     let flags_2 = Flags::decode(bytes.freeze()).unwrap();
     assert_eq!(flags_1, flags_2);
 }
