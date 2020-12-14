@@ -1,6 +1,4 @@
 #![allow(non_camel_case_types)]
-#[macro_use(lazy_static)]
-extern crate lazy_static;
 
 mod decode;
 mod dns;

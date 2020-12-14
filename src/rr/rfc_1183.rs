@@ -1,5 +1,6 @@
 use crate::rr::Class;
 use crate::DomainName;
+use lazy_static::lazy_static;
 use regex::Regex;
 use std::convert::TryFrom;
 use std::fmt::{Display, Formatter, Result as FmtResult};
