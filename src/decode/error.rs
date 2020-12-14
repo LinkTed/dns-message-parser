@@ -2,7 +2,6 @@ use crate::rr::{Class, ECSError, ISDNError, Type, X25Error};
 use crate::{Dns, DomainName, DomainNameError};
 use hex::FromHexError;
 use std::str::Utf8Error;
-use std::string::FromUtf8Error;
 use thiserror::Error;
 
 #[derive(Debug, PartialEq, Error)]
@@ -29,8 +28,6 @@ pub enum DecodeError {
     QClass(u16),
     #[error("Could not decode string as UTF-8: {0}")]
     Utf8Error(#[from] Utf8Error),
-    #[error("Could not decode string as UTF-8: {0}")]
-    FromUtf8Error(#[from] FromUtf8Error),
     #[error("Could not decode domain name: {0}")]
     DomainNameError(#[from] DomainNameError),
     #[error("Decode of type {0} is not yet implemented")]

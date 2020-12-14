@@ -1,6 +1,7 @@
 use crate::decode::Decoder;
 use crate::{DecodeError, DecodeResult};
 use bytes::Buf;
+use bytes::Bytes;
 use std::mem::size_of;
 use std::net::{Ipv4Addr, Ipv6Addr};
 use std::str::from_utf8;
@@ -47,16 +48,20 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         Ok(Ipv6Addr::new(a, b, c, d, e, f, g, h))
     }
 
-    pub(super) fn vec(&mut self) -> DecodeResult<Vec<u8>> {
+    pub(super) fn bytes(&mut self) -> DecodeResult<Bytes> {
         let bytes_len = self.bytes.len();
         if self.offset < bytes_len {
             let start = self.offset;
             self.offset = bytes_len;
-            let buffer = self.bytes.slice(start..self.offset);
-            let vec = buffer.to_vec();
-            Ok(vec)
+            let bytes = self.bytes.slice(start..self.offset);
+            Ok(bytes)
         } else {
             Err(DecodeError::NotEnoughBytes(bytes_len, self.offset))
         }
+    }
+
+    pub(super) fn vec(&mut self) -> DecodeResult<Vec<u8>> {
+        let bytes = self.bytes()?;
+        Ok(bytes.to_vec())
     }
 }
