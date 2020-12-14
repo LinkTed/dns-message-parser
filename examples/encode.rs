@@ -1,4 +1,5 @@
-use dns_message_parser::{Dns, DomainName, Flags, Opcode, QClass, QType, Question, RCode};
+use dns_message_parser::question::{QClass, QType, Question};
+use dns_message_parser::{Dns, DomainName, Flags, Opcode, RCode};
 use std::convert::TryFrom;
 
 fn main() {

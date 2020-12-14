@@ -1,5 +1,6 @@
 use crate::encode::Encoder;
-use crate::{EncodeResult, QClass, QType, Question};
+use crate::question::{QClass, QType, Question};
+use crate::EncodeResult;
 
 impl Encoder {
     #[inline]

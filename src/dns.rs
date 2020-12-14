@@ -1,5 +1,6 @@
+use crate::question::Question;
 use crate::rr::RR;
-use crate::{Opcode, Question, RCode};
+use crate::{Opcode, RCode};
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
 #[derive(Debug, Clone, PartialEq)]

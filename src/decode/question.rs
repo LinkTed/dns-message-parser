@@ -1,5 +1,6 @@
 use crate::decode::Decoder;
-use crate::{DecodeError, DecodeResult, QClass, QType, Question};
+use crate::question::{QClass, QType, Question};
+use crate::{DecodeError, DecodeResult};
 use std::convert::TryFrom;
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {

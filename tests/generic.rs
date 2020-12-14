@@ -1,6 +1,7 @@
 use bytes::Bytes;
+use dns_message_parser::question::{QClass, QType, Question};
 use dns_message_parser::rr::{Class, Type, A, RR};
-use dns_message_parser::{DomainName, QClass, QType, Question};
+use dns_message_parser::DomainName;
 use std::convert::TryFrom;
 use std::net::Ipv4Addr;
 

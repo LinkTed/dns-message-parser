@@ -1,9 +1,10 @@
+use dns_message_parser::question::{QClass, QType, Question};
 use dns_message_parser::rr::{
     Address, Class, EDNSOption, ISDNAddress, PSDNAddress, A, AAAA, CNAME, DNAME, ECS, EID, GPOS,
     HINFO, ISDN, KX, MB, MD, MF, MG, MINFO, MR, MX, NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA, SOA,
     SRV, TXT, URI, X25,
 };
-use dns_message_parser::{Dns, DomainName, Flags, Opcode, QClass, QType, Question, RCode};
+use dns_message_parser::{Dns, DomainName, Flags, Opcode, RCode};
 use std::convert::TryFrom;
 use std::fmt::Display;
 

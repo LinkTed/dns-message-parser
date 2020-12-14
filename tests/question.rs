@@ -1,5 +1,5 @@
 use bytes::Bytes;
-use dns_message_parser::{QClass, QType};
+use dns_message_parser::question::{QClass, QType};
 
 #[test]
 fn decode_q_type_type() {
