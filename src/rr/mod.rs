@@ -1,7 +1,7 @@
 //! This module contains struct for [resource records] handling.
 //!
-//! The [RR] enum represents arbitrary a resource record. Each type has a dedicated struct (for
-//! example the [A] record), which has a variant in the [RR] enum.
+//! The [RR] enum represents an arbitrary resource record. Each [type] has a dedicated struct,
+//! which has a variant in the [RR] enum. For example, the [A] struct represent an A record.
 //!
 //! The [Class] enum represents the [class] field of the resource record.
 //!
