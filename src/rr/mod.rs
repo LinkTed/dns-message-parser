@@ -21,8 +21,8 @@
 //!     // The time to live of the A record
 //!     ttl: 1000,
 //!     // The address of the A record
-//!     ipv4_addr: "10.0.0.1".parse(),
-//! }
+//!     ipv4_addr: "10.0.0.1".parse().unwrap(),
+//! };
 //!
 //! // Convert the resource record into a RR
 //! let rr = RR::A(a);
