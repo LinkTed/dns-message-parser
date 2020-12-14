@@ -12,31 +12,12 @@ try_from_enum_to_integer! {
     }
 }
 
-impl Display for SSHFPAlgorithm {
-    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-        match self {
-            SSHFPAlgorithm::Reserved => write!(f, "Reserved"),
-            SSHFPAlgorithm::RSA => write!(f, "RSA"),
-            SSHFPAlgorithm::DSS => write!(f, "DSS"),
-        }
-    }
-}
-
 try_from_enum_to_integer! {
     #[repr(u8)]
     #[derive(Debug, Clone, Eq, PartialEq, Hash)]
     pub enum SSHFPType {
         Reserved = 0,
         Sha1 = 1,
-    }
-}
-
-impl Display for SSHFPType {
-    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-        match self {
-            SSHFPType::Reserved => write!(f, "Reserved"),
-            SSHFPType::Sha1 => write!(f, "SHA-1"),
-        }
     }
 }
 

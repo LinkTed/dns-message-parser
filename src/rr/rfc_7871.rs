@@ -30,7 +30,7 @@ impl Address {
     }
 }
 
-try_from_enum_to_integer! {
+try_from_enum_to_integer_without_display! {
     #[repr(u16)]
     #[derive(Debug, Clone, PartialEq, Eq, Hash)]
     pub enum AddressNumber {

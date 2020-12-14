@@ -23,17 +23,6 @@ try_from_enum_to_integer! {
     }
 }
 
-impl Display for Class {
-    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-        match self {
-            Class::IN => write!(f, "IN"),
-            Class::CS => write!(f, "CS"),
-            Class::CH => write!(f, "CH"),
-            Class::HS => write!(f, "HS"),
-        }
-    }
-}
-
 try_from_enum_to_integer! {
     #[repr(u16)]
     /// The [type] field in the [resource records].
@@ -220,96 +209,6 @@ try_from_enum_to_integer! {
 
         TA = 32768,
         DLV = 32769,
-    }
-}
-
-impl Display for Type {
-    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-        match self {
-            Type::A => write!(f, "A"),
-            Type::NS => write!(f, "NS"),
-            Type::MD => write!(f, "MD"),
-            Type::MF => write!(f, "MF"),
-            Type::CNAME => write!(f, "CNAME"),
-            Type::SOA => write!(f, "SOA"),
-            Type::MB => write!(f, "MB"),
-            Type::MG => write!(f, "MG"),
-            Type::MR => write!(f, "MR"),
-            Type::NULL => write!(f, "NULL"),
-            Type::WKS => write!(f, "WKS"),
-            Type::PTR => write!(f, "PTR"),
-            Type::HINFO => write!(f, "HINFO"),
-            Type::MINFO => write!(f, "MINFO"),
-            Type::MX => write!(f, "MX"),
-            Type::TXT => write!(f, "TXT"),
-            Type::RP => write!(f, "RP"),
-            Type::AFSDB => write!(f, "AFSDB"),
-            Type::X25 => write!(f, "X25"),
-            Type::ISDN => write!(f, "ISDN"),
-            Type::RT => write!(f, "RT"),
-            Type::NSAP => write!(f, "NSAP"),
-            Type::NSAP_PTR => write!(f, "NSAP_PTR"),
-            Type::SIG => write!(f, "SIG"),
-            Type::KEY => write!(f, "KEY"),
-            Type::PX => write!(f, "PX"),
-            Type::GPOS => write!(f, "GPOS"),
-            Type::AAAA => write!(f, "AAAA"),
-            Type::LOC => write!(f, "LOC"),
-            Type::NXT => write!(f, "NXT"),
-            Type::EID => write!(f, "EID"),
-            Type::NIMLOC => write!(f, "NIMLOC"),
-            Type::SRV => write!(f, "SRV"),
-            Type::ATMA => write!(f, "ATMA"),
-            Type::NAPTR => write!(f, "NAPTR"),
-            Type::KX => write!(f, "KX"),
-            Type::CERT => write!(f, "CERT"),
-            Type::A6 => write!(f, "A6"),
-            Type::DNAME => write!(f, "DNAME"),
-            Type::SINK => write!(f, "SINK"),
-            Type::OPT => write!(f, "OPT"),
-            Type::APL => write!(f, "APL"),
-            Type::DS => write!(f, "DS"),
-            Type::SSHFP => write!(f, "SSHFP"),
-            Type::IPSECKEY => write!(f, "IPSECKEY"),
-            Type::RRSIG => write!(f, "RRSIG"),
-            Type::NSEC => write!(f, "NSEC"),
-            Type::DNSKEY => write!(f, "DNSKEY"),
-            Type::DHCID => write!(f, "DHCID"),
-            Type::NSEC3 => write!(f, "NSEC3"),
-            Type::NSEC3PARAM => write!(f, "NSEC3PARAM"),
-            Type::TLSA => write!(f, "TLSA"),
-            Type::SMIMEA => write!(f, "SMIMEA"),
-            Type::HIP => write!(f, "HIP"),
-            Type::NINFO => write!(f, "NINFO"),
-            Type::RKEY => write!(f, "RKEY"),
-            Type::TALINK => write!(f, "TALINK"),
-            Type::CDS => write!(f, "CDS"),
-            Type::CDNSKEY => write!(f, "CDNSKEY"),
-            Type::OPENPGPKEY => write!(f, "OPENPGPKEY"),
-            Type::CSYNC => write!(f, "CSYNC"),
-            Type::ZONEMD => write!(f, "ZONEMD"),
-            Type::SPF => write!(f, "SPF"),
-            Type::UINFO => write!(f, "UINFO"),
-            Type::UID => write!(f, "UID"),
-            Type::GID => write!(f, "GID"),
-            Type::UNSPEC => write!(f, "UNSPEC"),
-            Type::NID => write!(f, "NID"),
-            Type::L32 => write!(f, "L32"),
-            Type::L64 => write!(f, "L64"),
-            Type::LP => write!(f, "LP"),
-            Type::EUI48 => write!(f, "EUI48"),
-            Type::EUI64 => write!(f, "EUI64"),
-            Type::TKEY => write!(f, "TKEY"),
-            Type::TSIG => write!(f, "TSIG"),
-            Type::IXFR => write!(f, "IXFR"),
-            Type::URI => write!(f, "URI"),
-            Type::CAA => write!(f, "CAA"),
-            Type::AVC => write!(f, "AVC"),
-            Type::DOA => write!(f, "DOA"),
-            Type::AMTRELAY => write!(f, "AMTRELAY"),
-            Type::TA => write!(f, "TA"),
-            Type::DLV => write!(f, "DLV"),
-        }
     }
 }
 

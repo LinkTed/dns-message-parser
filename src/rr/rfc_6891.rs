@@ -10,15 +10,6 @@ try_from_enum_to_integer! {
     }
 }
 
-impl Display for EDNSOptionCode {
-    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-        match self {
-            EDNSOptionCode::ECS => write!(f, "ECS"),
-            EDNSOptionCode::Cookie => write!(f, "Cookie"),
-        }
-    }
-}
-
 #[derive(Debug, PartialEq, Clone, Eq, Hash)]
 pub enum EDNSOption {
     ECS(ECS),

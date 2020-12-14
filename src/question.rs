@@ -100,99 +100,6 @@ try_from_enum_to_integer! {
     }
 }
 
-impl Display for QType {
-    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-        match self {
-            QType::A => write!(f, "A"),
-            QType::NS => write!(f, "NS"),
-            QType::MD => write!(f, "MD"),
-            QType::MF => write!(f, "MF"),
-            QType::CNAME => write!(f, "CNAME"),
-            QType::SOA => write!(f, "SOA"),
-            QType::MB => write!(f, "MB"),
-            QType::MG => write!(f, "MG"),
-            QType::MR => write!(f, "MR"),
-            QType::NULL => write!(f, "NULL"),
-            QType::WKS => write!(f, "WKS"),
-            QType::PTR => write!(f, "PTR"),
-            QType::HINFO => write!(f, "HINFO"),
-            QType::MINFO => write!(f, "MINFO"),
-            QType::MX => write!(f, "MX"),
-            QType::TXT => write!(f, "TXT"),
-            QType::RP => write!(f, "RP"),
-            QType::AFSDB => write!(f, "AFSDB"),
-            QType::X25 => write!(f, "X25"),
-            QType::ISDN => write!(f, "ISDN"),
-            QType::RT => write!(f, "RT"),
-            QType::NSAP => write!(f, "NSAP"),
-            QType::NSAP_PTR => write!(f, "NSAP-PTR"),
-            QType::SIG => write!(f, "SIG"),
-            QType::KEY => write!(f, "KEY"),
-            QType::PX => write!(f, "PX"),
-            QType::GPOS => write!(f, "GPOS"),
-            QType::AAAA => write!(f, "AAAA"),
-            QType::LOC => write!(f, "LOC"),
-            QType::NXT => write!(f, "NXT"),
-            QType::EID => write!(f, "EID"),
-            QType::NIMLOC => write!(f, "NIMLOC"),
-            QType::SRV => write!(f, "SRV"),
-            QType::ATMA => write!(f, "ATMA"),
-            QType::NAPTR => write!(f, "NAPTR"),
-            QType::KX => write!(f, "KX"),
-            QType::CERT => write!(f, "CERT"),
-            QType::A6 => write!(f, "A6"),
-            QType::DNAME => write!(f, "DNAME"),
-            QType::SINK => write!(f, "SINK"),
-            QType::APL => write!(f, "APL"),
-            QType::DS => write!(f, "DS"),
-            QType::SSHFP => write!(f, "SSHFP"),
-            QType::IPSECKEY => write!(f, "IPSECKEY"),
-            QType::RRSIG => write!(f, "RRSIG"),
-            QType::NSEC => write!(f, "NSEC"),
-            QType::DNSKEY => write!(f, "DNSKEY"),
-            QType::DHCID => write!(f, "DHCID"),
-            QType::NSEC3 => write!(f, "NSEC3"),
-            QType::NSEC3PARAM => write!(f, "NSEC3PARAM"),
-            QType::TLSA => write!(f, "TLSA"),
-            QType::SMIMEA => write!(f, "SMIMEA"),
-            QType::HIP => write!(f, "HIP"),
-            QType::NINFO => write!(f, "NIFO"),
-            QType::RKEY => write!(f, "RKEY"),
-            QType::TALINK => write!(f, "TALINK"),
-            QType::CDS => write!(f, "CDS"),
-            QType::CDNSKEY => write!(f, "CDNSKEY"),
-            QType::OPENPGPKEY => write!(f, "OPENPGPKEY"),
-            QType::CSYNC => write!(f, "CSYNC"),
-            QType::ZONEMD => write!(f, "ZONEMD"),
-            QType::SPF => write!(f, "SPF"),
-            QType::UINFO => write!(f, "UINFO"),
-            QType::UID => write!(f, "UID"),
-            QType::GID => write!(f, "GID"),
-            QType::UNSPEC => write!(f, "UNSPEC"),
-            QType::NID => write!(f, "NID"),
-            QType::L32 => write!(f, "L32"),
-            QType::L64 => write!(f, "L64"),
-            QType::LP => write!(f, "LP"),
-            QType::EUI48 => write!(f, "EUI48"),
-            QType::EUI64 => write!(f, "EUI64"),
-            QType::TKEY => write!(f, "TKEY"),
-            QType::TSIG => write!(f, "TSIG"),
-            QType::IXFR => write!(f, "IXFR"),
-            QType::URI => write!(f, "URI"),
-            QType::CAA => write!(f, "CAA"),
-            QType::AVC => write!(f, "AVC"),
-            QType::DOA => write!(f, "DOA"),
-            QType::AMTRELAY => write!(f, "AMTRELAY"),
-            QType::TA => write!(f, "TA"),
-            QType::DLV => write!(f, "DLV"),
-            QType::AXFR => write!(f, "AXFR"),
-            QType::MAILB => write!(f, "MAILB"),
-            QType::MAILA => write!(f, "MAILA"),
-            QType::ALL => write!(f, "ALL"),
-        }
-    }
-}
-
 try_from_enum_to_integer! {
     #[repr(u16)]
     #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -202,18 +109,6 @@ try_from_enum_to_integer! {
         CH = 3,
         HS = 4,
         ANY = 255,
-    }
-}
-
-impl Display for QClass {
-    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-        match self {
-            QClass::IN => write!(f, "IN"),
-            QClass::CS => write!(f, "CS"),
-            QClass::CH => write!(f, "CH"),
-            QClass::HS => write!(f, "HS"),
-            QClass::ANY => write!(f, "ANY"),
-        }
     }
 }
 
