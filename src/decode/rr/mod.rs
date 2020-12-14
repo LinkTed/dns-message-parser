@@ -16,6 +16,8 @@ mod rfc_6891;
 mod rfc_7553;
 mod rfc_7871;
 mod rfc_7873;
+#[cfg(test)]
+mod tests;
 mod unknown;
 
 use enums::Header;
