@@ -1,4 +1,5 @@
 #[macro_use]
+mod macros;
 mod decoder;
 mod dns;
 mod domain_name;
