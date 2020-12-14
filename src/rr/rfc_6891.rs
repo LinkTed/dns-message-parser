@@ -1,10 +1,13 @@
 use super::{Cookie, ECS};
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
-#[derive(Debug, Clone, FromPrimitive, ToPrimitive, PartialEq)]
-pub enum EDNSOptionCode {
-    ECS = 0x00008,
-    Cookie = 0x000a,
+try_from_enum_to_integer! {
+    #[repr(u16)]
+    #[derive(Debug, Clone, PartialEq)]
+    pub enum EDNSOptionCode {
+        ECS = 0x00008,
+        Cookie = 0x000a,
+    }
 }
 
 impl Display for EDNSOptionCode {

@@ -1,16 +1,15 @@
 use crate::decode::Decoder;
 use crate::{DecodeError, DecodeResult, Dns, Flags, Opcode, RCode, MAXIMUM_DNS_PACKET_SIZE};
-use num_traits::FromPrimitive;
+use std::convert::TryFrom;
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
     fn flags(&mut self) -> DecodeResult<Flags> {
         let buffer = self.u8()?;
         let qr = (buffer & 0b1000_0000) != 0;
         let opcode = (buffer & 0b0111_1000) >> 3;
-        let opcode = if let Some(opcode) = Opcode::from_u8(opcode) {
-            opcode
-        } else {
-            return Err(DecodeError::Opcode(opcode));
+        let opcode = match Opcode::try_from(opcode) {
+            Ok(opcode) => opcode,
+            Err(buffer) => return Err(DecodeError::Opcode(buffer)),
         };
         let aa = (buffer & 0b0000_0100) != 0;
         let tc = (buffer & 0b0000_0010) != 0;
@@ -24,8 +23,8 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         let ad = (buffer & 0b0010_0000) != 0;
         let cd = (buffer & 0b0001_0000) != 0;
         let rcode = buffer & 0b0000_1111;
-        if let Some(rcode) = RCode::from_u8(rcode) {
-            Ok(Flags {
+        match RCode::try_from(rcode) {
+            Ok(rcode) => Ok(Flags {
                 qr,
                 opcode,
                 aa,
@@ -35,9 +34,8 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
                 ad,
                 cd,
                 rcode,
-            })
-        } else {
-            Err(DecodeError::RCode(rcode))
+            }),
+            Err(buffer) => Err(DecodeError::RCode(buffer)),
         }
     }
 }

@@ -1,23 +1,21 @@
 use crate::decode::Decoder;
 use crate::{DecodeError, DecodeResult, QClass, QType, Question};
-use num_traits::FromPrimitive;
+use std::convert::TryFrom;
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
     pub fn q_type(&mut self) -> DecodeResult<QType> {
         let buffer = self.u16()?;
-        if let Some(q_type) = QType::from_u16(buffer) {
-            Ok(q_type)
-        } else {
-            Err(DecodeError::QType(buffer))
+        match QType::try_from(buffer) {
+            Ok(q_type) => Ok(q_type),
+            Err(buffer) => Err(DecodeError::QType(buffer)),
         }
     }
 
     pub fn q_class(&mut self) -> DecodeResult<QClass> {
         let buffer = self.u16()?;
-        if let Some(q_class) = QClass::from_u16(buffer) {
-            Ok(q_class)
-        } else {
-            Err(DecodeError::QClass(buffer))
+        match QClass::try_from(buffer) {
+            Ok(q_class) => Ok(q_class),
+            Err(buffer) => Err(DecodeError::QClass(buffer)),
         }
     }
 

@@ -5,8 +5,8 @@ use crate::EncodeResult;
 impl Encoder {
     pub(super) fn rr_px(&mut self, px: &PX) -> EncodeResult<()> {
         self.domain_name(&px.domain_name)?;
-        self.rr_type(&Type::PX)?;
-        self.rr_class(&px.class)?;
+        self.rr_type(&Type::PX);
+        self.rr_class(&px.class);
         self.u32(px.ttl);
         let length_index = self.create_length_index();
         self.u16(px.preference);

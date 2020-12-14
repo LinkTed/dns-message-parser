@@ -1,27 +1,22 @@
 use crate::encode::Encoder;
 use crate::rr::{AFSDBSubtype, ISDNAddress, PSDNAddress, Type, AFSDB, ISDN, SA, X25};
-use crate::{EncodeError, EncodeResult};
-use num_traits::ToPrimitive;
+use crate::EncodeResult;
 
 impl Encoder {
     impl_encode_rr_domain_name_domain_name!(RP, mbox_dname, txt_dname, rr_rp);
 
-    fn rr_afsdb_subtype(&mut self, afsdb_subtype: &AFSDBSubtype) -> EncodeResult<()> {
-        if let Some(buffer) = afsdb_subtype.to_u16() {
-            self.u16(buffer);
-            Ok(())
-        } else {
-            Err(EncodeError::AFSDBSubtype(afsdb_subtype.clone()))
-        }
+    #[inline]
+    fn rr_afsdb_subtype(&mut self, afsdb_subtype: &AFSDBSubtype) {
+        self.u16(afsdb_subtype.clone() as u16);
     }
 
     pub(super) fn rr_afsdb(&mut self, afsdb: &AFSDB) -> EncodeResult<()> {
         self.domain_name(&afsdb.domain_name)?;
-        self.rr_type(&Type::AFSDB)?;
-        self.rr_class(&afsdb.class)?;
+        self.rr_type(&Type::AFSDB);
+        self.rr_class(&afsdb.class);
         self.u32(afsdb.ttl);
         let length_index = self.create_length_index();
-        self.rr_afsdb_subtype(&afsdb.subtype)?;
+        self.rr_afsdb_subtype(&afsdb.subtype);
         self.domain_name(&afsdb.hostname)?;
         self.set_length_index(length_index)
     }
@@ -32,8 +27,8 @@ impl Encoder {
 
     pub(super) fn rr_x25(&mut self, x25: &X25) -> EncodeResult<()> {
         self.domain_name(&x25.domain_name)?;
-        self.rr_type(&Type::X25)?;
-        self.rr_class(&x25.class)?;
+        self.rr_type(&Type::X25);
+        self.rr_class(&x25.class);
         self.u32(x25.ttl);
         let length_index = self.create_length_index();
         self.rr_x25_psdn_address(&x25.psdn_address)?;
@@ -52,8 +47,8 @@ impl Encoder {
 
     pub(super) fn rr_isdn(&mut self, isdn: &ISDN) -> EncodeResult<()> {
         self.domain_name(&isdn.domain_name)?;
-        self.rr_type(&Type::ISDN)?;
-        self.rr_class(&isdn.class)?;
+        self.rr_type(&Type::ISDN);
+        self.rr_class(&isdn.class);
         self.u32(isdn.ttl);
         let length_index = self.create_length_index();
         self.rr_isdn_address(&isdn.isdn_address)?;

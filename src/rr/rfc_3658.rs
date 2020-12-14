@@ -2,11 +2,14 @@ use super::Class;
 use crate::DomainName;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
-#[derive(Debug, Clone, FromPrimitive, ToPrimitive, Eq, PartialEq, Hash)]
-pub enum SSHFPAlgorithm {
-    Reserved = 0,
-    RSA = 1,
-    DSS = 2,
+try_from_enum_to_integer! {
+    #[repr(u8)]
+    #[derive(Debug, Clone, Eq, PartialEq, Hash)]
+    pub enum SSHFPAlgorithm {
+        Reserved = 0,
+        RSA = 1,
+        DSS = 2,
+    }
 }
 
 impl Display for SSHFPAlgorithm {
@@ -19,10 +22,13 @@ impl Display for SSHFPAlgorithm {
     }
 }
 
-#[derive(Debug, Clone, FromPrimitive, ToPrimitive, Eq, PartialEq, Hash)]
-pub enum SSHFPType {
-    Reserved = 0,
-    Sha1 = 1,
+try_from_enum_to_integer! {
+    #[repr(u8)]
+    #[derive(Debug, Clone, Eq, PartialEq, Hash)]
+    pub enum SSHFPType {
+        Reserved = 0,
+        Sha1 = 1,
+    }
 }
 
 impl Display for SSHFPType {

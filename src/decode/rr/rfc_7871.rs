@@ -1,17 +1,16 @@
 use crate::decode::Decoder;
 use crate::rr::{Address, AddressNumber, ECS};
 use crate::{DecodeError, DecodeResult};
-use num_traits::FromPrimitive;
+use std::convert::TryFrom;
 use std::mem::size_of;
 use std::net::{Ipv4Addr, Ipv6Addr};
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
     fn rr_ends_ecs_address_number(&mut self) -> DecodeResult<AddressNumber> {
         let buffer = self.u16()?;
-        if let Some(address_number) = AddressNumber::from_u16(buffer) {
-            Ok(address_number)
-        } else {
-            Err(DecodeError::EcsAddressNumber(buffer))
+        match AddressNumber::try_from(buffer) {
+            Ok(address_number) => Ok(address_number),
+            Err(buffer) => Err(DecodeError::EcsAddressNumber(buffer)),
         }
     }
 

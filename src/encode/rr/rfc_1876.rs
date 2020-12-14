@@ -5,8 +5,8 @@ use crate::EncodeResult;
 impl Encoder {
     pub(super) fn rr_loc(&mut self, loc: &LOC) -> EncodeResult<()> {
         self.domain_name(&loc.domain_name)?;
-        self.rr_type(&Type::LOC)?;
-        self.rr_class(&loc.class)?;
+        self.rr_type(&Type::LOC);
+        self.rr_class(&loc.class);
         self.u32(loc.ttl);
         let length_index = self.create_length_index();
         self.u8(loc.version);

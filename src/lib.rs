@@ -1,6 +1,4 @@
 #![allow(non_camel_case_types)]
-#[macro_use(FromPrimitive, ToPrimitive)]
-extern crate num_derive;
 #[macro_use(lazy_static)]
 extern crate lazy_static;
 
@@ -8,6 +6,8 @@ mod decode;
 mod dns;
 mod domain_name;
 mod encode;
+#[macro_use]
+mod macros;
 mod question;
 pub mod rr;
 mod subtypes;

@@ -5,8 +5,8 @@ use crate::EncodeResult;
 impl Encoder {
     pub(super) fn rr_a(&mut self, a: &A) -> EncodeResult<()> {
         self.domain_name(&a.domain_name)?;
-        self.rr_type(&Type::A)?;
-        self.rr_class(&Class::IN)?;
+        self.rr_type(&Type::A);
+        self.rr_class(&Class::IN);
         self.u32(a.ttl);
         let length_index = self.create_length_index();
         self.ipv4_addr(&a.ipv4_addr);
@@ -23,8 +23,8 @@ impl Encoder {
 
     pub(super) fn rr_soa(&mut self, soa: &SOA) -> EncodeResult<()> {
         self.domain_name(&soa.domain_name)?;
-        self.rr_type(&Type::SOA)?;
-        self.rr_class(&soa.class)?;
+        self.rr_type(&Type::SOA);
+        self.rr_class(&soa.class);
         self.u32(soa.ttl);
         let length_index = self.create_length_index();
         self.domain_name(&soa.m_name)?;
@@ -47,8 +47,8 @@ impl Encoder {
 
     pub(super) fn rr_wks(&mut self, wks: &WKS) -> EncodeResult<()> {
         self.domain_name(&wks.domain_name)?;
-        self.rr_type(&Type::WKS)?;
-        self.rr_class(&Class::IN)?;
+        self.rr_type(&Type::WKS);
+        self.rr_class(&Class::IN);
         self.u32(wks.ttl);
         let length_index = self.create_length_index();
         self.ipv4_addr(&wks.ipv4_addr);
@@ -61,8 +61,8 @@ impl Encoder {
 
     pub(super) fn rr_hinfo(&mut self, hinfo: &HINFO) -> EncodeResult<()> {
         self.domain_name(&hinfo.domain_name)?;
-        self.rr_type(&Type::HINFO)?;
-        self.rr_class(&hinfo.class)?;
+        self.rr_type(&Type::HINFO);
+        self.rr_class(&hinfo.class);
         self.u32(hinfo.ttl);
         let length_index = self.create_length_index();
         self.string(&hinfo.cpu)?;

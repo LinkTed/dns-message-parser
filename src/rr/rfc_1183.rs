@@ -20,10 +20,13 @@ struct_domain_name_domain_name!(
     txt_dname
 );
 
-#[derive(Debug, Clone, Eq, Hash, FromPrimitive, ToPrimitive, PartialEq)]
-pub enum AFSDBSubtype {
-    VolumeLocationServer = 1,
-    DCEAuthenticationServer = 2,
+try_from_enum_to_integer! {
+    #[repr(u16)]
+    #[derive(Debug, Clone, Eq, Hash, PartialEq)]
+    pub enum AFSDBSubtype {
+        VolumeLocationServer = 1,
+        DCEAuthenticationServer = 2,
+    }
 }
 
 impl Display for AFSDBSubtype {

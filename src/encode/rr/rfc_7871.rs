@@ -1,17 +1,12 @@
 use crate::encode::Encoder;
 use crate::rr::{Address, AddressNumber, EDNSOptionCode, ECS};
-use crate::{EncodeError, EncodeResult};
-use num_traits::ToPrimitive;
+use crate::EncodeResult;
 use std::net::{Ipv4Addr, Ipv6Addr};
 
 impl Encoder {
-    fn rr_edns_ecs_address_number(&mut self, address_number: &AddressNumber) -> EncodeResult<()> {
-        if let Some(buffer) = address_number.to_u16() {
-            self.u16(buffer);
-            Ok(())
-        } else {
-            Err(EncodeError::ECSAddressNumber(address_number.clone()))
-        }
+    #[inline]
+    fn rr_edns_ecs_address_number(&mut self, address_number: &AddressNumber) {
+        self.u16(address_number.clone() as u16);
     }
 
     fn rr_edns_ecs_address_ipv4(&mut self, ipv4_addr: &Ipv4Addr, mut prefix_length: u8) {
@@ -46,9 +41,9 @@ impl Encoder {
     }
 
     pub(super) fn rr_edns_ecs(&mut self, ecs: &ECS) -> EncodeResult<()> {
-        self.rr_edns_option_code(&EDNSOptionCode::ECS)?;
+        self.rr_edns_option_code(&EDNSOptionCode::ECS);
         let length_index = self.create_length_index();
-        self.rr_edns_ecs_address_number(&ecs.address.get_address_number())?;
+        self.rr_edns_ecs_address_number(&ecs.address.get_address_number());
         self.u8(ecs.source_prefix_length);
         self.u8(ecs.scope_prefix_length);
         self.rr_edns_ecs_address(&ecs.address, ecs.get_prefix_length());

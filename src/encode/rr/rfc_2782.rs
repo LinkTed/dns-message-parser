@@ -5,8 +5,8 @@ use crate::EncodeResult;
 impl Encoder {
     pub(super) fn rr_srv(&mut self, srv: &SRV) -> EncodeResult<()> {
         self.domain_name(&srv.domain_name)?;
-        self.rr_type(&Type::SRV)?;
-        self.rr_class(&srv.class)?;
+        self.rr_type(&Type::SRV);
+        self.rr_class(&srv.class);
         self.u32(srv.ttl);
         let length_index = self.create_length_index();
         self.u16(srv.priority);

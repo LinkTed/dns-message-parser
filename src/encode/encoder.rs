@@ -35,7 +35,7 @@ macro_rules! impl_encode {
             pub fn encode(&self) -> crate::EncodeResult<bytes::BytesMut> {
                 let mut encoder = crate::encode::Encoder::default();
                 encoder.$m(self)?;
-                Ok(encoder.bytes.clone())
+                Ok(encoder.bytes)
             }
         }
     };

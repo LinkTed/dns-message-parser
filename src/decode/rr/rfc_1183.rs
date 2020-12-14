@@ -2,7 +2,6 @@ use super::Header;
 use crate::decode::Decoder;
 use crate::rr::{AFSDBSubtype, ISDNAddress, PSDNAddress, AFSDB, ISDN, SA, X25};
 use crate::{DecodeError, DecodeResult};
-use num_traits::FromPrimitive;
 use std::convert::TryFrom;
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
@@ -10,10 +9,9 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
 
     fn rr_afsdb_subtype(&mut self) -> DecodeResult<AFSDBSubtype> {
         let buffer = self.u16()?;
-        if let Some(afs_db_subtype) = AFSDBSubtype::from_u16(buffer) {
-            Ok(afs_db_subtype)
-        } else {
-            Err(DecodeError::AFSDBSubtype(buffer))
+        match AFSDBSubtype::try_from(buffer) {
+            Ok(afs_db_subtype) => Ok(afs_db_subtype),
+            Err(buffer) => Err(DecodeError::AFSDBSubtype(buffer)),
         }
     }
 

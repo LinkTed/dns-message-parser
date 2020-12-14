@@ -29,10 +29,13 @@ impl Address {
     }
 }
 
-#[derive(Debug, Clone, FromPrimitive, ToPrimitive, PartialEq, Eq, Hash)]
-pub enum AddressNumber {
-    Ipv4 = 0x0001,
-    Ipv6 = 0x0002,
+try_from_enum_to_integer! {
+    #[repr(u16)]
+    #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+    pub enum AddressNumber {
+        Ipv4 = 0x0001,
+        Ipv6 = 0x0002,
+    }
 }
 
 impl Display for AddressNumber {

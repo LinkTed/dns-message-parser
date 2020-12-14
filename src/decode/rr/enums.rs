@@ -1,7 +1,7 @@
 use crate::decode::Decoder;
 use crate::rr::{Class, Type, RR};
 use crate::{DecodeError, DecodeResult, DomainName};
-use num_traits::FromPrimitive;
+use std::convert::TryFrom;
 
 pub(super) struct Header {
     pub(super) domain_name: DomainName,
@@ -11,10 +11,9 @@ pub(super) struct Header {
 
 impl Header {
     pub(super) fn get_class(&self) -> DecodeResult<Class> {
-        if let Some(class) = Class::from_u16(self.class) {
-            Ok(class)
-        } else {
-            Err(DecodeError::Class(self.class))
+        match Class::try_from(self.class) {
+            Ok(class) => Ok(class),
+            Err(buffer) => Err(DecodeError::Class(buffer)),
         }
     }
 }
@@ -87,19 +86,17 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
 
     pub fn rr_class(&mut self) -> DecodeResult<Class> {
         let buffer = self.u16()?;
-        if let Some(class) = Class::from_u16(buffer) {
-            Ok(class)
-        } else {
-            Err(DecodeError::Class(buffer))
+        match Class::try_from(buffer) {
+            Ok(class) => Ok(class),
+            Err(buffer) => Err(DecodeError::Class(buffer)),
         }
     }
 
     pub fn rr_type(&mut self) -> DecodeResult<Type> {
         let buffer = self.u16()?;
-        if let Some(type_) = Type::from_u16(buffer) {
-            Ok(type_)
-        } else {
-            Err(DecodeError::Type(buffer))
+        match Type::try_from(buffer) {
+            Ok(type_) => Ok(type_),
+            Err(buffer) => Err(DecodeError::Type(buffer)),
         }
     }
 }

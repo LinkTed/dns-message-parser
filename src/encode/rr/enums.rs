@@ -1,25 +1,17 @@
 use crate::encode::Encoder;
 use crate::rr::{Class, Type, RR};
-use crate::{EncodeError, EncodeResult};
-use num_traits::ToPrimitive;
+use crate::EncodeResult;
+use bytes::BytesMut;
 
 impl Encoder {
-    pub(super) fn rr_type(&mut self, type_: &Type) -> EncodeResult<()> {
-        if let Some(buffer) = type_.to_u16() {
-            self.u16(buffer);
-            Ok(())
-        } else {
-            Err(EncodeError::Type(type_.clone()))
-        }
+    #[inline]
+    pub(super) fn rr_type(&mut self, type_: &Type) {
+        self.u16(type_.clone() as u16);
     }
 
-    pub(super) fn rr_class(&mut self, class: &Class) -> EncodeResult<()> {
-        if let Some(buffer) = class.to_u16() {
-            self.u16(buffer);
-            Ok(())
-        } else {
-            Err(EncodeError::Class(class.clone()))
-        }
+    #[inline]
+    pub(super) fn rr_class(&mut self, class: &Class) {
+        self.u16(class.clone() as u16);
     }
 
     pub(crate) fn rr(&mut self, rr: &RR) -> EncodeResult<()> {
@@ -62,8 +54,20 @@ impl Encoder {
     }
 }
 
-impl_encode!(Type, rr_type);
+impl Type {
+    pub fn encode(&self) -> BytesMut {
+        let mut encoder = Encoder::default();
+        encoder.rr_type(self);
+        encoder.bytes
+    }
+}
 
-impl_encode!(Class, rr_class);
+impl Class {
+    pub fn encode(&self) -> BytesMut {
+        let mut encoder = Encoder::default();
+        encoder.rr_class(self);
+        encoder.bytes
+    }
+}
 
 impl_encode!(RR, rr);

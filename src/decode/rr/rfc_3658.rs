@@ -2,24 +2,22 @@ use super::Header;
 use crate::decode::Decoder;
 use crate::rr::{SSHFPAlgorithm, SSHFPType, SSHFP};
 use crate::{DecodeError, DecodeResult};
-use num_traits::FromPrimitive;
+use std::convert::TryFrom;
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
     fn rr_sshfp_algorithm(&mut self) -> DecodeResult<SSHFPAlgorithm> {
         let buffer = self.u8()?;
-        if let Some(algorithm) = SSHFPAlgorithm::from_u8(buffer) {
-            Ok(algorithm)
-        } else {
-            Err(DecodeError::SSHFPAlgorithm(buffer))
+        match SSHFPAlgorithm::try_from(buffer) {
+            Ok(algorithm) => Ok(algorithm),
+            Err(buffer) => Err(DecodeError::SSHFPAlgorithm(buffer)),
         }
     }
 
     fn rr_sshfp_type(&mut self) -> DecodeResult<SSHFPType> {
         let buffer = self.u8()?;
-        if let Some(algorithm) = SSHFPType::from_u8(buffer) {
-            Ok(algorithm)
-        } else {
-            Err(DecodeError::SSHFPType(buffer))
+        match SSHFPType::try_from(buffer) {
+            Ok(type_) => Ok(type_),
+            Err(buffer) => Err(DecodeError::SSHFPType(buffer)),
         }
     }
 

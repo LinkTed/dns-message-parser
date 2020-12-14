@@ -1,6 +1,5 @@
 use crate::encode::Encoder;
-use crate::{Dns, EncodeError, EncodeResult, Flags};
-use num_traits::ToPrimitive;
+use crate::{Dns, EncodeResult, Flags};
 
 impl Encoder {
     pub(super) fn flags(&mut self, flags: &Flags) -> EncodeResult<()> {
@@ -8,11 +7,9 @@ impl Encoder {
         if flags.qr {
             buffer |= 0b1000_0000;
         }
-        if let Some(opcode) = flags.opcode.to_u8() {
-            buffer |= opcode << 3;
-        } else {
-            return Err(EncodeError::Opcode(flags.opcode.clone()));
-        }
+
+        let opcode = flags.opcode.clone() as u8;
+        buffer |= opcode << 3;
         if flags.aa {
             buffer |= 0b0000_0100;
         }
@@ -34,11 +31,8 @@ impl Encoder {
         if flags.cd {
             buffer |= 0b0001_0000;
         }
-        if let Some(rcode) = flags.rcode.to_u8() {
-            buffer |= rcode;
-        } else {
-            return Err(EncodeError::RCode(flags.rcode.clone()));
-        }
+        let rcode = flags.rcode.clone() as u8;
+        buffer |= rcode;
         self.u8(buffer);
 
         Ok(())

@@ -2,7 +2,7 @@ use super::Header;
 use crate::decode::Decoder;
 use crate::rr::{EDNSOption, EDNSOptionCode, OPT};
 use crate::{DecodeError, DecodeResult};
-use num_traits::FromPrimitive;
+use std::convert::TryFrom;
 
 fn rr_opt_ttl(ttl: u32) -> DecodeResult<(u8, u8, bool)> {
     let extend_rcode = ((ttl >> 24) & 0xff) as u8;
@@ -58,10 +58,9 @@ impl<'a, 'b: 'a> Decoder<'b, 'b> {
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
     fn rr_edns_option_code(&mut self) -> DecodeResult<EDNSOptionCode> {
         let buffer = self.u16()?;
-        if let Some(ends_option_code) = EDNSOptionCode::from_u16(buffer) {
-            Ok(ends_option_code)
-        } else {
-            Err(DecodeError::EDNSOptionCode(buffer))
+        match EDNSOptionCode::try_from(buffer) {
+            Ok(ends_option_code) => Ok(ends_option_code),
+            Err(buffer) => Err(DecodeError::EDNSOptionCode(buffer)),
         }
     }
 }
