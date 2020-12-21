@@ -10,7 +10,7 @@ pub const DOMAIN_NAME_MAX_LENGTH: usize = 256;
 
 #[derive(Debug, PartialEq, Eq, Error)]
 pub enum DomainNameError {
-    #[error("Label is too big: {DOMAIN_NAME_MAX_LABEL_LENGTH} <= {0}]")]
+    #[error("Label is too big: {DOMAIN_NAME_MAX_LABEL_LENGTH} <= {0}")]
     LabelLength(usize),
     #[error("Domain name is too big: {DOMAIN_NAME_MAX_LENGTH} <= {0}")]
     DomainNameLength(usize),
