@@ -1,5 +1,6 @@
 use super::Class;
 use crate::DomainName;
+use hex::encode;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
 try_from_enum_to_integer! {
@@ -37,8 +38,13 @@ impl Display for SSHFP {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         write!(
             f,
-            "{} {} {} SSHFP {} {} {:x?}",
-            self.domain_name, self.ttl, self.class, self.algorithm, self.type_, self.fp,
+            "{} {} {} SSHFP {} {} {}",
+            self.domain_name,
+            self.ttl,
+            self.class,
+            self.algorithm,
+            self.type_,
+            encode(self.fp.as_slice()),
         )
     }
 }

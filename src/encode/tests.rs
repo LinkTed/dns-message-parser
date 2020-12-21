@@ -1,5 +1,5 @@
 use crate::encode::Encoder;
-use crate::{DomainName, DomainNameError};
+use crate::DomainName;
 use std::convert::TryFrom;
 
 #[test]
@@ -105,14 +105,4 @@ fn test_domain_name_encode_google_com() {
     domain_name.append_label("com").unwrap();
     let bytes = domain_name.encode().unwrap();
     assert_eq!(bytes, &b"\x06google\x03com\0"[..]);
-}
-
-#[test]
-fn label_length_error() {
-    let string = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\
-    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\
-    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\
-    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-    let result = DomainName::try_from(string);
-    assert_eq!(result, Err(DomainNameError::LabelLength(string.len())));
 }

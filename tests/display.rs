@@ -1,8 +1,8 @@
 use dns_message_parser::question::{QClass, QType, Question};
 use dns_message_parser::rr::{
-    Address, Class, EDNSOption, ISDNAddress, PSDNAddress, A, AAAA, CNAME, DNAME, ECS, EID, GPOS,
-    HINFO, ISDN, KX, MB, MD, MF, MG, MINFO, MR, MX, NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA, SOA,
-    SRV, TXT, URI, X25,
+    Address, Class, EDNSOption, ISDNAddress, PSDNAddress, SSHFPAlgorithm, SSHFPType, A, AAAA,
+    CNAME, DNAME, ECS, EID, GPOS, HINFO, ISDN, KX, MB, MD, MF, MG, MINFO, MR, MX, NIMLOC, NS, OPT,
+    PTR, PX, RP, RR, RT, SA, SOA, SRV, SSHFP, TXT, URI, X25,
 };
 use dns_message_parser::{Dns, DomainName, Flags, Opcode, RCode};
 use std::convert::TryFrom;
@@ -444,6 +444,28 @@ fn rr_dname() {
         target,
     });
     check_output(&rr, "example.org. 100 CH DNAME dname.example.org.");
+}
+
+#[test]
+fn rr_sshfp() {
+    let domain_name = DomainName::try_from("example.org").unwrap();
+    let class = Class::HS;
+    let algorithm = SSHFPAlgorithm::DSS;
+    let type_ = SSHFPType::Sha1;
+    let fp = b"\x12\x34\x56\x78\x9a\xbc\xde\xf6\x78\x90\x12\x34\x56\x78\x9a\xbc\xde\xf6\x78\x90"
+        .to_vec();
+    let rr = RR::SSHFP(SSHFP {
+        domain_name,
+        ttl: 100,
+        class,
+        algorithm,
+        type_,
+        fp,
+    });
+    check_output(
+        &rr,
+        "example.org. 100 HS SSHFP DSS Sha1 123456789abcdef67890123456789abcdef67890",
+    );
 }
 
 #[test]
