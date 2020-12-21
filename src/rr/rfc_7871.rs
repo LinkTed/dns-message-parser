@@ -215,6 +215,9 @@ impl ECS {
         Address
     );
 
+    /// Returns the prefix length of the address.
+    ///
+    /// It the max value of the `source_prefix_length` and `scope_prefix_length`.
     #[inline]
     pub fn get_prefix_length(&self) -> u8 {
         max(self.source_prefix_length, self.scope_prefix_length)
