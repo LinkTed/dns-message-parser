@@ -1,11 +1,11 @@
 //! This module contains struct for [resource records] handling.
 //!
-//! The [RR] enum represents an arbitrary resource record. Each [type] has a dedicated struct,
-//! which has a variant in the [RR] enum. For example, the [A] struct represent an A record.
+//! The [`RR`] enum represents an arbitrary resource record. Each [type] has a dedicated struct,
+//! which has a variant in the [`RR`] enum. For example, the [`A`] struct represent an A record.
 //!
-//! The [Class] enum represents the [class] field of the resource record.
+//! The [`Class`] enum represents the [class] field of the resource record.
 //!
-//! The [Type] enum represents the [type] field of the resource record.
+//! The [`Type`] enum represents the [type] field of the resource record.
 //!
 //! *Yet there are some missing resource records and types*
 //!
@@ -34,11 +34,11 @@
 //! let rr = RR::decode(bytes.freeze()).unwrap();
 //! ```
 //!
-//! [A]: crate::rr::A
-//! [RR]: crate::rr::RR
-//! [Class]: crate::rr::Class
-//! [Type]: crate::rr::Type
-//! [resource records]: https://tools.ietf.org/html/rfc1035#section-3.2
+//! [`A`]: crate::rr::A
+//! [`RR`]: crate::rr::RR
+//! [`Class`]: crate::rr::Class
+//! [`Type`]: crate::rr::Type
+//! [resource records]: https://tools.ietf.org/html/rfc1035#section-4.1.3
 //! [class]: https://tools.ietf.org/html/rfc1035#section-3.2.4
 //! [type]: https://tools.ietf.org/html/rfc1035#section-3.2.2
 

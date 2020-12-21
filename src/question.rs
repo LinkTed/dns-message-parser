@@ -1,3 +1,41 @@
+//! This module contains struct for [questions] handling.
+//!
+//! The [`Question`] struct represents an arbitrary question. Each [type] has a dedicated enum
+//! variant in the [`QType`] enum.
+//!
+//! The [`QClass`] enum represents the [class] field of the resource record.
+//!
+//! The [`QType`] enum represents the [type] field of the resource record.
+//!
+//! # Example
+//! ```rust
+//! use dns_message_parser::question::{Question, QType, QClass};
+//! use std::convert::TryInto;
+//!
+//! // Init A record
+//! let question = Question {
+//!     // The domain name of the question
+//!     domain_name: "example.org".try_into().unwrap(),
+//!     // The class of the question
+//!     q_class: QClass::IN,
+//!     // The type of the question
+//!     q_type: QType::A,
+//! };
+//!
+//! // Encode the A question into bytes::BytesMut
+//! let bytes = question.encode().unwrap();
+//!
+//! // Decode the A question into a Question struct
+//! let rr = Question::decode(bytes.freeze()).unwrap();
+//! ```
+//!
+//! [`Question`]: crate::question::Question
+//! [`QClass`]: crate::question::QClass
+//! [`QType`]: crate::question::QType
+//! [questions]: https://tools.ietf.org/html/rfc1035#section-4.1.2
+//! [class]: https://tools.ietf.org/html/rfc1035#section-3.2.5
+//! [type]: https://tools.ietf.org/html/rfc1035#section-3.2.3
+
 use crate::DomainName;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
