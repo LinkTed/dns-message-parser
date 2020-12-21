@@ -4,13 +4,15 @@ use std::convert::TryFrom;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 use thiserror::Error;
 
-pub(crate) const DOMAIN_NAME_MAX_RECURSION: usize = 16;
+pub const DOMAIN_NAME_MAX_RECURSION: usize = 16;
+pub const DOMAIN_NAME_MAX_LABEL_LENGTH: usize = 64;
+pub const DOMAIN_NAME_MAX_LENGTH: usize = 256;
 
 #[derive(Debug, PartialEq, Eq, Error)]
 pub enum DomainNameError {
-    #[error("Label is too big: {0}]")]
+    #[error("Label is too big: {DOMAIN_NAME_MAX_LABEL_LENGTH} <= {0}]")]
     LabelLength(usize),
-    #[error("Domain name is too big: {0}")]
+    #[error("Domain name is too big: {DOMAIN_NAME_MAX_LENGTH} <= {0}")]
     DomainNameLength(usize),
     #[error("Domain name contains illegal character: {0}")]
     Regex(String),
@@ -27,12 +29,12 @@ impl DomainName {
         }
 
         let label_length = label.len();
-        if label_length >= 64 {
+        if DOMAIN_NAME_MAX_LABEL_LENGTH <= label_length {
             return Err(DomainNameError::LabelLength(label_length));
         }
 
         let domain_name_length = self.0.len() + label_length;
-        if domain_name_length >= 256 {
+        if DOMAIN_NAME_MAX_LENGTH <= domain_name_length {
             return Err(DomainNameError::DomainNameLength(domain_name_length));
         }
 
