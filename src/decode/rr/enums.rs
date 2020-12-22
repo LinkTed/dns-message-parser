@@ -60,6 +60,8 @@ impl<'a, 'b: 'a> Decoder<'b, 'b> {
             Type::SSHFP => RR::SSHFP(r_data.rr_sshfp(header)?),
             Type::DNAME => RR::DNAME(r_data.rr_dname(header)?),
             Type::OPT => RR::OPT(r_data.rr_opt(header)?),
+            Type::EUI48 => RR::EUI48(r_data.rr_eui48(header)?),
+            Type::EUI64 => RR::EUI64(r_data.rr_eui64(header)?),
             Type::URI => RR::URI(r_data.rr_uri(header)?),
             Type::EID => RR::EID(r_data.rr_eid(header)?),
             Type::NIMLOC => RR::NIMLOC(r_data.rr_nimloc(header)?),

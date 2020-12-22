@@ -1,6 +1,7 @@
 pub use super::{
-    A, AAAA, AFSDB, CNAME, DNAME, EID, GPOS, HINFO, ISDN, KX, LOC, MB, MD, MF, MG, MINFO, MR, MX,
-    NIMLOC, NS, NSAP, NULL, OPT, PTR, PX, RP, RT, SOA, SRV, SSHFP, TXT, URI, WKS, X25,
+    A, AAAA, AFSDB, CNAME, DNAME, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, LOC, MB, MD, MF, MG,
+    MINFO, MR, MX, NIMLOC, NS, NSAP, NULL, OPT, PTR, PX, RP, RT, SOA, SRV, SSHFP, TXT, URI, WKS,
+    X25,
 };
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
@@ -252,6 +253,8 @@ pub enum RR {
     SSHFP(SSHFP),
     URI(URI),
     EID(EID),
+    EUI48(EUI48),
+    EUI64(EUI64),
 }
 
 impl Display for RR {
@@ -289,6 +292,8 @@ impl Display for RR {
             RR::DNAME(d_name) => d_name.fmt(f),
             RR::OPT(opt) => opt.fmt(f),
             RR::SSHFP(ssh_fp) => ssh_fp.fmt(f),
+            RR::EUI48(eui_48) => eui_48.fmt(f),
+            RR::EUI64(eui_64) => eui_64.fmt(f),
             RR::URI(uri) => uri.fmt(f),
             RR::EID(eid) => eid.fmt(f),
         }

@@ -1,8 +1,8 @@
 use dns_message_parser::question::{QClass, QType, Question};
 use dns_message_parser::rr::{
     Address, Class, EDNSOption, ISDNAddress, PSDNAddress, SSHFPAlgorithm, SSHFPType, A, AAAA,
-    CNAME, DNAME, ECS, EID, GPOS, HINFO, ISDN, KX, MB, MD, MF, MG, MINFO, MR, MX, NIMLOC, NS, OPT,
-    PTR, PX, RP, RR, RT, SA, SOA, SRV, SSHFP, TXT, URI, X25,
+    CNAME, DNAME, ECS, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, MB, MD, MF, MG, MINFO, MR, MX,
+    NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA, SOA, SRV, SSHFP, TXT, URI, X25,
 };
 use dns_message_parser::{Dns, DomainName, Flags, Opcode, RCode};
 use std::convert::TryFrom;
@@ -466,6 +466,34 @@ fn rr_sshfp() {
         &rr,
         "example.org. 100 HS SSHFP DSS Sha1 123456789abcdef67890123456789abcdef67890",
     );
+}
+
+#[test]
+fn rr_eui48() {
+    let domain_name = DomainName::try_from("example.org").unwrap();
+    let class = Class::CS;
+    let eui_48 = b"\x00\x11\x22\x33\x44\x55".to_owned();
+    let rr = RR::EUI48(EUI48 {
+        domain_name,
+        ttl: 100,
+        class,
+        eui_48,
+    });
+    check_output(&rr, "example.org. 100 CS EUI48 00-11-22-33-44-55");
+}
+
+#[test]
+fn rr_eui64() {
+    let domain_name = DomainName::try_from("example.org").unwrap();
+    let class = Class::CH;
+    let eui_64 = b"\x00\x11\x22\x33\x44\x55\x66\x77".to_owned();
+    let rr = RR::EUI64(EUI64 {
+        domain_name,
+        ttl: 100,
+        class,
+        eui_64,
+    });
+    check_output(&rr, "example.org. 100 CH EUI64 00-11-22-33-44-55-66-77");
 }
 
 #[test]

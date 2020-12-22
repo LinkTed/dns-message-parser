@@ -46,6 +46,8 @@ impl Encoder {
             RR::SSHFP(sshfp) => self.rr_sshfp(sshfp),
             RR::DNAME(dname) => self.rr_dname(dname),
             RR::OPT(opt) => self.rr_opt(opt),
+            RR::EUI48(eui_48) => self.rr_eui48(eui_48),
+            RR::EUI64(eui_64) => self.rr_eui64(eui_64),
             RR::URI(uri) => self.rr_uri(uri),
             RR::EID(eid) => self.rr_eid(eid),
             RR::NIMLOC(nimloc) => self.rr_nimloc(nimloc),
