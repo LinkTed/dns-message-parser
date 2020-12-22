@@ -22,7 +22,7 @@ impl Display for Address {
 }
 
 impl Address {
-    pub fn get_address_number(&self) -> AddressNumber {
+    pub const fn get_address_number(&self) -> AddressNumber {
         match self {
             Address::Ipv4(_) => AddressNumber::Ipv4,
             Address::Ipv6(_) => AddressNumber::Ipv6,
@@ -163,7 +163,7 @@ impl ECS {
 
     /// Returns the current source prefix length.
     #[inline]
-    pub fn get_source_prefix_length(&self) -> u8 {
+    pub const fn get_source_prefix_length(&self) -> u8 {
         self.source_prefix_length
     }
 
@@ -181,7 +181,7 @@ impl ECS {
 
     /// Returns the current scope prefix length.
     #[inline]
-    pub fn get_scope_prefix_length(&self) -> u8 {
+    pub const fn get_scope_prefix_length(&self) -> u8 {
         self.scope_prefix_length
     }
 
@@ -199,7 +199,7 @@ impl ECS {
 
     /// Returns the current address.
     #[inline]
-    pub fn get_address(&self) -> &Address {
+    pub const fn get_address(&self) -> &Address {
         &self.address
     }
 

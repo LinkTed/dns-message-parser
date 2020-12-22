@@ -21,7 +21,7 @@ impl<'a, 'b: 'a> Decoder<'b, 'b> {
 }
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
-    pub(crate) fn main(bytes: Bytes) -> Decoder<'static, 'static> {
+    pub(crate) const fn main(bytes: Bytes) -> Decoder<'static, 'static> {
         Decoder {
             parent: None,
             bytes,
@@ -38,7 +38,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         }
     }
 
-    pub(super) fn get_main(&'a self) -> &Decoder<'a, 'b> {
+    pub(super) const fn get_main(&'a self) -> &Decoder<'a, 'b> {
         let mut root = self;
         loop {
             match root.parent {

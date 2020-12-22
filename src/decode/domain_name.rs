@@ -7,12 +7,12 @@ const COMPRESSION_BITS: u8 = 0b1100_0000;
 const COMPRESSION_BITS_REV: u8 = 0b0011_1111;
 
 #[inline]
-fn is_compressed(length: u8) -> bool {
+const fn is_compressed(length: u8) -> bool {
     (length & COMPRESSION_BITS) == COMPRESSION_BITS
 }
 
 #[inline]
-fn get_offset(length_1: u8, length_2: u8) -> usize {
+const fn get_offset(length_1: u8, length_2: u8) -> usize {
     (((length_1 & COMPRESSION_BITS_REV) as usize) << 8) | length_2 as usize
 }
 

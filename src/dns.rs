@@ -64,7 +64,7 @@ pub struct Dns {
 
 impl Dns {
     #[inline]
-    pub fn is_response(&self) -> bool {
+    pub const fn is_response(&self) -> bool {
         self.flags.qr
     }
 }
