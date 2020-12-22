@@ -22,6 +22,33 @@ pub enum DomainNameError {
 pub struct DomainName(pub(super) String);
 
 impl DomainName {
+    /// Append a label to the domain name.
+    ///
+    /// If the label cannot be appended then the domain name is not changed.
+    /// The label cannot be appended if the label is too big **or** the label contains illegal
+    /// character **or** the domain name would be too big.
+    ///
+    /// # Example
+    /// ```
+    /// # use dns_message_parser::DomainName;
+    /// let mut domain_name = DomainName::default();
+    /// // Prints "."
+    /// println!("{}", domain_name);
+    ///
+    /// domain_name.append_label("example").unwrap();
+    /// // Prints "example."
+    /// println!("{}", domain_name);
+    ///
+    /// domain_name.append_label("org").unwrap();
+    /// // Prints "example.org."
+    /// println!("{}", domain_name);
+    ///
+    /// let result = domain_name.append_label("-");
+    /// // Prints "true"
+    /// println!("{}", result.is_err());
+    /// // Prints "example.org."
+    /// println!("{}", domain_name);
+    /// ```
     pub fn append_label(&mut self, label: &str) -> Result<(), DomainNameError> {
         lazy_static! {
             static ref LABEL_REGEX: Regex =
