@@ -33,6 +33,11 @@ impl Encoder {
         self.bytes.put_u32(n)
     }
 
+    pub(super) fn u64(&mut self, n: u64) {
+        self.bytes.reserve(size_of::<u64>());
+        self.bytes.put_u64(n)
+    }
+
     pub(super) fn ipv4_addr(&mut self, ipv4_addr: &Ipv4Addr) {
         let octets = ipv4_addr.octets();
 

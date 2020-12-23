@@ -12,6 +12,7 @@ mod rfc_2782;
 mod rfc_3596;
 mod rfc_3658;
 mod rfc_6672;
+mod rfc_6742;
 mod rfc_6891;
 mod rfc_7043;
 mod rfc_7553;

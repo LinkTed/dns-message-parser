@@ -1,8 +1,8 @@
 use dns_message_parser::question::{QClass, QType, Question};
 use dns_message_parser::rr::{
     Address, Class, EDNSOption, ISDNAddress, PSDNAddress, SSHFPAlgorithm, SSHFPType, A, AAAA,
-    CNAME, DNAME, ECS, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, MB, MD, MF, MG, MINFO, MR, MX,
-    NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA, SOA, SRV, SSHFP, TXT, URI, X25,
+    CNAME, DNAME, ECS, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32, L64, LP, MB, MD, MF, MG,
+    MINFO, MR, MX, NID, NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA, SOA, SRV, SSHFP, TXT, URI, X25,
 };
 use dns_message_parser::{Dns, DomainName, Flags, Opcode, RCode};
 use std::convert::TryFrom;
@@ -466,6 +466,70 @@ fn rr_sshfp() {
         &rr,
         "example.org. 100 HS SSHFP DSS Sha1 123456789abcdef67890123456789abcdef67890",
     );
+}
+
+#[test]
+fn rr_nid() {
+    let domain_name = DomainName::try_from("example.org").unwrap();
+    let class = Class::CH;
+    let preference = 10;
+    let node_id = 0xffeeddccbbaa9988;
+    let rr = RR::NID(NID {
+        domain_name,
+        ttl: 100,
+        class,
+        preference,
+        node_id,
+    });
+    check_output(&rr, "example.org. 100 CH NID 10 ffee:ddcc:bbaa:9988");
+}
+
+#[test]
+fn rr_l32() {
+    let domain_name = DomainName::try_from("example.org").unwrap();
+    let class = Class::HS;
+    let preference = 10;
+    let locator_32 = 0x0a000001;
+    let rr = RR::L32(L32 {
+        domain_name,
+        ttl: 100,
+        class,
+        preference,
+        locator_32,
+    });
+    check_output(&rr, "example.org. 100 HS L32 10 10.0.0.1");
+}
+
+#[test]
+fn rr_l64() {
+    let domain_name = DomainName::try_from("example.org").unwrap();
+    let class = Class::IN;
+    let preference = 100;
+    let locator_64 = 0x2021222324252627;
+    let rr = RR::L64(L64 {
+        domain_name,
+        ttl: 200,
+        class,
+        preference,
+        locator_64,
+    });
+    check_output(&rr, "example.org. 200 IN L64 100 2021:2223:2425:2627");
+}
+
+#[test]
+fn rr_lp() {
+    let domain_name = DomainName::try_from("example.org").unwrap();
+    let class = Class::CS;
+    let preference = 200;
+    let fqdn = DomainName::try_from("l64-subnet.example.org.").unwrap();
+    let rr = RR::LP(LP {
+        domain_name,
+        ttl: 100,
+        class,
+        preference,
+        fqdn,
+    });
+    check_output(&rr, "example.org. 100 CS LP 200 l64-subnet.example.org.");
 }
 
 #[test]

@@ -22,6 +22,11 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         Ok(buffer.get_u32())
     }
 
+    pub(super) fn u64(&mut self) -> DecodeResult<u64> {
+        let mut buffer = self.read(size_of::<u64>())?;
+        Ok(buffer.get_u64())
+    }
+
     pub(super) fn string(&mut self) -> DecodeResult<String> {
         let length = self.u8()? as usize;
         let buffer = self.read(length)?;
