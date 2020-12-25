@@ -261,6 +261,53 @@ pub enum RR {
     EUI64(EUI64),
 }
 
+impl RR {
+    pub fn get_ttl(&self) -> Option<u32> {
+        match self {
+            RR::A(a) => Some(a.ttl),
+            RR::NS(ns) => Some(ns.ttl),
+            RR::MD(md) => Some(md.ttl),
+            RR::MF(mf) => Some(mf.ttl),
+            RR::CNAME(c_name) => Some(c_name.ttl),
+            RR::SOA(soa) => Some(soa.ttl),
+            RR::MB(mb) => Some(mb.ttl),
+            RR::MG(mg) => Some(mg.ttl),
+            RR::MR(mr) => Some(mr.ttl),
+            RR::NULL(null) => Some(null.ttl),
+            RR::WKS(wks) => Some(wks.ttl),
+            RR::PTR(ptr) => Some(ptr.ttl),
+            RR::HINFO(h_info) => Some(h_info.ttl),
+            RR::MINFO(m_info) => Some(m_info.ttl),
+            RR::MX(mx) => Some(mx.ttl),
+            RR::TXT(txt) => Some(txt.ttl),
+            RR::RP(rp) => Some(rp.ttl),
+            RR::AFSDB(afsdb) => Some(afsdb.ttl),
+            RR::X25(x_25) => Some(x_25.ttl),
+            RR::ISDN(isdn) => Some(isdn.ttl),
+            RR::RT(rt) => Some(rt.ttl),
+            RR::NSAP(nsap) => Some(nsap.ttl),
+            RR::PX(px) => Some(px.ttl),
+            RR::GPOS(gpos) => Some(gpos.ttl),
+            RR::AAAA(aaaa) => Some(aaaa.ttl),
+            RR::LOC(loc) => Some(loc.ttl),
+            RR::NIMLOC(nim_loc) => Some(nim_loc.ttl),
+            RR::SRV(srv) => Some(srv.ttl),
+            RR::KX(kx) => Some(kx.ttl),
+            RR::DNAME(d_name) => Some(d_name.ttl),
+            RR::OPT(_) => None,
+            RR::SSHFP(ssh_fp) => Some(ssh_fp.ttl),
+            RR::NID(nid) => Some(nid.ttl),
+            RR::L32(l_32) => Some(l_32.ttl),
+            RR::L64(l_64) => Some(l_64.ttl),
+            RR::LP(lp) => Some(lp.ttl),
+            RR::EUI48(eui_48) => Some(eui_48.ttl),
+            RR::EUI64(eui_64) => Some(eui_64.ttl),
+            RR::URI(uri) => Some(uri.ttl),
+            RR::EID(eid) => Some(eid.ttl),
+        }
+    }
+}
+
 impl Display for RR {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         match self {
