@@ -1,4 +1,4 @@
-use crate::rr::{Class, ECSError, ISDNError, Type, X25Error};
+use crate::rr::{Class, CookieError, ECSError, ISDNError, Type, X25Error};
 use crate::{Dns, DomainName, DomainNameError};
 use hex::FromHexError;
 use std::str::Utf8Error;
@@ -58,6 +58,8 @@ pub enum DecodeError {
     EDNSOptionCode(u16),
     #[error("Could not decode ECS: {0}")]
     ECSError(#[from] ECSError),
+    #[error("Could not decode Cookie: {0}")]
+    CookieError(#[from] CookieError),
     #[error("Could not decode AddressNumber: {0}")]
     EcsAddressNumber(u16),
     #[error("The IPv4 Address is too big: {0}")]

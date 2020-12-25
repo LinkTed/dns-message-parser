@@ -83,5 +83,8 @@ pub use rfc_6891::{EDNSOption, EDNSOptionCode, OPT};
 pub use rfc_7043::{EUI48, EUI64};
 pub use rfc_7553::URI;
 pub use rfc_7871::{Address, AddressNumber, ECSError, ECS};
-pub use rfc_7873::Cookie;
+pub use rfc_7873::{
+    Cookie, CookieError, CLIENT_COOKIE_LENGTH, MAXIMUM_SERVER_COOKIE_LENGTH,
+    MINIMUM_SERVER_COOKIE_LENGTH,
+};
 pub use unknown::{EID, NIMLOC};

@@ -1,8 +1,9 @@
 use dns_message_parser::question::{QClass, QType, Question};
 use dns_message_parser::rr::{
-    Address, Class, EDNSOption, ISDNAddress, PSDNAddress, SSHFPAlgorithm, SSHFPType, A, AAAA,
-    CNAME, DNAME, ECS, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32, L64, LP, MB, MD, MF, MG,
-    MINFO, MR, MX, NID, NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA, SOA, SRV, SSHFP, TXT, URI, X25,
+    Address, Class, Cookie, EDNSOption, ISDNAddress, PSDNAddress, SSHFPAlgorithm, SSHFPType, A,
+    AAAA, CNAME, DNAME, ECS, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32, L64, LP, MB, MD, MF,
+    MG, MINFO, MR, MX, NID, NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA, SOA, SRV, SSHFP, TXT, URI,
+    X25,
 };
 use dns_message_parser::{Dns, DomainName, Flags, Opcode, RCode};
 use std::convert::TryFrom;
@@ -602,6 +603,40 @@ fn rr_opt_ecs_2() {
         edns_options: vec![EDNSOption::ECS(ecs)],
     });
     check_output(&rr, ". 0 IN OPT 1024 0 0 false 24 24 10::");
+}
+
+#[test]
+fn rr_opt_cookie_1() {
+    let client_cookie = b"\xd5\xa7\xe3\x00\x4d\x79\x05\x1e".to_owned();
+    let server_cookie = None;
+    let cookie = Cookie::new(client_cookie, server_cookie).unwrap();
+    let rr = RR::OPT(OPT {
+        requestor_payload_size: 1024,
+        dnssec: false,
+        version: 0,
+        extend_rcode: 0,
+        edns_options: vec![EDNSOption::Cookie(cookie)],
+    });
+    check_output(&rr, ". 0 IN OPT 1024 0 0 false d5a7e3004d79051e");
+}
+
+#[test]
+fn rr_opt_cookie_2() {
+    let client_cookie = b"\xd5\xa7\xe3\x00\x4d\x79\x05\x1e".to_owned();
+    let server_cookie =
+        Some(b"\x01\x00\x00\x00\x5f\xe5\xd6\xb1\x62\xda\x1b\xe3\xbc\x92\x5b\xd6".to_vec());
+    let cookie = Cookie::new(client_cookie, server_cookie).unwrap();
+    let rr = RR::OPT(OPT {
+        requestor_payload_size: 1024,
+        dnssec: false,
+        version: 0,
+        extend_rcode: 0,
+        edns_options: vec![EDNSOption::Cookie(cookie)],
+    });
+    check_output(
+        &rr,
+        ". 0 IN OPT 1024 0 0 false d5a7e3004d79051e 010000005fe5d6b162da1be3bc925bd6",
+    );
 }
 
 #[test]

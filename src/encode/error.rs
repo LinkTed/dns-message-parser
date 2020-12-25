@@ -12,6 +12,4 @@ pub enum EncodeError {
     Compression(u16),
     #[error("Could not compressed domain name, because many recursions: {0}")]
     MaxRecursion(usize),
-    #[error("Could not encode the cookie server, because the lengh is not between 8 and 32: {0}")]
-    CookieServerLength(usize),
 }
