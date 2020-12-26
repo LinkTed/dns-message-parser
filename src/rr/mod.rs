@@ -53,6 +53,7 @@ mod rfc_1876;
 mod rfc_2163;
 mod rfc_2230;
 mod rfc_2782;
+mod rfc_3123;
 mod rfc_3596;
 mod rfc_3658;
 mod rfc_6672;
@@ -62,6 +63,7 @@ mod rfc_7043;
 mod rfc_7553;
 mod rfc_7871;
 mod rfc_7873;
+mod subtypes;
 mod unknown;
 
 pub use enums::{Class, ToType, Type, RR};
@@ -75,6 +77,7 @@ pub use rfc_1876::LOC;
 pub use rfc_2163::PX;
 pub use rfc_2230::KX;
 pub use rfc_2782::SRV;
+pub use rfc_3123::{APItem, APL, APL_NEGATION_MASK};
 pub use rfc_3596::AAAA;
 pub use rfc_3658::{SSHFPAlgorithm, SSHFPType, SSHFP};
 pub use rfc_6672::DNAME;
@@ -82,9 +85,10 @@ pub use rfc_6742::{L32, L64, LP, NID};
 pub use rfc_6891::{EDNSOption, EDNSOptionCode, OPT};
 pub use rfc_7043::{EUI48, EUI64};
 pub use rfc_7553::URI;
-pub use rfc_7871::{Address, AddressNumber, ECSError, ECS};
+pub use rfc_7871::ECS;
 pub use rfc_7873::{
     Cookie, CookieError, CLIENT_COOKIE_LENGTH, MAXIMUM_SERVER_COOKIE_LENGTH,
     MINIMUM_SERVER_COOKIE_LENGTH,
 };
+pub use subtypes::{Address, AddressError, AddressFamilyNumber};
 pub use unknown::{EID, NIMLOC};

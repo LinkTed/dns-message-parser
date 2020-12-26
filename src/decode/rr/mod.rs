@@ -9,6 +9,7 @@ mod rfc_1876;
 mod rfc_2163;
 mod rfc_2230;
 mod rfc_2782;
+mod rfc_3123;
 mod rfc_3596;
 mod rfc_3658;
 mod rfc_6672;
@@ -18,6 +19,7 @@ mod rfc_7043;
 mod rfc_7553;
 mod rfc_7871;
 mod rfc_7873;
+mod subtypes;
 #[cfg(test)]
 mod tests;
 mod unknown;

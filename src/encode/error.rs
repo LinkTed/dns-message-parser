@@ -1,3 +1,4 @@
+use crate::rr::APL_NEGATION_MASK;
 use thiserror::Error;
 
 #[derive(Debug, PartialEq, Error)]
@@ -12,4 +13,6 @@ pub enum EncodeError {
     Compression(u16),
     #[error("Could not compressed domain name, because many recursions: {0}")]
     MaxRecursion(usize),
+    #[error("Could not encode address length, because it is too big: {APL_NEGATION_MASK} <= {0}")]
+    APLAddressLength(u8),
 }

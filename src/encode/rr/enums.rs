@@ -46,6 +46,7 @@ impl Encoder {
             RR::SSHFP(sshfp) => self.rr_sshfp(sshfp),
             RR::DNAME(dname) => self.rr_dname(dname),
             RR::OPT(opt) => self.rr_opt(opt),
+            RR::APL(apl) => self.rr_apl(apl),
             RR::NID(n_id) => self.rr_nid(n_id),
             RR::L32(l_32) => self.rr_l32(l_32),
             RR::L64(l_64) => self.rr_l64(l_64),

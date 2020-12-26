@@ -1,4 +1,4 @@
-use crate::rr::{Class, CookieError, ECSError, ISDNError, Type, X25Error};
+use crate::rr::{AddressError, Class, CookieError, ISDNError, Type, X25Error};
 use crate::{Dns, DomainName, DomainNameError};
 use hex::FromHexError;
 use std::str::Utf8Error;
@@ -56,8 +56,10 @@ pub enum DecodeError {
     OPTZero(u8),
     #[error("Could not decode ENDSOptionCode: {0}")]
     EDNSOptionCode(u16),
-    #[error("Could not decode ECS: {0}")]
-    ECSError(#[from] ECSError),
+    #[error("Could not decode Address: {0}")]
+    AddressError(#[from] AddressError),
+    #[error("Class is not IN for APL record: {0}")]
+    APLClass(Class),
     #[error("Could not decode Cookie: {0}")]
     CookieError(#[from] CookieError),
     #[error("Could not decode AddressNumber: {0}")]

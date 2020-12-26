@@ -1,9 +1,9 @@
 use dns_message_parser::question::{QClass, QType, Question};
 use dns_message_parser::rr::{
-    Address, Class, Cookie, EDNSOption, ISDNAddress, PSDNAddress, SSHFPAlgorithm, SSHFPType, A,
-    AAAA, CNAME, DNAME, ECS, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32, L64, LP, MB, MD, MF,
-    MG, MINFO, MR, MX, NID, NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA, SOA, SRV, SSHFP, TXT, URI,
-    X25,
+    APItem, Address, Class, Cookie, EDNSOption, ISDNAddress, PSDNAddress, SSHFPAlgorithm,
+    SSHFPType, A, AAAA, APL, CNAME, DNAME, ECS, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32, L64,
+    LP, MB, MD, MF, MG, MINFO, MR, MX, NID, NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA, SOA, SRV,
+    SSHFP, TXT, URI, X25,
 };
 use dns_message_parser::{Dns, DomainName, Flags, Opcode, RCode};
 use std::convert::TryFrom;
@@ -637,6 +637,50 @@ fn rr_opt_cookie_2() {
         &rr,
         ". 0 IN OPT 1024 0 0 false d5a7e3004d79051e 010000005fe5d6b162da1be3bc925bd6",
     );
+}
+
+#[test]
+fn rr_apl_1() {
+    let domain_name = DomainName::try_from("example.org").unwrap();
+    let apitems = Vec::new();
+    let rr = RR::APL(APL {
+        domain_name,
+        ttl: 100,
+        apitems,
+    });
+    check_output(&rr, "example.org. 100 IN APL");
+}
+
+#[test]
+fn rr_apl_2() {
+    let domain_name = DomainName::try_from("example.org").unwrap();
+    let mut apitems = Vec::new();
+    let address = Address::Ipv4("10.0.0.0".parse().unwrap());
+    let apitem = APItem::new(8, false, address).unwrap();
+    apitems.push(apitem);
+    let address = Address::Ipv4("20.0.0.0".parse().unwrap());
+    let apitem = APItem::new(16, false, address).unwrap();
+    apitems.push(apitem);
+    let rr = RR::APL(APL {
+        domain_name,
+        ttl: 100,
+        apitems,
+    });
+    check_output(&rr, "example.org. 100 IN APL 1:10.0.0.0/8 1:20.0.0.0/16");
+}
+
+#[test]
+fn rr_apl_3() {
+    let domain_name = DomainName::try_from("example.org").unwrap();
+    let address = Address::Ipv6("1122:3344::".parse().unwrap());
+    let apitem = APItem::new(64, true, address).unwrap();
+    let apitems = vec![apitem];
+    let rr = RR::APL(APL {
+        domain_name,
+        ttl: 100,
+        apitems,
+    });
+    check_output(&rr, "example.org. 100 IN APL !2:1122:3344::/64");
 }
 
 #[test]

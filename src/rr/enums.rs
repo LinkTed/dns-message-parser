@@ -1,7 +1,7 @@
 pub use super::{
-    A, AAAA, AFSDB, CNAME, DNAME, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32, L64, LOC, LP, MB,
-    MD, MF, MG, MINFO, MR, MX, NID, NIMLOC, NS, NSAP, NULL, OPT, PTR, PX, RP, RT, SOA, SRV, SSHFP,
-    TXT, URI, WKS, X25,
+    A, AAAA, AFSDB, APL, CNAME, DNAME, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32, L64, LOC, LP,
+    MB, MD, MF, MG, MINFO, MR, MX, NID, NIMLOC, NS, NSAP, NULL, OPT, PTR, PX, RP, RT, SOA, SRV,
+    SSHFP, TXT, URI, WKS, X25,
 };
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
@@ -250,6 +250,7 @@ pub enum RR {
     KX(KX),
     DNAME(DNAME),
     OPT(OPT),
+    APL(APL),
     SSHFP(SSHFP),
     URI(URI),
     EID(EID),
@@ -295,6 +296,7 @@ impl RR {
             RR::KX(kx) => Some(kx.ttl),
             RR::DNAME(d_name) => Some(d_name.ttl),
             RR::OPT(_) => None,
+            RR::APL(apl) => Some(apl.ttl),
             RR::SSHFP(ssh_fp) => Some(ssh_fp.ttl),
             RR::NID(nid) => Some(nid.ttl),
             RR::L32(l_32) => Some(l_32.ttl),
@@ -342,6 +344,7 @@ impl Display for RR {
             RR::KX(kx) => kx.fmt(f),
             RR::DNAME(d_name) => d_name.fmt(f),
             RR::OPT(opt) => opt.fmt(f),
+            RR::APL(apl) => apl.fmt(f),
             RR::SSHFP(ssh_fp) => ssh_fp.fmt(f),
             RR::NID(nid) => nid.fmt(f),
             RR::L32(l_32) => l_32.fmt(f),

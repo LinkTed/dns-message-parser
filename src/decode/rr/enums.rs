@@ -60,6 +60,7 @@ impl<'a, 'b: 'a> Decoder<'b, 'b> {
             Type::SSHFP => RR::SSHFP(r_data.rr_sshfp(header)?),
             Type::DNAME => RR::DNAME(r_data.rr_dname(header)?),
             Type::OPT => RR::OPT(r_data.rr_opt(header)?),
+            Type::APL => RR::APL(r_data.rr_apl(header)?),
             Type::NID => RR::NID(r_data.rr_nid(header)?),
             Type::L32 => RR::L32(r_data.rr_l32(header)?),
             Type::L64 => RR::L64(r_data.rr_l64(header)?),

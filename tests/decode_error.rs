@@ -1,5 +1,5 @@
 use bytes::Bytes;
-use dns_message_parser::rr::{Class, ECSError};
+use dns_message_parser::rr::{AddressError, Class};
 use dns_message_parser::{DecodeError, Dns, Flags};
 
 fn decode_msg_error(msg: &[u8], e: DecodeError) {
@@ -391,7 +391,10 @@ fn opt_ecs_example_org_request_1() {
     let msg = b"\x46\xfd\x01\x20\x00\x01\x00\x00\x00\x00\x00\x01\x07\x65\x78\x61\x6d\x70\x6c\x65\
     \x03\x6f\x72\x67\x00\x00\x01\x00\x01\x00\x00\x29\x10\x00\x00\x00\x00\x00\x00\x0b\x00\x08\x00\
     \x07\x00\x01\xff\x00\x0a\x00\x00";
-    decode_msg_error(&msg[..], DecodeError::ECSError(ECSError::Ipv4Prefix(255)));
+    decode_msg_error(
+        &msg[..],
+        DecodeError::AddressError(AddressError::Ipv4Prefix(255)),
+    );
 }
 
 #[test]
@@ -401,7 +404,7 @@ fn opt_ecs_example_org_request_2() {
     \x07\x00\x01\x00\x00\x0a\x00\x00";
     decode_msg_error(
         &msg[..],
-        DecodeError::ECSError(ECSError::Ipv4Mask("10.0.0.0".parse().unwrap(), 0)),
+        DecodeError::AddressError(AddressError::Ipv4Mask("10.0.0.0".parse().unwrap(), 0)),
     );
 }
 
@@ -410,7 +413,10 @@ fn opt_ecs_example_org_request_3() {
     let msg = b"\x7d\x2a\x01\x20\x00\x01\x00\x00\x00\x00\x00\x01\x07\x65\x78\x61\x6d\x70\x6c\x65\
     \x03\x6f\x72\x67\x00\x00\x01\x00\x01\x00\x00\x29\x10\x00\x00\x00\x00\x00\x00\x10\x00\x08\x00\
     \x0c\x00\x02\xff\x00\x00\x00\x00\x00\x00\x00\x00\x00";
-    decode_msg_error(&msg[..], DecodeError::ECSError(ECSError::Ipv6Prefix(255)));
+    decode_msg_error(
+        &msg[..],
+        DecodeError::AddressError(AddressError::Ipv6Prefix(255)),
+    );
 }
 
 #[test]
@@ -420,7 +426,7 @@ fn opt_ecs_example_org_request_4() {
     \x0c\x00\x02\x00\x00\x0a\x00\x00\x00\x00\x00\x00\x00";
     decode_msg_error(
         &msg[..],
-        DecodeError::ECSError(ECSError::Ipv6Mask("a00::".parse().unwrap(), 0)),
+        DecodeError::AddressError(AddressError::Ipv6Mask("a00::".parse().unwrap(), 0)),
     );
 }
 
@@ -467,4 +473,12 @@ fn opt_cookie_example_org_response() {
     \x05\x1e\x01\x00\x00\x00\x5f\xe5\xd6\xb1\x62\xda\x1b\xe3\xbc\x92\x5b\xd6\x01\x02\x03\x04\x05\
     \x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10\x11";
     decode_msg_error(&msg[..], DecodeError::CookieLength(41));
+}
+
+#[test]
+fn apl_example_org_response() {
+    let msg = b"\x75\xc4\x85\x80\x00\x01\x00\x01\x00\x00\x00\x00\x07\x65\x78\x61\x6d\x70\x6c\x65\
+    \x03\x6f\x72\x67\x00\x00\x2a\x00\x01\xc0\x0c\x00\x2a\x00\x03\x00\x00\x0e\x10\x00\x0a\x00\x01\
+    \x10\x01\x0a\x00\x01\x10\x01\x14";
+    decode_msg_error(&msg[..], DecodeError::APLClass(Class::CH));
 }

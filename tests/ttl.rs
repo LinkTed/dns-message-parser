@@ -1,5 +1,5 @@
 use dns_message_parser::rr::{
-    AFSDBSubtype, Class, ISDNAddress, PSDNAddress, SSHFPAlgorithm, SSHFPType, A, AAAA, AFSDB,
+    AFSDBSubtype, Class, ISDNAddress, PSDNAddress, SSHFPAlgorithm, SSHFPType, A, AAAA, AFSDB, APL,
     CNAME, DNAME, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32, L64, LP, MB, MD, MF, MG, MINFO,
     MR, MX, NID, NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA, SOA, SRV, SSHFP, TXT, URI, X25,
 };
@@ -575,4 +575,16 @@ fn opt() {
         edns_options: Vec::new(),
     });
     assert_eq!(rr.get_ttl(), None);
+}
+
+#[test]
+fn rr_apl() {
+    let domain_name = DomainName::try_from("example.org").unwrap();
+    let apitems = Vec::new();
+    let rr = RR::APL(APL {
+        domain_name,
+        ttl: 300,
+        apitems,
+    });
+    assert_eq!(rr.get_ttl(), Some(300));
 }
