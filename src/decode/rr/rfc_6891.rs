@@ -28,6 +28,7 @@ impl<'a, 'b: 'a> Decoder<'b, 'b> {
         let edns_option = match edns_option_code {
             EDNSOptionCode::ECS => EDNSOption::ECS(ends_option_data.rr_edns_ecs()?),
             EDNSOptionCode::Cookie => EDNSOption::Cookie(ends_option_data.rr_edns_cookie()?),
+            EDNSOptionCode::Padding => EDNSOption::Padding(ends_option_data.rr_edns_padding()?),
         };
         ends_option_data.finished()?;
         Ok(edns_option)

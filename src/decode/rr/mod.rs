@@ -17,6 +17,7 @@ mod rfc_6742;
 mod rfc_6891;
 mod rfc_7043;
 mod rfc_7553;
+mod rfc_7830;
 mod rfc_7871;
 mod rfc_7873;
 mod subtypes;

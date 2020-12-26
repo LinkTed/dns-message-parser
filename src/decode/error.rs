@@ -78,4 +78,8 @@ pub enum DecodeError {
     MaxRecursion(usize),
     #[error("The are remaining bytes, which was not parsed")]
     RemainingBytes(usize, Dns),
+    #[error("Padding is not zero: {0}")]
+    PaddingZero(u8),
+    #[error("Padding length is too long for u16: {0}")]
+    PaddingLength(usize),
 }

@@ -1,4 +1,4 @@
-use super::{Cookie, ECS};
+use super::{Cookie, Padding, ECS};
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
 try_from_enum_to_integer! {
@@ -7,6 +7,7 @@ try_from_enum_to_integer! {
     pub enum EDNSOptionCode {
         ECS = 0x00008,
         Cookie = 0x000a,
+        Padding = 0x000c,
     }
 }
 
@@ -14,6 +15,7 @@ try_from_enum_to_integer! {
 pub enum EDNSOption {
     ECS(ECS),
     Cookie(Cookie),
+    Padding(Padding),
 }
 
 impl Display for EDNSOption {
@@ -21,6 +23,7 @@ impl Display for EDNSOption {
         match self {
             EDNSOption::ECS(ecs) => ecs.fmt(f),
             EDNSOption::Cookie(cookie) => cookie.fmt(f),
+            EDNSOption::Padding(padding) => padding.fmt(f),
         }
     }
 }

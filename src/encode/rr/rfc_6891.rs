@@ -18,9 +18,11 @@ impl Encoder {
 
     fn rr_edns_option(&mut self, edns_option: &EDNSOption) -> EncodeResult<()> {
         match edns_option {
-            EDNSOption::ECS(ecs) => self.rr_edns_ecs(ecs),
-            EDNSOption::Cookie(cookie) => self.rr_edns_cookie(cookie),
+            EDNSOption::ECS(ecs) => self.rr_edns_ecs(ecs)?,
+            EDNSOption::Cookie(cookie) => self.rr_edns_cookie(cookie)?,
+            EDNSOption::Padding(padding) => self.rr_edns_padding(padding),
         }
+        Ok(())
     }
 
     pub(super) fn rr_opt(&mut self, opt: &OPT) -> EncodeResult<()> {

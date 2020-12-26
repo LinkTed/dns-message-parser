@@ -61,6 +61,7 @@ mod rfc_6742;
 mod rfc_6891;
 mod rfc_7043;
 mod rfc_7553;
+mod rfc_7830;
 mod rfc_7871;
 mod rfc_7873;
 mod subtypes;
@@ -85,6 +86,7 @@ pub use rfc_6742::{L32, L64, LP, NID};
 pub use rfc_6891::{EDNSOption, EDNSOptionCode, OPT};
 pub use rfc_7043::{EUI48, EUI64};
 pub use rfc_7553::URI;
+pub use rfc_7830::Padding;
 pub use rfc_7871::ECS;
 pub use rfc_7873::{
     Cookie, CookieError, CLIENT_COOKIE_LENGTH, MAXIMUM_SERVER_COOKIE_LENGTH,
