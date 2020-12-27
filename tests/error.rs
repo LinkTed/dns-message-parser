@@ -13,7 +13,7 @@ fn opt_cookie_server_cookie_length() {
 #[test]
 fn opt_ecs_set_source_prefix_length() {
     let ipv4_addr: Ipv4Addr = "10.0.0.0".parse().unwrap();
-    let address = Address::Ipv4(ipv4_addr.clone());
+    let address = Address::Ipv4(ipv4_addr);
     let mut ecs = ECS::new(24, 0, address).unwrap();
     assert_eq!(
         ecs.set_source_prefix_length(1),
@@ -24,7 +24,7 @@ fn opt_ecs_set_source_prefix_length() {
 #[test]
 fn opt_ecs_set_scope_prefix_length() {
     let ipv4_addr: Ipv4Addr = "10.0.0.0".parse().unwrap();
-    let address = Address::Ipv4(ipv4_addr.clone());
+    let address = Address::Ipv4(ipv4_addr);
     let mut ecs = ECS::new(24, 0, address).unwrap();
     assert_eq!(
         ecs.set_source_prefix_length(33),
@@ -35,10 +35,10 @@ fn opt_ecs_set_scope_prefix_length() {
 #[test]
 fn opt_ecs_set_address() {
     let ipv6_addr: Ipv6Addr = "1122::".parse().unwrap();
-    let address = Address::Ipv6(ipv6_addr.clone());
+    let address = Address::Ipv6(ipv6_addr);
     let mut ecs = ECS::new(24, 0, address).unwrap();
     let ipv6_addr: Ipv6Addr = "1122:3344:5566:7788:99::".parse().unwrap();
-    let address = Address::Ipv6(ipv6_addr.clone());
+    let address = Address::Ipv6(ipv6_addr);
     assert_eq!(
         ecs.set_address(address),
         Err(AddressError::Ipv6Mask(ipv6_addr, 24))
