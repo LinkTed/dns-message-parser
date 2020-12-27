@@ -1,5 +1,5 @@
 use crate::decode::Decoder;
-use crate::rr::ECS;
+use crate::rr::edns::ECS;
 use crate::DecodeResult;
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {

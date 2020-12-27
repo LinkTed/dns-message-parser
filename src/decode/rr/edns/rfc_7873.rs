@@ -1,5 +1,5 @@
 use crate::decode::Decoder;
-use crate::rr::{
+use crate::rr::edns::{
     Cookie, CLIENT_COOKIE_LENGTH, MAXIMUM_SERVER_COOKIE_LENGTH, MINIMUM_SERVER_COOKIE_LENGTH,
 };
 use crate::{DecodeError, DecodeResult};

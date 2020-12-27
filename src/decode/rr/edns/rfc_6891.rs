@@ -1,6 +1,7 @@
-use super::Header;
+use super::super::Header;
 use crate::decode::Decoder;
-use crate::rr::{EDNSOption, EDNSOptionCode, OPT};
+use crate::rr::edns::{EDNSOption, EDNSOptionCode};
+use crate::rr::OPT;
 use crate::{DecodeError, DecodeResult};
 use std::convert::TryFrom;
 
@@ -34,7 +35,7 @@ impl<'a, 'b: 'a> Decoder<'b, 'b> {
         Ok(edns_option)
     }
 
-    pub(super) fn rr_opt(&'a mut self, header: Header) -> DecodeResult<OPT> {
+    pub(in super::super) fn rr_opt(&'a mut self, header: Header) -> DecodeResult<OPT> {
         if header.domain_name != "." {
             return Err(DecodeError::OPTDomainName(header.domain_name));
         }

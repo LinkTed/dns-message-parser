@@ -1,5 +1,5 @@
 use crate::decode::Decoder;
-use crate::rr::Padding;
+use crate::rr::edns::Padding;
 use crate::{DecodeError, DecodeResult};
 use std::convert::TryInto;
 

@@ -1,4 +1,5 @@
-use crate::rr::{AddressError, Class, CookieError, ISDNError, Type, X25Error};
+use crate::rr::edns::CookieError;
+use crate::rr::{AddressError, Class, ISDNError, Type, X25Error};
 use crate::{Dns, DomainName, DomainNameError};
 use hex::FromHexError;
 use std::str::Utf8Error;

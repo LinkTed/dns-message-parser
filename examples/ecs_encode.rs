@@ -1,5 +1,6 @@
 use dns_message_parser::question::{QClass, QType, Question};
-use dns_message_parser::rr::{Address, EDNSOption, A, ECS, OPT, RR};
+use dns_message_parser::rr::edns::{EDNSOption, ECS};
+use dns_message_parser::rr::{Address, A, OPT, RR};
 use dns_message_parser::{Dns, DomainName, Flags, Opcode, RCode};
 use std::convert::TryFrom;
 

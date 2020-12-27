@@ -1,5 +1,5 @@
 use crate::encode::Encoder;
-use crate::rr::{Cookie, EDNSOptionCode};
+use crate::rr::edns::{Cookie, EDNSOptionCode};
 use crate::EncodeResult;
 
 impl Encoder {

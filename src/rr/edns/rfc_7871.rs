@@ -58,9 +58,9 @@ impl ECS {
         /// Try to set the source prefix length.
         ///
         /// Returns `Ok()` if the length fit in the current address as network mask, otherwise
-        /// returns [`ECSError`] and the value is not changed.
+        /// returns [`AddressError`] and the value is not changed.
         ///
-        /// [`ECSError`]: crate::rr::ECSError
+        /// [`AddressError`]: crate::rr::AddressError
         set_source_prefix_length,
         source_prefix_length,
         u8
@@ -76,9 +76,9 @@ impl ECS {
         /// Try to set the scope prefix length.
         ///
         /// Returns `Ok()` if the length fit in the current address as network mask, otherwise
-        /// returns [`ECSError`] and the value is not changed.
+        /// returns [`AddressError`] and the value is not changed.
         ///
-        /// [`ECSError`]: crate::rr::ECSError
+        /// [`AddressError`]: crate::rr::AddressError
         set_scope_prefix_length,
         scope_prefix_length,
         u8
@@ -94,9 +94,9 @@ impl ECS {
         /// Try to set the scope prefix length.
         ///
         /// Returns `Ok()` if the current and scope prefix length fits in the new address as
-        /// network mask , otherwise returns [`ECSError`] and the value is not changed.
+        /// network mask , otherwise returns [`AddressError`] and the value is not changed.
         ///
-        /// [`ECSError`]: crate::rr::ECSError
+        /// [`AddressError`]: crate::rr::AddressError
         set_address,
         address,
         Address

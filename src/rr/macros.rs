@@ -1,8 +1,8 @@
 macro_rules! impl_to_type {
     ($i:ident) => {
-        impl super::ToType for $i {
-            fn to_type(&self) -> super::Type {
-                super::Type::$i
+        impl crate::rr::ToType for $i {
+            fn to_type(&self) -> crate::rr::Type {
+                crate::rr::Type::$i
             }
         }
     };

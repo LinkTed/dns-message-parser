@@ -1,5 +1,6 @@
 #[macro_use]
 mod macros;
+mod edns;
 mod enums;
 mod rfc_1035;
 mod rfc_1183;
@@ -14,12 +15,8 @@ mod rfc_3596;
 mod rfc_3658;
 mod rfc_6672;
 mod rfc_6742;
-mod rfc_6891;
 mod rfc_7043;
 mod rfc_7553;
-mod rfc_7830;
-mod rfc_7871;
-mod rfc_7873;
 mod subtypes;
 #[cfg(test)]
 mod tests;

@@ -1,5 +1,5 @@
 use crate::encode::Encoder;
-use crate::rr::{EDNSOptionCode, ECS};
+use crate::rr::edns::{EDNSOptionCode, ECS};
 use crate::EncodeResult;
 
 impl Encoder {

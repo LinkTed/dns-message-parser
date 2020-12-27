@@ -44,6 +44,7 @@
 
 #[macro_use]
 mod macros;
+pub mod edns;
 mod enums;
 mod rfc_1035;
 mod rfc_1183;
@@ -58,15 +59,12 @@ mod rfc_3596;
 mod rfc_3658;
 mod rfc_6672;
 mod rfc_6742;
-mod rfc_6891;
 mod rfc_7043;
 mod rfc_7553;
-mod rfc_7830;
-mod rfc_7871;
-mod rfc_7873;
 mod subtypes;
 mod unknown;
 
+pub use edns::rfc_6891::OPT;
 pub use enums::{Class, ToType, Type, RR};
 pub use rfc_1035::{A, CNAME, HINFO, MB, MD, MF, MG, MINFO, MR, MX, NS, NULL, PTR, SOA, TXT, WKS};
 pub use rfc_1183::{
@@ -83,14 +81,7 @@ pub use rfc_3596::AAAA;
 pub use rfc_3658::{SSHFPAlgorithm, SSHFPType, SSHFP};
 pub use rfc_6672::DNAME;
 pub use rfc_6742::{L32, L64, LP, NID};
-pub use rfc_6891::{EDNSOption, EDNSOptionCode, OPT};
 pub use rfc_7043::{EUI48, EUI64};
 pub use rfc_7553::URI;
-pub use rfc_7830::Padding;
-pub use rfc_7871::ECS;
-pub use rfc_7873::{
-    Cookie, CookieError, CLIENT_COOKIE_LENGTH, MAXIMUM_SERVER_COOKIE_LENGTH,
-    MINIMUM_SERVER_COOKIE_LENGTH,
-};
 pub use subtypes::{Address, AddressError, AddressFamilyNumber};
 pub use unknown::{EID, NIMLOC};

@@ -1,4 +1,4 @@
-use dns_message_parser::rr::{Cookie, CookieError};
+use dns_message_parser::rr::edns::{Cookie, CookieError};
 
 #[test]
 fn opt_cookie_server_cookie_length() {

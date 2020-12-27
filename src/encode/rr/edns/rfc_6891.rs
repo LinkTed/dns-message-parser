@@ -1,5 +1,6 @@
 use crate::encode::Encoder;
-use crate::rr::{EDNSOption, EDNSOptionCode, Type, OPT};
+use crate::rr::edns::{EDNSOption, EDNSOptionCode};
+use crate::rr::{Type, OPT};
 use crate::{DomainName, EncodeResult};
 
 fn rr_opt_ttl(extend_rcode: u8, version: u8, dnssec: bool) -> u32 {
@@ -12,7 +13,7 @@ fn rr_opt_ttl(extend_rcode: u8, version: u8, dnssec: bool) -> u32 {
 
 impl Encoder {
     #[inline]
-    pub(super) fn rr_edns_option_code(&mut self, edns_option_code: &EDNSOptionCode) {
+    pub(in super::super) fn rr_edns_option_code(&mut self, edns_option_code: &EDNSOptionCode) {
         self.u16(edns_option_code.clone() as u16);
     }
 
@@ -25,7 +26,7 @@ impl Encoder {
         Ok(())
     }
 
-    pub(super) fn rr_opt(&mut self, opt: &OPT) -> EncodeResult<()> {
+    pub(crate) fn rr_opt(&mut self, opt: &OPT) -> EncodeResult<()> {
         self.domain_name(&DomainName::default())?;
         self.rr_type(&Type::OPT);
         self.u16(opt.requestor_payload_size);

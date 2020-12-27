@@ -1,9 +1,9 @@
 use dns_message_parser::question::{QClass, QType, Question};
+use dns_message_parser::rr::edns::{Cookie, EDNSOption, ECS};
 use dns_message_parser::rr::{
-    APItem, Address, Class, Cookie, EDNSOption, ISDNAddress, PSDNAddress, SSHFPAlgorithm,
-    SSHFPType, A, AAAA, APL, CNAME, DNAME, ECS, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32, L64,
-    LP, MB, MD, MF, MG, MINFO, MR, MX, NID, NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA, SOA, SRV,
-    SSHFP, TXT, URI, X25,
+    APItem, Address, Class, ISDNAddress, PSDNAddress, SSHFPAlgorithm, SSHFPType, A, AAAA, APL,
+    CNAME, DNAME, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32, L64, LP, MB, MD, MF, MG, MINFO,
+    MR, MX, NID, NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA, SOA, SRV, SSHFP, TXT, URI, X25,
 };
 use dns_message_parser::{Dns, DomainName, Flags, Opcode, RCode};
 use std::convert::TryFrom;
