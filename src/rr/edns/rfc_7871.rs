@@ -115,7 +115,7 @@ impl Display for ECS {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         write!(
             f,
-            "{} {} {}",
+            "ECS {} {} {}",
             self.source_prefix_length, self.scope_prefix_length, self.address
         )
     }

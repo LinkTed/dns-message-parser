@@ -58,7 +58,7 @@ impl Cookie {
 
 impl Display for Cookie {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-        write!(f, "{}", encode(self.client_cookie))?;
+        write!(f, "Cookie {}", encode(self.client_cookie))?;
         match &self.server_cookie {
             Some(server_cookie) => write!(f, " {}", encode(server_cookie)),
             None => Ok(()),

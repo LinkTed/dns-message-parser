@@ -5,6 +5,6 @@ pub struct Padding(pub u16);
 
 impl Display for Padding {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-        write!(f, "{}", self.0)
+        write!(f, "Padding {}", self.0)
     }
 }

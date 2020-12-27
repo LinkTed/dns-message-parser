@@ -1,5 +1,5 @@
 use dns_message_parser::question::{QClass, QType, Question};
-use dns_message_parser::rr::edns::{Cookie, EDNSOption, ECS};
+use dns_message_parser::rr::edns::{Cookie, EDNSOption, Padding, ECS};
 use dns_message_parser::rr::{
     APItem, Address, Class, ISDNAddress, PSDNAddress, SSHFPAlgorithm, SSHFPType, A, AAAA, APL,
     CNAME, DNAME, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32, L64, LP, MB, MD, MF, MG, MINFO,
@@ -588,7 +588,7 @@ fn rr_opt_ecs_1() {
         extend_rcode: 0,
         edns_options: vec![EDNSOption::ECS(ecs)],
     });
-    check_output(&rr, ". 0 IN OPT 1024 0 0 false 24 24 10.0.0.0");
+    check_output(&rr, ". OPT 1024 0 0 false ECS 24 24 10.0.0.0");
 }
 
 #[test]
@@ -602,7 +602,7 @@ fn rr_opt_ecs_2() {
         extend_rcode: 0,
         edns_options: vec![EDNSOption::ECS(ecs)],
     });
-    check_output(&rr, ". 0 IN OPT 1024 0 0 false 24 24 10::");
+    check_output(&rr, ". OPT 1024 0 0 false ECS 24 24 10::");
 }
 
 #[test]
@@ -617,7 +617,7 @@ fn rr_opt_cookie_1() {
         extend_rcode: 0,
         edns_options: vec![EDNSOption::Cookie(cookie)],
     });
-    check_output(&rr, ". 0 IN OPT 1024 0 0 false d5a7e3004d79051e");
+    check_output(&rr, ". OPT 1024 0 0 false Cookie d5a7e3004d79051e");
 }
 
 #[test]
@@ -635,8 +635,21 @@ fn rr_opt_cookie_2() {
     });
     check_output(
         &rr,
-        ". 0 IN OPT 1024 0 0 false d5a7e3004d79051e 010000005fe5d6b162da1be3bc925bd6",
+        ". OPT 1024 0 0 false Cookie d5a7e3004d79051e 010000005fe5d6b162da1be3bc925bd6",
     );
+}
+
+#[test]
+fn rr_opt_padding() {
+    let padding = Padding(6);
+    let rr = RR::OPT(OPT {
+        requestor_payload_size: 1024,
+        dnssec: false,
+        version: 0,
+        extend_rcode: 0,
+        edns_options: vec![EDNSOption::Padding(padding)],
+    });
+    check_output(&rr, ". OPT 1024 0 0 false Padding 6");
 }
 
 #[test]

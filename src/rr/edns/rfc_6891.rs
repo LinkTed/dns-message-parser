@@ -44,7 +44,7 @@ impl Display for OPT {
         // TODO extend_rcode
         write!(
             f,
-            ". 0 IN OPT {} {} {} {}",
+            ". OPT {} {} {} {}",
             self.requestor_payload_size, self.extend_rcode, self.version, self.dnssec,
         )?;
         for edns_option in &self.edns_options {
