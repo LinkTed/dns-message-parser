@@ -7,4 +7,4 @@ ignore:
   - "tests/*"
   - "examples/*"
   - "/*"
-excl-line: "#\[(derive|error)"
+excl-line: "#\\["
