@@ -19,7 +19,8 @@ dns-message-parser = "0.4"
 ## Example
 ```rust
 use bytes::Bytes;
-use dns_message_parser::{Dns, DomainName, Flags, Opcode, QClass, QType, Question, RCode};
+use dns_message_parser::{Dns, DomainName, Flags, Opcode, RCode};
+use dns_message_parser::question::{QClass, QType, Question};
 use std::convert::TryFrom;
 
 fn decode_example() {
