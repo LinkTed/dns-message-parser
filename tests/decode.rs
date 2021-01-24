@@ -12,10 +12,8 @@ fn decode_msg(msg: &[u8]) -> Dns {
 fn domain_name() {
     let data = b"\x03\x61\x2e\x74\x00";
     let bytes = Bytes::copy_from_slice(&data[..]);
-    let error = Err(DecodeError::DomainNameError(DomainNameError::Regex(
-        "a.t".to_string(),
-    )));
-    assert_eq!(DomainName::decode(bytes), error,)
+    let error = Err(DecodeError::DomainNameError(DomainNameError::LabelDot));
+    assert_eq!(DomainName::decode(bytes), error)
 }
 
 #[test]

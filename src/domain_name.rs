@@ -1,5 +1,3 @@
-use lazy_static::lazy_static;
-use regex::Regex;
 use std::convert::TryFrom;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 use thiserror::Error;
@@ -14,8 +12,8 @@ pub enum DomainNameError {
     LabelLength(usize),
     #[error("Domain name is too big: {DOMAIN_NAME_MAX_LENGTH} <= {0}")]
     DomainNameLength(usize),
-    #[error("Domain name contains illegal character: {0}")]
-    Regex(String),
+    #[error("Label contains dot")]
+    LabelDot,
 }
 
 #[derive(Debug, PartialEq, Clone, Eq, Hash)]
@@ -25,7 +23,7 @@ impl DomainName {
     /// Append a label to the domain name.
     ///
     /// If the label cannot be appended then the domain name is not changed.
-    /// The label cannot be appended if the label is too big **or** the label contains illegal
+    /// The label cannot be appended if the label is too big **or** the label contains a dot
     /// character **or** the domain name would be too big.
     ///
     /// # Example
@@ -43,18 +41,13 @@ impl DomainName {
     /// // Prints "example.org."
     /// println!("{}", domain_name);
     ///
-    /// let result = domain_name.append_label("-");
+    /// let result = domain_name.append_label(".");
     /// // Prints "true"
     /// println!("{}", result.is_err());
     /// // Prints "example.org."
     /// println!("{}", domain_name);
     /// ```
     pub fn append_label(&mut self, label: &str) -> Result<(), DomainNameError> {
-        lazy_static! {
-            static ref LABEL_REGEX: Regex =
-                Regex::new(r"^[_0-9a-zA-Z]([_0-9a-zA-Z-]*[_0-9a-zA-Z])?$").unwrap();
-        }
-
         let label_length = label.len();
         if DOMAIN_NAME_MAX_LABEL_LENGTH <= label_length {
             return Err(DomainNameError::LabelLength(label_length));
@@ -65,18 +58,18 @@ impl DomainName {
             return Err(DomainNameError::DomainNameLength(domain_name_length));
         }
 
-        if LABEL_REGEX.is_match(label) {
-            let label = label.to_lowercase();
-            if &self.0 == "." {
-                self.0.insert_str(0, &label);
-            } else {
-                self.0.push_str(&label);
-                self.0.push('.');
-            }
-            Ok(())
-        } else {
-            Err(DomainNameError::Regex(label.to_string()))
+        if label.contains('.') {
+            return Err(DomainNameError::LabelDot);
         }
+
+        let label = label.to_lowercase();
+        if &self.0 == "." {
+            self.0.insert_str(0, &label);
+        } else {
+            self.0.push_str(&label);
+            self.0.push('.');
+        }
+        Ok(())
     }
 }
 
