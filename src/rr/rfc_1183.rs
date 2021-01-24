@@ -1,16 +1,9 @@
 use crate::rr::Class;
 use crate::DomainName;
-use lazy_static::lazy_static;
-use regex::Regex;
 use std::convert::TryFrom;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::ops::Deref;
 use thiserror::Error;
-
-lazy_static! {
-    static ref ADDRESS_REGEX: Regex = Regex::new(r"^[[:digit:]]*$").unwrap();
-    static ref ISDN_SA_REGEX: Regex = Regex::new(r"^[[:xdigit:]]*$").unwrap();
-}
 
 struct_domain_name_domain_name!(
     /// The [responsible person] resource record type.
@@ -70,11 +63,12 @@ impl TryFrom<String> for PSDNAddress {
     type Error = X25Error;
 
     fn try_from(psdn_address: String) -> Result<Self, Self::Error> {
-        if ADDRESS_REGEX.is_match(&psdn_address) {
-            Ok(PSDNAddress(psdn_address))
-        } else {
-            Err(X25Error::PSDNAddress(psdn_address))
+        for c in psdn_address.chars() {
+            if !c.is_ascii_digit() {
+                return Err(X25Error::IllegalChar(c));
+            }
         }
+        Ok(PSDNAddress(psdn_address))
     }
 }
 
@@ -98,7 +92,7 @@ impl Display for PSDNAddress {
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Error)]
 pub enum X25Error {
     #[error("PSDN address contains illegal character: {0}")]
-    PSDNAddress(String),
+    IllegalChar(char),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -124,9 +118,9 @@ impl Display for X25 {
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Error)]
 pub enum ISDNError {
     #[error("Address contains illegal character: {0}")]
-    Address(String),
+    IllegalChar(char),
     #[error("SA contains illegal character: {0}")]
-    SA(String),
+    IllegalCharSA(char),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -136,11 +130,12 @@ impl TryFrom<String> for ISDNAddress {
     type Error = ISDNError;
 
     fn try_from(isdn_address: String) -> Result<Self, Self::Error> {
-        if ADDRESS_REGEX.is_match(&isdn_address) {
-            Ok(ISDNAddress(isdn_address))
-        } else {
-            Err(ISDNError::Address(isdn_address))
+        for c in isdn_address.chars() {
+            if !c.is_ascii_digit() {
+                return Err(ISDNError::IllegalChar(c));
+            }
         }
+        Ok(ISDNAddress(isdn_address))
     }
 }
 
@@ -165,11 +160,12 @@ impl TryFrom<String> for SA {
     type Error = ISDNError;
 
     fn try_from(sa: String) -> Result<Self, Self::Error> {
-        if ISDN_SA_REGEX.is_match(&sa) {
-            Ok(SA(sa))
-        } else {
-            Err(ISDNError::Address(sa))
+        for c in sa.chars() {
+            if !c.is_ascii_hexdigit() {
+                return Err(ISDNError::IllegalCharSA(c));
+            }
         }
+        Ok(SA(sa))
     }
 }
 

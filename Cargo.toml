@@ -23,7 +23,5 @@ categories = [
 
 [dependencies]
 bytes = "~1.0"
-regex = "~1.4"
-lazy_static = "~1.4"
 hex = "~0.4"
 thiserror = "~1.0"
