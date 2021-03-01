@@ -75,6 +75,14 @@ pub enum DecodeError {
     SSHFPAlgorithm(u8),
     #[error("Could not decode SSHFPType: {0}")]
     SSHFPType(u8),
+    #[error("Could not decode AlgorithmType: {0}")]
+    AlgorithmType(u8),
+    #[error("Could not decode DigestType: {0}")]
+    DigestType(u8),
+    #[error("The undefined flags are not zero: {0}")]
+    DNSKEYZeroFlags(u16),
+    #[error("DNSKEY protocol is not equal 3: {0}")]
+    DNSKEYProtocol(u8),
     #[error("Could not decode the domain name, the because maximum recursion is reached: {0}")]
     MaxRecursion(usize),
     #[error("The are remaining bytes, which was not parsed")]

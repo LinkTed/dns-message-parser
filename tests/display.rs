@@ -1,9 +1,10 @@
 use dns_message_parser::question::{QClass, QType, Question};
 use dns_message_parser::rr::edns::{Cookie, EDNSOption, Padding, ECS};
 use dns_message_parser::rr::{
-    APItem, Address, Class, ISDNAddress, PSDNAddress, SSHFPAlgorithm, SSHFPType, A, AAAA, APL,
-    CNAME, DNAME, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32, L64, LP, MB, MD, MF, MG, MINFO,
-    MR, MX, NID, NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA, SOA, SRV, SSHFP, TXT, URI, X25,
+    APItem, Address, AlgorithmType, Class, DigestType, ISDNAddress, PSDNAddress, SSHFPAlgorithm,
+    SSHFPType, A, AAAA, APL, CNAME, DNAME, DNSKEY, DS, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX,
+    L32, L64, LP, MB, MD, MF, MG, MINFO, MR, MX, NID, NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA,
+    SOA, SRV, SSHFP, TXT, URI, X25,
 };
 use dns_message_parser::{Dns, DomainName, Flags, Opcode, RCode};
 use std::convert::TryFrom;
@@ -694,6 +695,57 @@ fn rr_apl_3() {
         apitems,
     });
     check_output(&rr, "example.org. 100 IN APL !2:1122:3344::/64");
+}
+
+#[test]
+fn rr_dnskey() {
+    let domain_name = DomainName::try_from("example.org").unwrap();
+    let class = Class::IN;
+    let zone_key_flag = true;
+    let secure_entry_point_flag = true;
+    let algorithm_type = AlgorithmType::Ed25519;
+    let public_key = b"\xde\x9f\x0d\x53\xf0\x1d\xe1\x94\x8d\x95\x4c\x7b\xaf\x5b\x25\x13\x54\x19\
+    \xc2\x6b\x8f\xc2\xd1\x96\xcd\x5a\x5e\xd9\xfb\x6b\x99\x07"
+        .to_vec();
+    let rr = RR::DNSKEY(DNSKEY {
+        domain_name,
+        class,
+        ttl: 1234,
+        zone_key_flag,
+        secure_entry_point_flag,
+        algorithm_type,
+        public_key,
+    });
+    check_output(
+        &rr,
+        "example.org. 1234 IN DNSKEY 257 3 15 de9f0d53f01de1948d954c7baf5b25135419c26b8fc2d196cd5a5ed9fb6b9907",
+    );
+}
+
+#[test]
+fn rr_ds() {
+    let domain_name = DomainName::try_from("dskey.example.org").unwrap();
+    let class = Class::CS;
+    let key_tag = 5583;
+    let algorithm_type = AlgorithmType::Ed448;
+    let digest_type = DigestType::Sha256;
+    let digest = b"\x89\x04\x8b\x1c\x99\xa2\x8e\x3e\xb5\x42\x5a\x92\xd5\x0b\x77\x8b\x8f\xb4\xa5\
+    \xd9\x78\xf0\xf5\xcb\xab\x43\x06\x04\xad\xcf\x73\xba"
+        .to_vec();
+    let rr = RR::DS(DS {
+        domain_name,
+        class,
+        ttl: 4321,
+        key_tag,
+        algorithm_type,
+        digest_type,
+        digest,
+    });
+    check_output(
+        &rr,
+        "dskey.example.org. 4321 CS DS 5583 16 2 89048b1c99a28e3eb5425a92d50b778b8fb4a5d978f0f5cba\
+        b430604adcf73ba",
+    );
 }
 
 #[test]

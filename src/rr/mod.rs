@@ -57,6 +57,7 @@ mod rfc_2782;
 mod rfc_3123;
 mod rfc_3596;
 mod rfc_3658;
+mod rfc_4034;
 mod rfc_6672;
 mod rfc_6742;
 mod rfc_7043;
@@ -79,6 +80,9 @@ pub use rfc_2782::SRV;
 pub use rfc_3123::{APItem, APL, APL_NEGATION_MASK};
 pub use rfc_3596::AAAA;
 pub use rfc_3658::{SSHFPAlgorithm, SSHFPType, SSHFP};
+pub use rfc_4034::{
+    AlgorithmType, DigestType, DNSKEY, DNSKEY_ZERO_MASK, DS, SECURE_ENTRY_POINT_FLAG, ZONE_KEY_FLAG,
+};
 pub use rfc_6672::DNAME;
 pub use rfc_6742::{L32, L64, LP, NID};
 pub use rfc_7043::{EUI48, EUI64};

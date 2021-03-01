@@ -1,7 +1,7 @@
 pub use super::{
-    A, AAAA, AFSDB, APL, CNAME, DNAME, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32, L64, LOC, LP,
-    MB, MD, MF, MG, MINFO, MR, MX, NID, NIMLOC, NS, NSAP, NULL, OPT, PTR, PX, RP, RT, SOA, SRV,
-    SSHFP, TXT, URI, WKS, X25,
+    A, AAAA, AFSDB, APL, CNAME, DNAME, DNSKEY, DS, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32,
+    L64, LOC, LP, MB, MD, MF, MG, MINFO, MR, MX, NID, NIMLOC, NS, NSAP, NULL, OPT, PTR, PX, RP, RT,
+    SOA, SRV, SSHFP, TXT, URI, WKS, X25,
 };
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
@@ -164,11 +164,17 @@ try_from_enum_to_integer! {
         SINK = 40,
         OPT = 41,
         APL = 42,
+        /// The [DS] type.
+        ///
+        /// [DS]: https://tools.ietf.org/html/rfc4034#section-5
         DS = 43,
         SSHFP = 44,
         IPSECKEY = 45,
         RRSIG = 46,
         NSEC = 47,
+        /// The [DNSKEY] type.
+        ///
+        /// [DNSKEY]: https://tools.ietf.org/html/rfc4034#section-2
         DNSKEY = 48,
         DHCID = 49,
         NSEC3 = 50,
@@ -260,6 +266,8 @@ pub enum RR {
     LP(LP),
     EUI48(EUI48),
     EUI64(EUI64),
+    DS(DS),
+    DNSKEY(DNSKEY),
 }
 
 impl RR {
@@ -306,6 +314,8 @@ impl RR {
             RR::EUI64(eui_64) => Some(eui_64.ttl),
             RR::URI(uri) => Some(uri.ttl),
             RR::EID(eid) => Some(eid.ttl),
+            RR::DS(ds) => Some(ds.ttl),
+            RR::DNSKEY(dnskey) => Some(dnskey.ttl),
         }
     }
 
@@ -352,6 +362,8 @@ impl RR {
             RR::EUI64(eui_64) => Some(eui_64.class.clone()),
             RR::URI(uri) => Some(uri.class.clone()),
             RR::EID(eid) => Some(eid.class.clone()),
+            RR::DS(ds) => Some(ds.class.clone()),
+            RR::DNSKEY(dnskey) => Some(dnskey.class.clone()),
         }
     }
 }
@@ -400,6 +412,8 @@ impl Display for RR {
             RR::EUI64(eui_64) => eui_64.fmt(f),
             RR::URI(uri) => uri.fmt(f),
             RR::EID(eid) => eid.fmt(f),
+            RR::DS(ds) => ds.fmt(f),
+            RR::DNSKEY(dnskey) => dnskey.fmt(f),
         }
     }
 }

@@ -70,6 +70,8 @@ impl<'a, 'b: 'a> Decoder<'b, 'b> {
             Type::URI => RR::URI(r_data.rr_uri(header)?),
             Type::EID => RR::EID(r_data.rr_eid(header)?),
             Type::NIMLOC => RR::NIMLOC(r_data.rr_nimloc(header)?),
+            Type::DNSKEY => RR::DNSKEY(r_data.rr_dnskey(header)?),
+            Type::DS => RR::DS(r_data.rr_ds(header)?),
             type_ => return Err(DecodeError::NotYetImplemented(type_)),
         };
         r_data.finished()?;
