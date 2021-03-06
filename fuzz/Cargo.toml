@@ -1,14 +1,12 @@
 [package]
-name = "fuzz-afl"
+name = "fuzz"
 version = "0.1.0"
 authors = ["LinkTed <link.ted@mailbox.org>"]
 edition = "2018"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
-afl = "0.8.0"
-bytes = "~1.0"
+honggfuzz = "~0.5.54"
+bytes = "~1.0.1"
 
 [dependencies.dns-message-parser]
 path = ".."
