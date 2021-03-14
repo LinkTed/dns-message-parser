@@ -27,8 +27,8 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
 
         Ok(Question {
             domain_name,
-            q_type,
             q_class,
+            q_type,
         })
     }
 }

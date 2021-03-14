@@ -1,3 +1,4 @@
+#![allow(clippy::upper_case_acronyms)]
 #![allow(non_camel_case_types)]
 
 mod decode;
