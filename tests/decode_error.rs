@@ -4,7 +4,7 @@ use dns_message_parser::{DecodeError, Dns, Flags};
 
 fn decode_msg_error(msg: &[u8], e: DecodeError) {
     // Decode BytesMut to message
-    let bytes = Bytes::copy_from_slice(&msg[..]);
+    let bytes = Bytes::copy_from_slice(msg);
     // Decode the DNS message
     let dns = Dns::decode(bytes);
     // Check the result
@@ -13,7 +13,7 @@ fn decode_msg_error(msg: &[u8], e: DecodeError) {
 
 fn decode_flags_error(msg: &[u8], e: DecodeError) {
     // Decode BytesMut to message
-    let bytes = Bytes::copy_from_slice(&msg[..]);
+    let bytes = Bytes::copy_from_slice(msg);
     // Decode the DNS message
     let flags = Flags::decode(bytes);
     // Check the result

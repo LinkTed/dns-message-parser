@@ -868,8 +868,8 @@ fn dns() {
         let ns_d_name = DomainName::try_from("example.org.").unwrap();
         let ns = NS {
             domain_name,
-            class,
             ttl,
+            class,
             ns_d_name,
         };
         vec![RR::NS(ns)]

@@ -3,7 +3,7 @@ use dns_message_parser::{DecodeError, Dns, DomainName, DomainNameError};
 
 fn decode_msg(msg: &[u8]) -> Dns {
     // Decode BytesMut to message
-    let bytes = Bytes::copy_from_slice(&msg[..]);
+    let bytes = Bytes::copy_from_slice(msg);
     // Decode the DNS message
     Dns::decode(bytes).unwrap()
 }
