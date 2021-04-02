@@ -1,6 +1,6 @@
 [package]
 name = "dns-message-parser"
-version = "0.4.6"
+version = "0.5.0"
 authors = ["LinkTed <link.ted@mailbox.org>"]
 edition = "2018"
 readme = "README.md"
@@ -31,4 +31,5 @@ criterion = "~0.3.4"
 
 [[bench]]
 name = "message"
+path = "benches/message.rs"
 harness = false
