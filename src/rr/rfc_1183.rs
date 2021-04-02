@@ -56,16 +56,22 @@ impl Display for AFSDB {
     }
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Error)]
+pub enum PSDNAddressError {
+    #[error("PSDN address contains illegal character: {0}")]
+    IllegalChar(char),
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct PSDNAddress(String);
 
 impl TryFrom<String> for PSDNAddress {
-    type Error = X25Error;
+    type Error = PSDNAddressError;
 
     fn try_from(psdn_address: String) -> Result<Self, Self::Error> {
         for c in psdn_address.chars() {
             if !c.is_ascii_digit() {
-                return Err(X25Error::IllegalChar(c));
+                return Err(PSDNAddressError::IllegalChar(c));
             }
         }
         Ok(PSDNAddress(psdn_address))
@@ -89,12 +95,6 @@ impl Display for PSDNAddress {
 /// The [X25] resource record type.
 ///
 /// [X25]: https://tools.ietf.org/html/rfc1183#section-3.1
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Error)]
-pub enum X25Error {
-    #[error("PSDN address contains illegal character: {0}")]
-    IllegalChar(char),
-}
-
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct X25 {
     pub domain_name: DomainName,

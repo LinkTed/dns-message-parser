@@ -1,5 +1,5 @@
 use crate::rr::edns::CookieError;
-use crate::rr::{AddressError, Class, ISDNError, TagError, Type, X25Error};
+use crate::rr::{AddressError, Class, ISDNError, PSDNAddressError, TagError, Type};
 use crate::{Dns, DomainName, DomainNameError};
 use hex::FromHexError;
 use std::str::Utf8Error;
@@ -43,8 +43,8 @@ pub enum DecodeError {
     WKSClass(Class),
     #[error("Could not decode AFSDBSubtype: {0}")]
     AFSDBSubtype(u16),
-    #[error("Could not decode X25: {0}")]
-    X25Error(#[from] X25Error),
+    #[error("Could not decode PSDN address: {0}")]
+    PSDNAddressError(#[from] PSDNAddressError),
     #[error("Could not decode ISDN: {0}")]
     ISDNError(#[from] ISDNError),
     #[error("Could not decode GPOS")]

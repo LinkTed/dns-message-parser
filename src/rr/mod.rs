@@ -70,7 +70,8 @@ pub use edns::rfc_6891::OPT;
 pub use enums::{Class, ToType, Type, RR};
 pub use rfc_1035::{A, CNAME, HINFO, MB, MD, MF, MG, MINFO, MR, MX, NS, NULL, PTR, SOA, TXT, WKS};
 pub use rfc_1183::{
-    AFSDBSubtype, ISDNAddress, ISDNError, PSDNAddress, X25Error, AFSDB, ISDN, RP, RT, SA, X25,
+    AFSDBSubtype, ISDNAddress, ISDNError, PSDNAddress, PSDNAddressError, AFSDB, ISDN, RP, RT, SA,
+    X25,
 };
 pub use rfc_1706::NSAP;
 pub use rfc_1712::GPOS;
