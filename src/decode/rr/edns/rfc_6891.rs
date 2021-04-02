@@ -1,6 +1,6 @@
 use super::super::Header;
 use crate::decode::Decoder;
-use crate::rr::edns::{EDNSOption, EDNSOptionCode};
+use crate::rr::edns::{EDNSOption, EDNSOptionCode, EDNS_DNSSEC_MASK};
 use crate::rr::OPT;
 use crate::{DecodeError, DecodeResult};
 use std::convert::TryFrom;
@@ -10,8 +10,8 @@ fn rr_opt_ttl(ttl: u32) -> DecodeResult<(u8, u8, bool)> {
     let version = ((ttl >> 16) & 0xff) as u8;
     let buffer = ((ttl >> 8) & 0xff) as u8;
     let dnssec = match buffer {
-        0 => false,
-        1 => true,
+        0x00 => false,
+        EDNS_DNSSEC_MASK => true,
         buffer => return Err(DecodeError::OPTZero(buffer)),
     };
     let buffer = (ttl & 0xff) as u8;

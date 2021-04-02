@@ -1,6 +1,8 @@
 use super::{Cookie, Padding, ECS};
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
+pub const EDNS_DNSSEC_MASK: u8 = 0x80;
+
 try_from_enum_to_integer! {
     #[repr(u16)]
     #[derive(Debug, Clone, PartialEq)]
