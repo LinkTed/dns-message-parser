@@ -62,6 +62,7 @@ mod rfc_6672;
 mod rfc_6742;
 mod rfc_7043;
 mod rfc_7553;
+mod rfc_8659;
 mod subtypes;
 mod unknown;
 
@@ -87,5 +88,6 @@ pub use rfc_6672::DNAME;
 pub use rfc_6742::{L32, L64, LP, NID};
 pub use rfc_7043::{EUI48, EUI64};
 pub use rfc_7553::URI;
+pub use rfc_8659::{Tag, TagError, CAA};
 pub use subtypes::{Address, AddressError, AddressFamilyNumber};
 pub use unknown::{EID, NIMLOC};

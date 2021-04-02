@@ -18,6 +18,7 @@ mod rfc_6672;
 mod rfc_6742;
 mod rfc_7043;
 mod rfc_7553;
+mod rfc_8659;
 mod subtypes;
 #[cfg(test)]
 mod tests;

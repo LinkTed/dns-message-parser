@@ -72,6 +72,7 @@ impl<'a, 'b: 'a> Decoder<'b, 'b> {
             Type::NIMLOC => RR::NIMLOC(r_data.rr_nimloc(header)?),
             Type::DNSKEY => RR::DNSKEY(r_data.rr_dnskey(header)?),
             Type::DS => RR::DS(r_data.rr_ds(header)?),
+            Type::CAA => RR::CAA(r_data.rr_caa(header)?),
             type_ => return Err(DecodeError::NotYetImplemented(type_)),
         };
         r_data.finished()?;

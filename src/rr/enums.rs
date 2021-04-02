@@ -1,7 +1,7 @@
 pub use super::{
-    A, AAAA, AFSDB, APL, CNAME, DNAME, DNSKEY, DS, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32,
-    L64, LOC, LP, MB, MD, MF, MG, MINFO, MR, MX, NID, NIMLOC, NS, NSAP, NULL, OPT, PTR, PX, RP, RT,
-    SOA, SRV, SSHFP, TXT, URI, WKS, X25,
+    A, AAAA, AFSDB, APL, CAA, CNAME, DNAME, DNSKEY, DS, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX,
+    L32, L64, LOC, LP, MB, MD, MF, MG, MINFO, MR, MX, NID, NIMLOC, NS, NSAP, NULL, OPT, PTR, PX,
+    RP, RT, SOA, SRV, SSHFP, TXT, URI, WKS, X25,
 };
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
@@ -209,6 +209,9 @@ try_from_enum_to_integer! {
         IXFR = 251,
         // TODO QType?
         URI = 256,
+        /// The [certification authority authorization] resource record type.
+        ///
+        /// [certification authority authorization]: https://tools.ietf.org/html/rfc8659
         CAA = 257,
         AVC = 258,
         DOA = 259,
@@ -268,6 +271,7 @@ pub enum RR {
     EUI64(EUI64),
     DS(DS),
     DNSKEY(DNSKEY),
+    CAA(CAA),
 }
 
 impl RR {
@@ -316,6 +320,7 @@ impl RR {
             RR::EID(eid) => Some(eid.ttl),
             RR::DS(ds) => Some(ds.ttl),
             RR::DNSKEY(dnskey) => Some(dnskey.ttl),
+            RR::CAA(caa) => Some(caa.ttl),
         }
     }
 
@@ -364,6 +369,7 @@ impl RR {
             RR::EID(eid) => Some(eid.class.clone()),
             RR::DS(ds) => Some(ds.class.clone()),
             RR::DNSKEY(dnskey) => Some(dnskey.class.clone()),
+            RR::CAA(caa) => Some(caa.class.clone()),
         }
     }
 }
@@ -414,6 +420,7 @@ impl Display for RR {
             RR::EID(eid) => eid.fmt(f),
             RR::DS(ds) => ds.fmt(f),
             RR::DNSKEY(dnskey) => dnskey.fmt(f),
+            RR::CAA(caa) => caa.fmt(f),
         }
     }
 }

@@ -2,9 +2,9 @@ use dns_message_parser::question::{QClass, QType, Question};
 use dns_message_parser::rr::edns::{Cookie, EDNSOption, Padding, ECS};
 use dns_message_parser::rr::{
     APItem, Address, AlgorithmType, Class, DigestType, ISDNAddress, PSDNAddress, SSHFPAlgorithm,
-    SSHFPType, A, AAAA, APL, CNAME, DNAME, DNSKEY, DS, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX,
-    L32, L64, LP, MB, MD, MF, MG, MINFO, MR, MX, NID, NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA,
-    SOA, SRV, SSHFP, TXT, URI, X25,
+    SSHFPType, Tag, A, AAAA, APL, CAA, CNAME, DNAME, DNSKEY, DS, EID, EUI48, EUI64, GPOS, HINFO,
+    ISDN, KX, L32, L64, LP, MB, MD, MF, MG, MINFO, MR, MX, NID, NIMLOC, NS, OPT, PTR, PX, RP, RR,
+    RT, SA, SOA, SRV, SSHFP, TXT, URI, X25,
 };
 use dns_message_parser::{Dns, DomainName, Flags, Opcode, RCode};
 use std::convert::TryFrom;
@@ -746,6 +746,24 @@ fn rr_ds() {
         "dskey.example.org. 4321 CS DS 5583 16 2 89048b1c99a28e3eb5425a92d50b778b8fb4a5d978f0f5cba\
         b430604adcf73ba",
     );
+}
+
+#[test]
+fn rr_caa() {
+    let domain_name = DomainName::try_from("caa.example.org").unwrap();
+    let class = Class::IN;
+    let flags = 0x80;
+    let tag = Tag::try_from("tag".to_string()).unwrap();
+    let value = b"VALUE".to_vec();
+    let rr = RR::CAA(CAA {
+        domain_name,
+        class,
+        ttl: 1234,
+        flags,
+        tag,
+        value,
+    });
+    check_output(&rr, "caa.example.org. 1234 IN CAA 128 tag 56414c5545");
 }
 
 #[test]

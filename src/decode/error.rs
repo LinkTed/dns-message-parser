@@ -1,5 +1,5 @@
 use crate::rr::edns::CookieError;
-use crate::rr::{AddressError, Class, ISDNError, Type, X25Error};
+use crate::rr::{AddressError, Class, ISDNError, TagError, Type, X25Error};
 use crate::{Dns, DomainName, DomainNameError};
 use hex::FromHexError;
 use std::str::Utf8Error;
@@ -91,4 +91,6 @@ pub enum DecodeError {
     PaddingZero(u8),
     #[error("Padding length is too long for u16: {0}")]
     PaddingLength(usize),
+    #[error("Could not decode Tag: {0}")]
+    TagError(#[from] TagError),
 }
