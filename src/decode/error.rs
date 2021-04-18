@@ -93,4 +93,6 @@ pub enum DecodeError {
     PaddingLength(usize),
     #[error("Could not decode Tag: {0}")]
     TagError(#[from] TagError),
+    #[error("ECH length mismatch. Expected {0} got {1}")]
+    ECHLengthMismatch(usize, usize),
 }

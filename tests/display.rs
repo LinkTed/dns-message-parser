@@ -2,11 +2,12 @@ use dns_message_parser::question::{QClass, QType, Question};
 use dns_message_parser::rr::edns::{Cookie, EDNSOption, Padding, ECS};
 use dns_message_parser::rr::{
     APItem, Address, AlgorithmType, Class, DigestType, ISDNAddress, PSDNAddress, SSHFPAlgorithm,
-    SSHFPType, Tag, A, AAAA, APL, CAA, CNAME, DNAME, DNSKEY, DS, EID, EUI48, EUI64, GPOS, HINFO,
-    ISDN, KX, L32, L64, LP, MB, MD, MF, MG, MINFO, MR, MX, NID, NIMLOC, NS, OPT, PTR, PX, RP, RR,
-    RT, SA, SOA, SRV, SSHFP, TXT, URI, X25,
+    SSHFPType, ServiceBinding, ServiceParameter, Tag, A, AAAA, APL, CAA, CNAME, DNAME, DNSKEY, DS,
+    EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32, L64, LP, MB, MD, MF, MG, MINFO, MR, MX, NID,
+    NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA, SOA, SRV, SSHFP, TXT, URI, X25,
 };
 use dns_message_parser::{Dns, DomainName, Flags, Opcode, RCode};
+use std::collections::BTreeSet;
 use std::convert::TryFrom;
 use std::fmt::Display;
 
@@ -764,6 +765,176 @@ fn rr_caa() {
         value,
     });
     check_output(&rr, "caa.example.org. 1234 IN CAA 128 tag 56414c5545");
+}
+
+#[test]
+fn rr_svcb_alias() {
+    // given
+    let domain_name = DomainName::try_from("_8443._foo.api.example.com").unwrap();
+    let target_name = DomainName::try_from("svc4.example.net.").unwrap();
+    let service_binding = ServiceBinding {
+        name: domain_name,
+        ttl: 7200,
+        priority: 0,
+        target_name,
+        parameters: BTreeSet::default(),
+        https: false,
+    };
+
+    // when
+    let rr = RR::SVCB(service_binding);
+
+    // then
+    check_output(
+        &rr,
+        "_8443._foo.api.example.com. 7200 IN SVCB 0 svc4.example.net.",
+    );
+}
+
+#[test]
+fn rr_svcb_service() {
+    // given
+    let domain_name = DomainName::try_from("svc4.example.net.").unwrap();
+    let target_name = DomainName::try_from("svc4.example.net.").unwrap();
+    let application_layer_protocol_negotiation = ServiceParameter::ALPN {
+        alpn_ids: vec!["bar".to_string()],
+    };
+    let port = ServiceParameter::PORT { port: 8004 };
+
+    let service_binding = ServiceBinding {
+        name: domain_name,
+        ttl: 7200,
+        priority: 3,
+        target_name,
+        parameters: vec![application_layer_protocol_negotiation, port]
+            .into_iter()
+            .collect::<BTreeSet<ServiceParameter>>(),
+        https: false,
+    };
+
+    // when
+    let rr = RR::SVCB(service_binding);
+
+    // then
+    check_output(
+        &rr,
+        "svc4.example.net. 7200 IN SVCB 3 svc4.example.net. alpn=bar port=8004",
+    );
+}
+
+/// Test alias mode for default `https://` and `http://` on ports 443 and 80 respectively.
+///
+/// https://indico.dns-oarc.net/event/37/contributions/813/attachments/781/1365/SVCB_HTTPS_%20DNS-OARC%202021%20%281%29.pdf
+#[test]
+fn rr_https_alias_default() {
+    // given
+    let domain_name = DomainName::try_from("example.com").unwrap();
+    let target_name = DomainName::try_from("svc.example.net").unwrap();
+    let service_binding = ServiceBinding {
+        name: domain_name,
+        ttl: 7200,
+        priority: 0, // alias mode
+        target_name,
+        parameters: BTreeSet::default(),
+        https: true,
+    };
+
+    // when
+    let rr = RR::HTTPS(service_binding);
+
+    // then
+    check_output(&rr, "example.com. 7200 IN HTTPS 0 svc.example.net.");
+}
+
+/// Test alias mode for default `https://` on an alternative port.
+///
+/// https://indico.dns-oarc.net/event/37/contributions/813/attachments/781/1365/SVCB_HTTPS_%20DNS-OARC%202021%20%281%29.pdf
+#[test]
+fn rr_https_alias_alternative_port() {
+    // given
+    let domain_name = DomainName::try_from("_8443._https.example.com").unwrap();
+    let target_name = DomainName::try_from("svc.example.net").unwrap();
+    let service_binding = ServiceBinding {
+        name: domain_name,
+        ttl: 7200,
+        priority: 0, // alias mode
+        target_name,
+        parameters: BTreeSet::default(),
+        https: true,
+    };
+
+    // when
+    let rr = RR::HTTPS(service_binding);
+
+    // then
+    check_output(
+        &rr,
+        "_8443._https.example.com. 7200 IN HTTPS 0 svc.example.net.",
+    );
+}
+
+/// Example from:
+/// https://indico.dns-oarc.net/event/37/contributions/813/attachments/781/1365/SVCB_HTTPS_%20DNS-OARC%202021%20%281%29.pdf
+#[test]
+fn rr_https_quic_to_udp() {
+    // given
+    let domain_name = DomainName::try_from("svc.example.net").unwrap();
+    let target_name = DomainName::try_from("svc3.example.net").unwrap();
+    let application_layer_protocol_negotiation = ServiceParameter::ALPN {
+        alpn_ids: vec!["h3".to_string()],
+    };
+    let port = ServiceParameter::PORT { port: 8003 };
+    let service_binding = ServiceBinding {
+        name: domain_name,
+        ttl: 7200,
+        priority: 2,
+        target_name,
+        parameters: vec![application_layer_protocol_negotiation, port]
+            .into_iter()
+            .collect::<BTreeSet<ServiceParameter>>(),
+        https: true,
+    };
+
+    // when
+    let rr = RR::HTTPS(service_binding);
+
+    // then
+    check_output(
+        &rr,
+        "svc.example.net. 7200 IN HTTPS 2 svc3.example.net. alpn=h3 port=8003",
+    );
+}
+
+/// Example from:
+/// https://indico.dns-oarc.net/event/37/contributions/813/attachments/781/1365/SVCB_HTTPS_%20DNS-OARC%202021%20%281%29.pdf
+#[test]
+fn rr_https_h2_to_tcp() {
+    // given
+    let domain_name = DomainName::try_from("svc.example.net").unwrap();
+    let target_name = DomainName::try_from("svc2.example.net").unwrap();
+    let application_layer_protocol_negotiation = ServiceParameter::ALPN {
+        alpn_ids: vec!["h2".to_string()],
+    };
+    let port = ServiceParameter::PORT { port: 8002 };
+    let service_binding = ServiceBinding {
+        name: domain_name,
+        ttl: 7200,
+        priority: 3,
+        target_name,
+        parameters: vec![application_layer_protocol_negotiation, port]
+            .into_iter()
+            .collect::<BTreeSet<ServiceParameter>>(),
+        https: true,
+    };
+
+    // when
+    let rr = RR::HTTPS(service_binding);
+
+    // then
+    check_output(
+        &rr,
+        "svc.example.net. 7200 IN HTTPS 3 svc2.example.net. alpn=h2 port=8002",
+    );
 }
 
 #[test]

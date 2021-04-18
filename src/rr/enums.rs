@@ -3,6 +3,7 @@ pub use super::{
     L32, L64, LOC, LP, MB, MD, MF, MG, MINFO, MR, MX, NID, NIMLOC, NS, NSAP, NULL, OPT, PTR, PX,
     RP, RT, SOA, SRV, SSHFP, TXT, URI, WKS, X25,
 };
+use crate::rr::draft_ietf_dnsop_svcb_https::ServiceBinding;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
 try_from_enum_to_integer! {
@@ -192,6 +193,15 @@ try_from_enum_to_integer! {
         CSYNC = 62,
         ZONEMD = 63,
 
+        /// The [service binding] resource record type.
+        ///
+        /// [service binding] https://datatracker.ietf.org/doc/draft-ietf-dnsop-svcb-https/
+        SVCB = 64,
+        /// The [https] resource record type.
+        ///
+        /// [https] https://datatracker.ietf.org/doc/draft-ietf-dnsop-svcb-https/
+        HTTPS = 65,
+
         SPF = 99,
         UINFO = 100,
         UID = 101,
@@ -272,6 +282,8 @@ pub enum RR {
     DS(DS),
     DNSKEY(DNSKEY),
     CAA(CAA),
+    SVCB(ServiceBinding),
+    HTTPS(ServiceBinding),
 }
 
 impl RR {
@@ -321,6 +333,8 @@ impl RR {
             RR::DS(ds) => Some(ds.ttl),
             RR::DNSKEY(dnskey) => Some(dnskey.ttl),
             RR::CAA(caa) => Some(caa.ttl),
+            RR::SVCB(svcb) => Some(svcb.ttl),
+            RR::HTTPS(https) => Some(https.ttl),
         }
     }
 
@@ -370,6 +384,8 @@ impl RR {
             RR::DS(ds) => Some(ds.class.clone()),
             RR::DNSKEY(dnskey) => Some(dnskey.class.clone()),
             RR::CAA(caa) => Some(caa.class.clone()),
+            RR::SVCB(_) => Some(Class::IN),
+            RR::HTTPS(_) => Some(Class::IN),
         }
     }
 }
@@ -421,6 +437,8 @@ impl Display for RR {
             RR::DS(ds) => ds.fmt(f),
             RR::DNSKEY(dnskey) => dnskey.fmt(f),
             RR::CAA(caa) => caa.fmt(f),
+            RR::SVCB(svcb) => svcb.fmt(f),
+            RR::HTTPS(https) => https.fmt(f),
         }
     }
 }

@@ -59,6 +59,8 @@ impl Encoder {
             RR::DNSKEY(dnskey) => self.rr_dnskey(dnskey),
             RR::DS(ds) => self.rr_ds(ds),
             RR::CAA(caa) => self.rr_caa(caa),
+            RR::SVCB(svcb) => self.rr_service_binding(svcb),
+            RR::HTTPS(https) => self.rr_service_binding(https),
         }
     }
 }
