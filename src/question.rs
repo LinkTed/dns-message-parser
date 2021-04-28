@@ -106,6 +106,10 @@ try_from_enum_to_integer! {
         OPENPGPKEY = 61,
         CSYNC = 62,
         ZONEMD = 63,
+        /// Service Binding
+        SVCB = 64,
+        /// Service Binding specific to the https and http schemes
+        HTTPS = 65,
 
         SPF = 99,
         UINFO = 100,

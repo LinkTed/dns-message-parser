@@ -42,3 +42,17 @@ fn decode_q_class_error() {
     let result = QClass::decode(bytes);
     assert!(result.is_err());
 }
+
+#[test]
+fn decode_q_type_svcb() {
+    let bytes = Bytes::copy_from_slice(&b"\x00\x40"[..]);
+    let q_type = QType::decode(bytes).unwrap();
+    assert_eq!(q_type, QType::SVCB);
+}
+
+#[test]
+fn decode_q_type_https() {
+    let bytes = Bytes::copy_from_slice(&b"\x00\x41"[..]);
+    let q_type = QType::decode(bytes).unwrap();
+    assert_eq!(q_type, QType::HTTPS);
+}

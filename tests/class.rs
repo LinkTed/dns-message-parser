@@ -1,9 +1,11 @@
 use dns_message_parser::rr::{
-    AFSDBSubtype, Class, ISDNAddress, PSDNAddress, SSHFPAlgorithm, SSHFPType, A, AAAA, AFSDB, APL,
-    CNAME, DNAME, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32, L64, LP, MB, MD, MF, MG, MINFO,
-    MR, MX, NID, NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA, SOA, SRV, SSHFP, TXT, URI, X25,
+    AFSDBSubtype, Class, ISDNAddress, PSDNAddress, SSHFPAlgorithm, SSHFPType, ServiceBinding, A,
+    AAAA, AFSDB, APL, CNAME, DNAME, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32, L64, LP, MB, MD,
+    MF, MG, MINFO, MR, MX, NID, NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA, SOA, SRV, SSHFP, TXT,
+    URI, X25,
 };
 use dns_message_parser::DomainName;
+use std::collections::BTreeSet;
 use std::convert::TryFrom;
 
 #[test]
@@ -587,4 +589,46 @@ fn rr_apl() {
         apitems,
     });
     assert_eq!(rr.get_class(), Some(Class::IN));
+}
+
+#[test]
+fn rr_svcb() {
+    // given
+    let domain_name = DomainName::try_from("www.example.com").unwrap();
+    let target_name = DomainName::try_from("service.example.com").unwrap();
+    let rr = RR::SVCB(ServiceBinding {
+        name: domain_name,
+        ttl: 300,
+        priority: 1,
+        target_name,
+        parameters: BTreeSet::default(),
+        https: false,
+    });
+
+    // when
+    let class = rr.get_class();
+
+    // then
+    assert_eq!(class, Some(Class::IN));
+}
+
+#[test]
+fn rr_https() {
+    // given
+    let domain_name = DomainName::try_from("www.example.com").unwrap();
+    let target_name = DomainName::try_from("service.example.com").unwrap();
+    let rr = RR::HTTPS(ServiceBinding {
+        name: domain_name,
+        ttl: 300,
+        priority: 1,
+        target_name,
+        parameters: BTreeSet::default(),
+        https: true,
+    });
+
+    // when
+    let class = rr.get_class();
+
+    // then
+    assert_eq!(class, Some(Class::IN));
 }

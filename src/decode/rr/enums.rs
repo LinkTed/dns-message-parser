@@ -73,6 +73,8 @@ impl<'a, 'b: 'a> Decoder<'b, 'b> {
             Type::DNSKEY => RR::DNSKEY(r_data.rr_dnskey(header)?),
             Type::DS => RR::DS(r_data.rr_ds(header)?),
             Type::CAA => RR::CAA(r_data.rr_caa(header)?),
+            Type::SVCB => RR::SVCB(r_data.rr_service_binding(header, false)?),
+            Type::HTTPS => RR::HTTPS(r_data.rr_service_binding(header, true)?),
             type_ => return Err(DecodeError::NotYetImplemented(type_)),
         };
         r_data.finished()?;
