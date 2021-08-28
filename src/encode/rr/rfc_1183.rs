@@ -22,7 +22,7 @@ impl Encoder {
     }
 
     fn rr_x25_psdn_address(&mut self, psdn_address: &PSDNAddress) -> EncodeResult<()> {
-        self.string(&psdn_address)
+        self.string(psdn_address)
     }
 
     pub(super) fn rr_x25(&mut self, x25: &X25) -> EncodeResult<()> {
@@ -37,12 +37,12 @@ impl Encoder {
 
     #[inline]
     fn rr_isdn_address(&mut self, isdn_address: &ISDNAddress) -> EncodeResult<()> {
-        self.string(&isdn_address)
+        self.string(isdn_address)
     }
 
     #[inline]
     fn rr_isdn_sa(&mut self, sa: &SA) -> EncodeResult<()> {
-        self.string(&sa)
+        self.string(sa)
     }
 
     pub(super) fn rr_isdn(&mut self, isdn: &ISDN) -> EncodeResult<()> {
@@ -53,7 +53,7 @@ impl Encoder {
         let length_index = self.create_length_index();
         self.rr_isdn_address(&isdn.isdn_address)?;
         if let Some(sa) = &isdn.sa {
-            self.rr_isdn_sa(&sa)?;
+            self.rr_isdn_sa(sa)?;
         }
         self.set_length_index(length_index)
     }
