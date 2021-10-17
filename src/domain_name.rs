@@ -1,5 +1,6 @@
 use std::convert::TryFrom;
 use std::fmt::{Display, Formatter, Result as FmtResult};
+use std::hash::{Hash, Hasher};
 use thiserror::Error;
 
 pub const DOMAIN_NAME_MAX_RECURSION: usize = 16;
@@ -16,7 +17,7 @@ pub enum DomainNameError {
     LabelDot,
 }
 
-#[derive(Debug, PartialEq, Clone, Eq, Hash)]
+#[derive(Debug, Clone, Eq)]
 pub struct DomainName(pub(super) String);
 
 impl DomainName {
@@ -62,11 +63,10 @@ impl DomainName {
             return Err(DomainNameError::LabelDot);
         }
 
-        let label = label.to_lowercase();
         if &self.0 == "." {
-            self.0.insert_str(0, &label);
+            self.0.insert_str(0, label);
         } else {
-            self.0.push_str(&label);
+            self.0.push_str(label);
             self.0.push('.');
         }
         Ok(())
@@ -109,14 +109,26 @@ impl AsRef<str> for DomainName {
     }
 }
 
+impl PartialEq<DomainName> for DomainName {
+    fn eq(&self, other: &DomainName) -> bool {
+        self.0.to_lowercase() == other.0.to_lowercase()
+    }
+}
+
 impl PartialEq<&str> for DomainName {
     fn eq(&self, other: &&str) -> bool {
-        self.0 == other.to_lowercase()
+        self.0.to_lowercase() == other.to_lowercase()
     }
 }
 
 impl Display for DomainName {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         write!(f, "{}", self.0)
+    }
+}
+
+impl Hash for DomainName {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.0.to_lowercase().hash(state);
     }
 }

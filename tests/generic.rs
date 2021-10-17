@@ -128,7 +128,7 @@ fn domain_name_eq() {
 fn domain_name_string_eq() {
     let domain_name = DomainName::try_from("Example.OrG.").unwrap();
     assert_eq!(domain_name, "example.org.");
-    assert_eq!(domain_name.as_ref(), "example.org.");
+    assert_eq!(domain_name.as_ref(), "Example.OrG.");
     assert_ne!(domain_name, "example.com.");
 }
 
@@ -136,5 +136,5 @@ fn domain_name_string_eq() {
 fn domain_name_from_string() {
     let domain_name = DomainName::try_from("Example.OrG.").unwrap();
     let domain_name = String::from(domain_name);
-    assert_eq!(&domain_name, "example.org.");
+    assert_eq!(&domain_name, "Example.OrG.");
 }
