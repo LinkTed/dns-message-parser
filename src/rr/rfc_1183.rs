@@ -16,7 +16,7 @@ struct_domain_name_domain_name!(
 
 try_from_enum_to_integer_without_display! {
     #[repr(u16)]
-    #[derive(Debug, Clone, Eq, Hash, PartialEq)]
+    #[derive(Debug, Clone, Copy, Eq, Hash, PartialEq)]
     pub enum AFSDBSubtype {
         VolumeLocationServer = 1,
         DCEAuthenticationServer = 2,

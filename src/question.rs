@@ -41,7 +41,7 @@ use std::fmt::{Display, Formatter, Result as FmtResult};
 
 try_from_enum_to_integer! {
     #[repr(u16)]
-    #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum QType {
         A = 1,
         NS = 2,
@@ -144,7 +144,7 @@ try_from_enum_to_integer! {
 
 try_from_enum_to_integer! {
     #[repr(u16)]
-    #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum QClass {
         IN = 1,
         CS = 2,

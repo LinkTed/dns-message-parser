@@ -5,7 +5,7 @@ pub const EDNS_DNSSEC_MASK: u8 = 0x80;
 
 try_from_enum_to_integer! {
     #[repr(u16)]
-    #[derive(Debug, Clone, PartialEq)]
+    #[derive(Debug, Clone, Copy, PartialEq)]
     pub enum EDNSOptionCode {
         ECS = 0x00008,
         Cookie = 0x000a,

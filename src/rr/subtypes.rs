@@ -55,7 +55,7 @@ fn check_ipv6_addr(ipv6_addr: &Ipv6Addr, prefix_length: u8) -> Result<(), Addres
     }
 }
 
-#[derive(Debug, PartialEq, Clone, Eq, Hash)]
+#[derive(Debug, PartialEq, Clone, Copy, Eq, Hash)]
 pub enum Address {
     Ipv4(Ipv4Addr),
     Ipv6(Ipv6Addr),
@@ -102,7 +102,7 @@ impl Address {
 
 try_from_enum_to_integer_without_display! {
     #[repr(u16)]
-    #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum AddressFamilyNumber {
         Ipv4 = 0x0001,
         Ipv6 = 0x0002,

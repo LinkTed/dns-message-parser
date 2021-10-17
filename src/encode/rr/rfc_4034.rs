@@ -19,7 +19,7 @@ impl Encoder {
         let length_index = self.create_length_index();
         self.u16(dnskey.get_flags());
         self.u8(3);
-        self.rr_algorithm_type(dnskey.algorithm_type.clone());
+        self.rr_algorithm_type(dnskey.algorithm_type);
         self.vec(&dnskey.public_key);
         self.set_length_index(length_index)
     }
@@ -31,8 +31,8 @@ impl Encoder {
         self.u32(ds.ttl);
         let length_index = self.create_length_index();
         self.u16(ds.key_tag);
-        self.rr_algorithm_type(ds.algorithm_type.clone());
-        self.rr_digest_type(ds.digest_type.clone());
+        self.rr_algorithm_type(ds.algorithm_type);
+        self.rr_digest_type(ds.digest_type);
         self.vec(&ds.digest);
         self.set_length_index(length_index)
     }

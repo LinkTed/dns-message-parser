@@ -15,7 +15,7 @@ pub const DNSKEY_ZERO_MASK: u16 = 0b1111_1110_1111_1110;
 
 try_from_enum_to_integer! {
     #[repr(u8)]
-    #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     /// https://www.iana.org/assignments/dns-sec-alg-numbers/dns-sec-alg-numbers.xhtml
     pub enum AlgorithmType {
         Reserved = 0x00,
@@ -40,7 +40,7 @@ try_from_enum_to_integer! {
 
 try_from_enum_to_integer! {
     #[repr(u8)]
-    #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     /// https://www.iana.org/assignments/ds-rr-types/ds-rr-types.xhtml#ds-rr-types-1
     pub enum DigestType {
         Reserved = 0x00,
@@ -84,7 +84,7 @@ impl Display for DNSKEY {
             self.ttl,
             self.class,
             self.get_flags(),
-            self.algorithm_type.clone() as u8,
+            self.algorithm_type as u8,
             encode(&self.public_key),
         )
     }
@@ -110,8 +110,8 @@ impl Display for DS {
             self.ttl,
             self.class,
             self.key_tag,
-            self.algorithm_type.clone() as u8,
-            self.digest_type.clone() as u8,
+            self.algorithm_type as u8,
+            self.digest_type as u8,
             encode(&self.digest),
         )
     }

@@ -5,12 +5,12 @@ use crate::EncodeResult;
 impl Encoder {
     #[inline]
     pub(super) fn rr_type(&mut self, type_: &Type) {
-        self.u16(type_.clone() as u16);
+        self.u16(*type_ as u16);
     }
 
     #[inline]
     pub(super) fn rr_class(&mut self, class: &Class) {
-        self.u16(class.clone() as u16);
+        self.u16(*class as u16);
     }
 
     pub(crate) fn rr(&mut self, rr: &RR) -> EncodeResult<()> {

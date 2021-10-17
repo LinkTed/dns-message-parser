@@ -7,7 +7,7 @@ impl Encoder {
         if flags.qr {
             buffer |= 0b1000_0000;
         }
-        let opcode = flags.opcode.clone() as u8;
+        let opcode = flags.opcode as u8;
         buffer |= opcode << 3;
         if flags.aa {
             buffer |= 0b0000_0100;
@@ -30,7 +30,7 @@ impl Encoder {
         if flags.cd {
             buffer |= 0b0001_0000;
         }
-        let rcode = flags.rcode.clone() as u8;
+        let rcode = flags.rcode as u8;
         buffer |= rcode;
         self.u8(buffer);
     }

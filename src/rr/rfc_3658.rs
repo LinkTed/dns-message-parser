@@ -5,7 +5,7 @@ use std::fmt::{Display, Formatter, Result as FmtResult};
 
 try_from_enum_to_integer! {
     #[repr(u8)]
-    #[derive(Debug, Clone, Eq, PartialEq, Hash)]
+    #[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
     pub enum SSHFPAlgorithm {
         Reserved = 0,
         RSA = 1,
@@ -15,7 +15,7 @@ try_from_enum_to_integer! {
 
 try_from_enum_to_integer! {
     #[repr(u8)]
-    #[derive(Debug, Clone, Eq, PartialEq, Hash)]
+    #[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
     pub enum SSHFPType {
         Reserved = 0,
         Sha1 = 1,
