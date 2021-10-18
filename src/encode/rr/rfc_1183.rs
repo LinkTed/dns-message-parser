@@ -7,7 +7,7 @@ impl Encoder {
 
     #[inline]
     fn rr_afsdb_subtype(&mut self, afsdb_subtype: &AFSDBSubtype) {
-        self.u16(afsdb_subtype.clone() as u16);
+        self.u16(*afsdb_subtype as u16);
     }
 
     pub(super) fn rr_afsdb(&mut self, afsdb: &AFSDB) -> EncodeResult<()> {

@@ -5,7 +5,7 @@ use std::net::{Ipv4Addr, Ipv6Addr};
 impl Encoder {
     #[inline]
     pub(super) fn rr_address_family_number(&mut self, address_number: &AddressFamilyNumber) {
-        self.u16(address_number.clone() as u16);
+        self.u16(*address_number as u16);
     }
 
     fn rr_address_ipv4(&mut self, ipv4_addr: &Ipv4Addr, mut prefix_length: u8) {

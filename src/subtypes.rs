@@ -1,6 +1,6 @@
 try_from_enum_to_integer! {
     #[repr(u8)]
-    #[derive(Debug, Clone, PartialEq)]
+    #[derive(Debug, Clone, Copy, PartialEq)]
     pub enum Opcode {
         Query = 0,
         IQuery = 1,
@@ -14,7 +14,7 @@ try_from_enum_to_integer! {
 
 try_from_enum_to_integer! {
     #[repr(u8)]
-    #[derive(Debug, Clone, PartialEq)]
+    #[derive(Debug, Clone, Copy, PartialEq)]
     pub enum RCode {
         NoError = 0,
         FormErr = 1,

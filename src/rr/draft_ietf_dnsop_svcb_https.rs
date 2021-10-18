@@ -37,7 +37,7 @@ impl ToType for ServiceBinding {
 }
 
 /// The modes inferred from the `SvcPriority` field
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum ServiceBindingMode {
     /// "go to the target name and do another service binding query"
     /// enables apex aliasing for participating clients

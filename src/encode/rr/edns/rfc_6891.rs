@@ -16,7 +16,7 @@ fn rr_opt_ttl(extend_rcode: u8, version: u8, dnssec: bool) -> u32 {
 impl Encoder {
     #[inline]
     pub(in super::super) fn rr_edns_option_code(&mut self, edns_option_code: &EDNSOptionCode) {
-        self.u16(edns_option_code.clone() as u16);
+        self.u16(*edns_option_code as u16);
     }
 
     fn rr_edns_option(&mut self, edns_option: &EDNSOption) -> EncodeResult<()> {

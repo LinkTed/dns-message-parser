@@ -5,12 +5,12 @@ use crate::EncodeResult;
 impl Encoder {
     #[inline]
     fn rr_sshfp_algorithm(&mut self, algorihtm: &SSHFPAlgorithm) {
-        self.u8(algorihtm.clone() as u8);
+        self.u8(*algorihtm as u8);
     }
 
     #[inline]
     fn rr_sshfp_type(&mut self, type_: &SSHFPType) {
-        self.u8(type_.clone() as u8);
+        self.u8(*type_ as u8);
     }
 
     pub(super) fn rr_sshfp(&mut self, ssh_fp: &SSHFP) -> EncodeResult<()> {

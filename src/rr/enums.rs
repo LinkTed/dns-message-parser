@@ -12,7 +12,7 @@ try_from_enum_to_integer! {
     ///
     /// [class]: https://tools.ietf.org/html/rfc1035#section-3.2.4
     /// [resource records]: crate::rr::RR
-    #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum Class {
         /// The Internet class.
         IN = 1,
@@ -31,7 +31,7 @@ try_from_enum_to_integer! {
     ///
     /// [type]: https://tools.ietf.org/html/rfc1035#section-3.2.2
     /// [resource records]: crate::rr::RR
-    #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum Type {
         /// The [IPv4] [host address] type.
         ///
@@ -341,49 +341,49 @@ impl RR {
     pub fn get_class(&self) -> Option<Class> {
         match self {
             RR::A(_) => Some(Class::IN),
-            RR::NS(ns) => Some(ns.class.clone()),
-            RR::MD(md) => Some(md.class.clone()),
-            RR::MF(mf) => Some(mf.class.clone()),
-            RR::CNAME(c_name) => Some(c_name.class.clone()),
-            RR::SOA(soa) => Some(soa.class.clone()),
-            RR::MB(mb) => Some(mb.class.clone()),
-            RR::MG(mg) => Some(mg.class.clone()),
-            RR::MR(mr) => Some(mr.class.clone()),
-            RR::NULL(null) => Some(null.class.clone()),
+            RR::NS(ns) => Some(ns.class),
+            RR::MD(md) => Some(md.class),
+            RR::MF(mf) => Some(mf.class),
+            RR::CNAME(c_name) => Some(c_name.class),
+            RR::SOA(soa) => Some(soa.class),
+            RR::MB(mb) => Some(mb.class),
+            RR::MG(mg) => Some(mg.class),
+            RR::MR(mr) => Some(mr.class),
+            RR::NULL(null) => Some(null.class),
             RR::WKS(_) => Some(Class::IN),
-            RR::PTR(ptr) => Some(ptr.class.clone()),
-            RR::HINFO(h_info) => Some(h_info.class.clone()),
-            RR::MINFO(m_info) => Some(m_info.class.clone()),
-            RR::MX(mx) => Some(mx.class.clone()),
-            RR::TXT(txt) => Some(txt.class.clone()),
-            RR::RP(rp) => Some(rp.class.clone()),
-            RR::AFSDB(afsdb) => Some(afsdb.class.clone()),
-            RR::X25(x_25) => Some(x_25.class.clone()),
-            RR::ISDN(isdn) => Some(isdn.class.clone()),
-            RR::RT(rt) => Some(rt.class.clone()),
-            RR::NSAP(nsap) => Some(nsap.class.clone()),
-            RR::PX(px) => Some(px.class.clone()),
-            RR::GPOS(gpos) => Some(gpos.class.clone()),
+            RR::PTR(ptr) => Some(ptr.class),
+            RR::HINFO(h_info) => Some(h_info.class),
+            RR::MINFO(m_info) => Some(m_info.class),
+            RR::MX(mx) => Some(mx.class),
+            RR::TXT(txt) => Some(txt.class),
+            RR::RP(rp) => Some(rp.class),
+            RR::AFSDB(afsdb) => Some(afsdb.class),
+            RR::X25(x_25) => Some(x_25.class),
+            RR::ISDN(isdn) => Some(isdn.class),
+            RR::RT(rt) => Some(rt.class),
+            RR::NSAP(nsap) => Some(nsap.class),
+            RR::PX(px) => Some(px.class),
+            RR::GPOS(gpos) => Some(gpos.class),
             RR::AAAA(_) => Some(Class::IN),
-            RR::LOC(loc) => Some(loc.class.clone()),
-            RR::NIMLOC(nim_loc) => Some(nim_loc.class.clone()),
-            RR::SRV(srv) => Some(srv.class.clone()),
-            RR::KX(kx) => Some(kx.class.clone()),
-            RR::DNAME(d_name) => Some(d_name.class.clone()),
+            RR::LOC(loc) => Some(loc.class),
+            RR::NIMLOC(nim_loc) => Some(nim_loc.class),
+            RR::SRV(srv) => Some(srv.class),
+            RR::KX(kx) => Some(kx.class),
+            RR::DNAME(d_name) => Some(d_name.class),
             RR::OPT(_) => None,
             RR::APL(_) => Some(Class::IN),
-            RR::SSHFP(ssh_fp) => Some(ssh_fp.class.clone()),
-            RR::NID(nid) => Some(nid.class.clone()),
-            RR::L32(l_32) => Some(l_32.class.clone()),
-            RR::L64(l_64) => Some(l_64.class.clone()),
-            RR::LP(lp) => Some(lp.class.clone()),
-            RR::EUI48(eui_48) => Some(eui_48.class.clone()),
-            RR::EUI64(eui_64) => Some(eui_64.class.clone()),
-            RR::URI(uri) => Some(uri.class.clone()),
-            RR::EID(eid) => Some(eid.class.clone()),
-            RR::DS(ds) => Some(ds.class.clone()),
-            RR::DNSKEY(dnskey) => Some(dnskey.class.clone()),
-            RR::CAA(caa) => Some(caa.class.clone()),
+            RR::SSHFP(ssh_fp) => Some(ssh_fp.class),
+            RR::NID(nid) => Some(nid.class),
+            RR::L32(l_32) => Some(l_32.class),
+            RR::L64(l_64) => Some(l_64.class),
+            RR::LP(lp) => Some(lp.class),
+            RR::EUI48(eui_48) => Some(eui_48.class),
+            RR::EUI64(eui_64) => Some(eui_64.class),
+            RR::URI(uri) => Some(uri.class),
+            RR::EID(eid) => Some(eid.class),
+            RR::DS(ds) => Some(ds.class),
+            RR::DNSKEY(dnskey) => Some(dnskey.class),
+            RR::CAA(caa) => Some(caa.class),
             RR::SVCB(_) => Some(Class::IN),
             RR::HTTPS(_) => Some(Class::IN),
         }
