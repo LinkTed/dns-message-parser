@@ -103,6 +103,12 @@ impl From<DomainName> for String {
     }
 }
 
+impl AsRef<str> for DomainName {
+    fn as_ref(&self) -> &str {
+        &self.0
+    }
+}
+
 impl PartialEq<&str> for DomainName {
     fn eq(&self, other: &&str) -> bool {
         self.0 == other.to_lowercase()
