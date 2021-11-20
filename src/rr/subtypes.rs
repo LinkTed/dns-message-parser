@@ -1,6 +1,8 @@
 use std::cmp::Ordering;
+use std::convert::TryFrom;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::net::{Ipv4Addr, Ipv6Addr};
+use std::slice::Iter;
 use thiserror::Error;
 
 const MASK: u8 = 0b1111_1111;
@@ -115,5 +117,32 @@ impl Display for AddressFamilyNumber {
             AddressFamilyNumber::Ipv4 => write!(f, "IPv4"),
             AddressFamilyNumber::Ipv6 => write!(f, "IPv6"),
         }
+    }
+}
+
+#[derive(Debug, PartialEq, Clone, Eq, Hash)]
+pub struct NonEmptyVec<T>(Vec<T>);
+
+impl<T> NonEmptyVec<T> {
+    pub fn iter(&self) -> Iter<'_, T> {
+        self.0.iter()
+    }
+}
+
+impl<T> TryFrom<Vec<T>> for NonEmptyVec<T> {
+    type Error = ();
+
+    fn try_from(vec: Vec<T>) -> Result<Self, Self::Error> {
+        if vec.is_empty() {
+            Err(())
+        } else {
+            Ok(NonEmptyVec(vec))
+        }
+    }
+}
+
+impl<T> From<NonEmptyVec<T>> for Vec<T> {
+    fn from(vec: NonEmptyVec<T>) -> Vec<T> {
+        vec.0
     }
 }

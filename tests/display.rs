@@ -8,7 +8,7 @@ use dns_message_parser::rr::{
 };
 use dns_message_parser::{Dns, DomainName, Flags, Opcode, RCode};
 use std::collections::BTreeSet;
-use std::convert::TryFrom;
+use std::convert::{TryFrom, TryInto};
 use std::fmt::Display;
 
 fn check_output<T>(t: &T, output: &str)
@@ -229,14 +229,14 @@ fn rr_mx() {
 fn rr_txt() {
     let domain_name = DomainName::try_from("example.org").unwrap();
     let class = Class::CH;
-    let string = String::from("Text");
+    let strings = vec![String::from("Text\n")].try_into().unwrap();
     let rr = RR::TXT(TXT {
         domain_name,
         ttl: 100,
         class,
-        string,
+        strings,
     });
-    check_output(&rr, "example.org. 100 CH TXT Text");
+    check_output(&rr, "example.org. 100 CH TXT \"Text\\n\"");
 }
 
 #[test]

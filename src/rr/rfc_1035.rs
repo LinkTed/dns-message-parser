@@ -1,4 +1,4 @@
-use super::Class;
+use super::{Class, NonEmptyVec};
 use crate::DomainName;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::net::Ipv4Addr;
@@ -204,10 +204,25 @@ struct_u16_domain_name!(
     exchange
 );
 
-struct_string!(
-    /// The [text] resource record type.
-    ///
-    /// [text]: https://tools.ietf.org/html/rfc1035#section-3.3.14
-    TXT,
-    string
-);
+/// The [text] resource record type.
+///
+/// [text]: https://tools.ietf.org/html/rfc1035#section-3.3.14
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct TXT {
+    pub domain_name: DomainName,
+    pub ttl: u32,
+    pub class: Class,
+    pub strings: NonEmptyVec<String>,
+}
+
+impl_to_type!(TXT);
+
+impl Display for TXT {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        write!(f, "{} {} {} TXT", self.domain_name, self.ttl, self.class,)?;
+        for string in self.strings.iter() {
+            write!(f, " \"{}\"", string.escape_default())?;
+        }
+        Ok(())
+    }
+}

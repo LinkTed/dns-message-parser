@@ -94,5 +94,5 @@ pub use rfc_6742::{L32, L64, LP, NID};
 pub use rfc_7043::{EUI48, EUI64};
 pub use rfc_7553::URI;
 pub use rfc_8659::{Tag, TagError, CAA};
-pub use subtypes::{Address, AddressError, AddressFamilyNumber};
+pub use subtypes::{Address, AddressError, AddressFamilyNumber, NonEmptyVec};
 pub use unknown::{EID, NIMLOC};

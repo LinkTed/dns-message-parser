@@ -1,7 +1,8 @@
 use super::Header;
 use crate::decode::Decoder;
-use crate::rr::{Class, A, HINFO, SOA, WKS};
+use crate::rr::{Class, A, HINFO, SOA, TXT, WKS};
 use crate::{DecodeError, DecodeResult};
+use std::convert::TryInto;
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
     pub(super) fn rr_a(&mut self, header: Header) -> DecodeResult<A> {
@@ -100,5 +101,19 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
 
     impl_decode_rr_u16_domain_name!(MX, preference, exchange, rr_mx);
 
-    impl_decode_rr_string!(TXT, string, rr_txt);
+    pub(super) fn rr_txt(&mut self, header: Header) -> DecodeResult<TXT> {
+        let class = header.get_class()?;
+        let mut strings = Vec::new();
+        while !self.is_finished()? {
+            strings.push(self.string()?);
+        }
+        let strings = strings.try_into().map_err(|_| DecodeError::TXTEmpty)?;
+        let txt = TXT {
+            domain_name: header.domain_name,
+            ttl: header.ttl,
+            class,
+            strings,
+        };
+        Ok(txt)
+    }
 }

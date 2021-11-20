@@ -128,35 +128,6 @@ macro_rules! struct_u16_domain_name {
     };
 }
 
-macro_rules! struct_string {
-    ($(#[$doc_comment:meta])* $i:ident, $n:ident) => {
-        $(#[$doc_comment])*
-        #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-        pub struct $i {
-            pub domain_name: crate::DomainName,
-            pub ttl: u32,
-            pub class: super::Class,
-            pub $n: String,
-        }
-
-        impl_to_type!($i);
-
-        impl std::fmt::Display for $i {
-            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                write!(
-                    f,
-                    "{} {} {} {} {}",
-                    self.domain_name,
-                    self.ttl,
-                    self.class,
-                    stringify!($i),
-                    self.$n
-                )
-            }
-        }
-    };
-}
-
 macro_rules! struct_u16_u64 {
     ($(#[$doc_comment:meta])* $i:ident, $n:ident, $m:ident) => {
         $(#[$doc_comment])*

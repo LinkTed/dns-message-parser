@@ -6,7 +6,7 @@ use dns_message_parser::rr::{
 };
 use dns_message_parser::DomainName;
 use std::collections::BTreeSet;
-use std::convert::TryFrom;
+use std::convert::{TryFrom, TryInto};
 
 #[test]
 fn a() {
@@ -210,12 +210,12 @@ fn mx() {
 fn txt() {
     let domain_name = DomainName::try_from("example.org").unwrap();
     let class = Class::CH;
-    let string = String::from("Text");
+    let strings = vec![String::from("Text")].try_into().unwrap();
     let rr = RR::TXT(TXT {
         domain_name,
         ttl: 100,
         class,
-        string,
+        strings,
     });
     assert_eq!(rr.get_ttl(), Some(100));
 }

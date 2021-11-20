@@ -41,6 +41,8 @@ pub enum DecodeError {
     AClass(Class),
     #[error("Class is not IN for WKS record: {0}")]
     WKSClass(Class),
+    #[error("The RData of the TXT is empty")]
+    TXTEmpty,
     #[error("Could not decode AFSDBSubtype: {0}")]
     AFSDBSubtype(u16),
     #[error("Could not decode PSDN address: {0}")]

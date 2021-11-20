@@ -98,22 +98,3 @@ macro_rules! impl_decode_rr_vec {
         }
     };
 }
-
-macro_rules! impl_decode_rr_string {
-    ($i:ident, $n:ident, $m:ident) => {
-        pub(super) fn $m(
-            &mut self,
-            header: super::enums::Header,
-        ) -> crate::DecodeResult<crate::rr::$i> {
-            let class = header.get_class()?;
-            let $n = self.string()?;
-            let v = crate::rr::$i {
-                domain_name: header.domain_name,
-                ttl: header.ttl,
-                class,
-                $n,
-            };
-            Ok(v)
-        }
-    };
-}

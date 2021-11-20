@@ -1,5 +1,5 @@
 use crate::encode::Encoder;
-use crate::rr::{Class, Type, A, HINFO, SOA, WKS};
+use crate::rr::{Class, Type, A, HINFO, SOA, TXT, WKS};
 use crate::EncodeResult;
 
 impl Encoder {
@@ -74,7 +74,17 @@ impl Encoder {
 
     impl_encode_rr_u16_domain_name!(MX, preference, exchange, rr_mx);
 
-    impl_encode_rr_string!(TXT, string, rr_txt);
+    pub(super) fn rr_txt(&mut self, txt: &TXT) -> EncodeResult<()> {
+        self.domain_name(&txt.domain_name)?;
+        self.rr_type(&Type::TXT);
+        self.rr_class(&txt.class);
+        self.u32(txt.ttl);
+        let length_index = self.create_length_index();
+        for string in txt.strings.iter() {
+            self.string(string)?;
+        }
+        self.set_length_index(length_index)
+    }
 }
 
 impl_encode_rr!(A, rr_a);
