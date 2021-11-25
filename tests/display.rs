@@ -962,6 +962,12 @@ fn q_class_q_class() {
 }
 
 #[test]
+fn q_class_none() {
+    let q_type = QClass::NONE;
+    check_output(&q_type, "NONE");
+}
+
+#[test]
 fn question() {
     let domain_name = DomainName::try_from("example.org.").unwrap();
     let q_class = QClass::IN;

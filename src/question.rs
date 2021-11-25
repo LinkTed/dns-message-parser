@@ -150,6 +150,7 @@ try_from_enum_to_integer! {
         CS = 2,
         CH = 3,
         HS = 4,
+        NONE = 254,
         ANY = 255,
     }
 }
