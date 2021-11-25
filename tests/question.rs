@@ -37,6 +37,13 @@ fn decode_q_class_q_class() {
 }
 
 #[test]
+fn decode_q_class_none() {
+    let bytes = Bytes::copy_from_slice(&b"\x00\xfe"[..]);
+    let q_class = QClass::decode(bytes).unwrap();
+    assert_eq!(q_class, QClass::NONE);
+}
+
+#[test]
 fn decode_q_class_error() {
     let bytes = Bytes::copy_from_slice(&b"\xff\xff"[..]);
     let result = QClass::decode(bytes);
