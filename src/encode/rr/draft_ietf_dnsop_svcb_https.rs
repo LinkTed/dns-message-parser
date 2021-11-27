@@ -19,7 +19,7 @@ impl Encoder {
         self.u32(service_binding.ttl);
 
         // RDATA wire format: RFC section 2.2
-        let length_index = self.create_length_index();
+        let length_index = self.create_length_index_u16();
         self.u16(service_binding.priority);
         self.domain_name(&service_binding.target_name)?;
         if service_binding.mode() == ServiceBindingMode::Service {
@@ -27,13 +27,13 @@ impl Encoder {
                 self.rr_service_parameter(parameter)?;
             }
         }
-        self.set_length_index(length_index)
+        self.set_length_index_u16(length_index)
     }
 
     /// Encode a single service parameter
     fn rr_service_parameter(&mut self, parameter: &ServiceParameter) -> EncodeResult<()> {
         self.u16(parameter.get_registered_number());
-        let length_index = self.create_length_index();
+        let length_index = self.create_length_index_u16();
         match parameter {
             ServiceParameter::MANDATORY { key_ids } => {
                 let mut key_ids = key_ids.clone();
@@ -79,6 +79,6 @@ impl Encoder {
             }
             ServiceParameter::KEY_65535 => {}
         }
-        self.set_length_index(length_index)
+        self.set_length_index_u16(length_index)
     }
 }

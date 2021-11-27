@@ -8,9 +8,9 @@ impl Encoder {
         self.rr_type(&Type::AAAA);
         self.rr_class(&Class::IN);
         self.u32(aaaa.ttl);
-        let length_index = self.create_length_index();
+        let length_index = self.create_length_index_u16();
         self.ipv6_addr(&aaaa.ipv6_addr);
-        self.set_length_index(length_index)
+        self.set_length_index_u16(length_index)
     }
 }
 

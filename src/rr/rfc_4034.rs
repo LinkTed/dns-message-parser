@@ -1,6 +1,7 @@
-use crate::rr::Class;
+use super::subtypes::NonEmptyBTreeSet;
+use crate::rr::{Class, Type};
 use crate::DomainName;
-use hex::encode;
+use base64::encode;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
 /// The bit at offset 7 of the DNSKEY flags field is the [Zone Key flag].
@@ -12,6 +13,32 @@ pub const ZONE_KEY_FLAG: u16 = 0b0000_0001_0000_0000;
 /// [Secure Entry Point flag]: https://tools.ietf.org/html/rfc4034#section-2.1.1
 pub const SECURE_ENTRY_POINT_FLAG: u16 = 0b0000_0000_0000_0001;
 pub const DNSKEY_ZERO_MASK: u16 = 0b1111_1110_1111_1110;
+
+/// The [NSEC] resource record type.
+///
+/// [NSEC]: https://datatracker.ietf.org/doc/html/rfc4034#section-4
+#[derive(Debug, PartialEq, Clone, Eq, Hash)]
+pub struct NSEC {
+    pub domain_name: DomainName,
+    pub ttl: u32,
+    pub class: Class,
+    pub next_domain_name: DomainName,
+    pub types: NonEmptyBTreeSet<Type>,
+}
+
+impl Display for NSEC {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        write!(
+            f,
+            "{} {} {} NSEC {} (",
+            self.domain_name, self.ttl, self.class, self.next_domain_name
+        )?;
+        for r#type in self.types.iter() {
+            write!(f, " {}", r#type)?;
+        }
+        write!(f, " )")
+    }
+}
 
 try_from_enum_to_integer! {
     #[repr(u8)]

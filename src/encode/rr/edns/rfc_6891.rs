@@ -33,10 +33,10 @@ impl Encoder {
         self.rr_type(&Type::OPT);
         self.u16(opt.requestor_payload_size);
         self.u32(rr_opt_ttl(opt.extend_rcode, opt.version, opt.dnssec));
-        let length_index = self.create_length_index();
+        let length_index = self.create_length_index_u16();
         for ends_option in opt.edns_options.iter() {
             self.rr_edns_option(ends_option)?;
         }
-        self.set_length_index(length_index)
+        self.set_length_index_u16(length_index)
     }
 }

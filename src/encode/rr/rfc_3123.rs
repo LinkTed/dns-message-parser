@@ -5,16 +5,6 @@ use std::convert::TryInto;
 use std::mem::size_of;
 
 impl Encoder {
-    fn set_u8(&mut self, n: u8, index: usize) -> EncodeResult<()> {
-        let bytes_len = self.bytes.len();
-        if index + size_of::<u8>() - 1 < bytes_len {
-            self.bytes[index] = n;
-            Ok(())
-        } else {
-            Err(EncodeError::NotEnoughBytes(bytes_len, index))
-        }
-    }
-
     #[inline]
     pub(super) fn set_address_length_index(
         &mut self,
@@ -52,11 +42,11 @@ impl Encoder {
         self.rr_type(&Type::APL);
         self.rr_class(&Class::IN);
         self.u32(apl.ttl);
-        let length_index = self.create_length_index();
+        let length_index = self.create_length_index_u16();
         for apitem in &apl.apitems {
             self.rr_apl_apitem(apitem)?;
         }
-        self.set_length_index(length_index)
+        self.set_length_index_u16(length_index)
     }
 }
 

@@ -83,6 +83,16 @@ pub enum DecodeError {
     AlgorithmType(u8),
     #[error("Could not decode DigestType: {0}")]
     DigestType(u8),
+    #[error("The Type Bit Maps of the NSEC is empty")]
+    NSECTypeBitMapsEmpty,
+    #[error("The window blocks of Type Bit Maps of the NSEC is not in increasing numerical order")]
+    NSECTypeBitMapsNonIncreasingOrder,
+    #[error("One window block of Type Bit Maps of the NSEC is empty")]
+    NSECTypeBitMapsWindowBlockEmpty,
+    #[error("One window block of Type Bit Maps of the NSEC is too big: 32 < {0}")]
+    NSECTypeBitMapsWindowBlockTooBig(u8),
+    #[error("Unknown type in the Bit Map: {0}")]
+    NSECUnknownType(u16),
     #[error("The undefined flags are not zero: {0}")]
     DNSKEYZeroFlags(u16),
     #[error("DNSKEY protocol is not equal 3: {0}")]

@@ -8,14 +8,14 @@ impl Encoder {
         self.rr_type(&Type::EUI48);
         self.rr_class(&eui_48.class);
         self.u32(eui_48.ttl);
-        let length_index = self.create_length_index();
+        let length_index = self.create_length_index_u16();
         self.u8(eui_48.eui_48[0]);
         self.u8(eui_48.eui_48[1]);
         self.u8(eui_48.eui_48[2]);
         self.u8(eui_48.eui_48[3]);
         self.u8(eui_48.eui_48[4]);
         self.u8(eui_48.eui_48[5]);
-        self.set_length_index(length_index)
+        self.set_length_index_u16(length_index)
     }
 
     pub(super) fn rr_eui64(&mut self, eui_64: &EUI64) -> EncodeResult<()> {
@@ -23,7 +23,7 @@ impl Encoder {
         self.rr_type(&Type::EUI64);
         self.rr_class(&eui_64.class);
         self.u32(eui_64.ttl);
-        let length_index = self.create_length_index();
+        let length_index = self.create_length_index_u16();
         self.u8(eui_64.eui_64[0]);
         self.u8(eui_64.eui_64[1]);
         self.u8(eui_64.eui_64[2]);
@@ -32,6 +32,6 @@ impl Encoder {
         self.u8(eui_64.eui_64[5]);
         self.u8(eui_64.eui_64[6]);
         self.u8(eui_64.eui_64[7]);
-        self.set_length_index(length_index)
+        self.set_length_index_u16(length_index)
     }
 }

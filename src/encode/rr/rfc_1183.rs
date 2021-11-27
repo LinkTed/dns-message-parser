@@ -15,10 +15,10 @@ impl Encoder {
         self.rr_type(&Type::AFSDB);
         self.rr_class(&afsdb.class);
         self.u32(afsdb.ttl);
-        let length_index = self.create_length_index();
+        let length_index = self.create_length_index_u16();
         self.rr_afsdb_subtype(&afsdb.subtype);
         self.domain_name(&afsdb.hostname)?;
-        self.set_length_index(length_index)
+        self.set_length_index_u16(length_index)
     }
 
     fn rr_x25_psdn_address(&mut self, psdn_address: &PSDNAddress) -> EncodeResult<()> {
@@ -30,9 +30,9 @@ impl Encoder {
         self.rr_type(&Type::X25);
         self.rr_class(&x25.class);
         self.u32(x25.ttl);
-        let length_index = self.create_length_index();
+        let length_index = self.create_length_index_u16();
         self.rr_x25_psdn_address(&x25.psdn_address)?;
-        self.set_length_index(length_index)
+        self.set_length_index_u16(length_index)
     }
 
     #[inline]
@@ -50,12 +50,12 @@ impl Encoder {
         self.rr_type(&Type::ISDN);
         self.rr_class(&isdn.class);
         self.u32(isdn.ttl);
-        let length_index = self.create_length_index();
+        let length_index = self.create_length_index_u16();
         self.rr_isdn_address(&isdn.isdn_address)?;
         if let Some(sa) = &isdn.sa {
             self.rr_isdn_sa(sa)?;
         }
-        self.set_length_index(length_index)
+        self.set_length_index_u16(length_index)
     }
 
     impl_encode_rr_u16_domain_name!(RT, preference, intermediate_host, rr_rt);

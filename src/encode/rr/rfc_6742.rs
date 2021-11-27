@@ -10,10 +10,10 @@ impl Encoder {
         self.rr_type(&Type::L32);
         self.rr_class(&l_32.class);
         self.u32(l_32.ttl);
-        let length_index = self.create_length_index();
+        let length_index = self.create_length_index_u16();
         self.u16(l_32.preference);
         self.u32(l_32.locator_32);
-        self.set_length_index(length_index)
+        self.set_length_index_u16(length_index)
     }
 
     impl_encode_rr_u16_u64!(L64, preference, locator_64, rr_l64);

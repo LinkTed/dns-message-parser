@@ -8,12 +8,12 @@ impl Encoder {
         self.rr_type(&Type::SRV);
         self.rr_class(&srv.class);
         self.u32(srv.ttl);
-        let length_index = self.create_length_index();
+        let length_index = self.create_length_index_u16();
         self.u16(srv.priority);
         self.u16(srv.weight);
         self.u16(srv.port);
         self.domain_name(&srv.target)?;
-        self.set_length_index(length_index)
+        self.set_length_index_u16(length_index)
     }
 }
 

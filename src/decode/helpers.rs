@@ -1,10 +1,81 @@
-use crate::decode::Decoder;
-use crate::{DecodeError, DecodeResult};
-use bytes::Buf;
-use bytes::Bytes;
-use std::mem::size_of;
-use std::net::{Ipv4Addr, Ipv6Addr};
-use std::str::from_utf8;
+use crate::{
+    decode::Decoder,
+    {DecodeError, DecodeResult},
+};
+use bytes::{
+    buf::IntoIter,
+    {Buf, Bytes},
+};
+use std::{
+    iter::{Enumerate, IntoIterator},
+    mem::size_of,
+    net::{Ipv4Addr, Ipv6Addr},
+    str::from_utf8,
+};
+
+pub(super) struct BitMap(Bytes);
+
+impl From<Bytes> for BitMap {
+    fn from(bytes: Bytes) -> Self {
+        BitMap(bytes)
+    }
+}
+
+impl IntoIterator for BitMap {
+    type Item = usize;
+    type IntoIter = BitMapIter;
+
+    fn into_iter(self) -> Self::IntoIter {
+        BitMapIter::new(self.0.into_iter().enumerate())
+    }
+}
+
+pub(super) struct BitMapIter {
+    iter: Enumerate<IntoIter<Bytes>>,
+    current: Option<(usize, u8, u8)>,
+}
+
+impl BitMapIter {
+    fn new(iter: Enumerate<IntoIter<Bytes>>) -> BitMapIter {
+        BitMapIter {
+            iter,
+            current: None,
+        }
+    }
+}
+
+impl Iterator for BitMapIter {
+    type Item = usize;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.current.is_none() {
+            let (bytes_index, b) = self.iter.next()?;
+            self.current = Some((bytes_index, 0, b));
+        }
+
+        loop {
+            let (_, _, b) = self.current.as_mut()?;
+            if *b == 0 {
+                let (bytes_index, b) = self.iter.next()?;
+                self.current = Some((bytes_index, 0, b));
+            } else {
+                break;
+            }
+        }
+
+        let (bytes_index, bit_index, b) = self.current.as_mut()?;
+        let leading_zeros = b.leading_zeros() as u8;
+
+        *bit_index += leading_zeros;
+
+        let index = *bytes_index * u8::BITS as usize + *bit_index as usize;
+
+        *b = (*b << leading_zeros) << 1;
+        *bit_index += 1;
+
+        Some(index)
+    }
+}
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
     pub(super) fn u8(&mut self) -> DecodeResult<u8> {

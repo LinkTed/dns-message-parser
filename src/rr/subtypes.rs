@@ -1,8 +1,9 @@
 use std::cmp::Ordering;
+use std::collections::{btree_set::Iter as BTreeSetIter, BTreeSet};
 use std::convert::TryFrom;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::net::{Ipv4Addr, Ipv6Addr};
-use std::slice::Iter;
+use std::slice::Iter as SliceIter;
 use thiserror::Error;
 
 const MASK: u8 = 0b1111_1111;
@@ -124,7 +125,7 @@ impl Display for AddressFamilyNumber {
 pub struct NonEmptyVec<T>(Vec<T>);
 
 impl<T> NonEmptyVec<T> {
-    pub fn iter(&self) -> Iter<'_, T> {
+    pub fn iter(&self) -> SliceIter<'_, T> {
         self.0.iter()
     }
 }
@@ -144,5 +145,38 @@ impl<T> TryFrom<Vec<T>> for NonEmptyVec<T> {
 impl<T> From<NonEmptyVec<T>> for Vec<T> {
     fn from(vec: NonEmptyVec<T>) -> Vec<T> {
         vec.0
+    }
+}
+
+#[derive(Debug, PartialEq, Clone, Eq, Hash)]
+pub struct NonEmptyBTreeSet<T>(BTreeSet<T>);
+
+impl<T> NonEmptyBTreeSet<T> {
+    pub fn iter(&self) -> BTreeSetIter<'_, T> {
+        self.0.iter()
+    }
+}
+
+impl<T> AsMut<BTreeSet<T>> for NonEmptyBTreeSet<T> {
+    fn as_mut(&mut self) -> &mut BTreeSet<T> {
+        &mut self.0
+    }
+}
+
+impl<T> TryFrom<BTreeSet<T>> for NonEmptyBTreeSet<T> {
+    type Error = ();
+
+    fn try_from(btree_set: BTreeSet<T>) -> Result<Self, Self::Error> {
+        if btree_set.is_empty() {
+            Err(())
+        } else {
+            Ok(NonEmptyBTreeSet(btree_set))
+        }
+    }
+}
+
+impl<T> From<NonEmptyBTreeSet<T>> for BTreeSet<T> {
+    fn from(btree_set: NonEmptyBTreeSet<T>) -> BTreeSet<T> {
+        btree_set.0
     }
 }

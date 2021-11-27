@@ -8,9 +8,9 @@ impl Encoder {
         self.rr_type(&Type::A);
         self.rr_class(&Class::IN);
         self.u32(a.ttl);
-        let length_index = self.create_length_index();
+        let length_index = self.create_length_index_u16();
         self.ipv4_addr(&a.ipv4_addr);
-        self.set_length_index(length_index)
+        self.set_length_index_u16(length_index)
     }
 
     impl_encode_rr_domain_name!(NS, ns_d_name, rr_ns);
@@ -26,7 +26,7 @@ impl Encoder {
         self.rr_type(&Type::SOA);
         self.rr_class(&soa.class);
         self.u32(soa.ttl);
-        let length_index = self.create_length_index();
+        let length_index = self.create_length_index_u16();
         self.domain_name(&soa.m_name)?;
         self.domain_name(&soa.r_name)?;
         self.u32(soa.serial);
@@ -34,7 +34,7 @@ impl Encoder {
         self.u32(soa.retry);
         self.u32(soa.expire);
         self.u32(soa.min_ttl);
-        self.set_length_index(length_index)
+        self.set_length_index_u16(length_index)
     }
 
     impl_encode_rr_domain_name!(MB, mad_name, rr_mb);
@@ -50,11 +50,11 @@ impl Encoder {
         self.rr_type(&Type::WKS);
         self.rr_class(&Class::IN);
         self.u32(wks.ttl);
-        let length_index = self.create_length_index();
+        let length_index = self.create_length_index_u16();
         self.ipv4_addr(&wks.ipv4_addr);
         self.u8(wks.protocol);
         self.vec(&wks.bit_map);
-        self.set_length_index(length_index)
+        self.set_length_index_u16(length_index)
     }
 
     impl_encode_rr_domain_name!(PTR, ptr_d_name, rr_ptr);
@@ -64,10 +64,10 @@ impl Encoder {
         self.rr_type(&Type::HINFO);
         self.rr_class(&hinfo.class);
         self.u32(hinfo.ttl);
-        let length_index = self.create_length_index();
+        let length_index = self.create_length_index_u16();
         self.string(&hinfo.cpu)?;
         self.string(&hinfo.os)?;
-        self.set_length_index(length_index)
+        self.set_length_index_u16(length_index)
     }
 
     impl_encode_rr_domain_name_domain_name!(MINFO, r_mail_bx, e_mail_bx, rr_minfo);
@@ -79,11 +79,11 @@ impl Encoder {
         self.rr_type(&Type::TXT);
         self.rr_class(&txt.class);
         self.u32(txt.ttl);
-        let length_index = self.create_length_index();
+        let length_index = self.create_length_index_u16();
         for string in txt.strings.iter() {
             self.string(string)?;
         }
-        self.set_length_index(length_index)
+        self.set_length_index_u16(length_index)
     }
 }
 

@@ -1,9 +1,30 @@
 use crate::encode::Encoder;
 use crate::{EncodeError, EncodeResult};
-use bytes::BufMut;
+use bytes::{BufMut, BytesMut};
 use std::convert::TryInto;
 use std::mem::size_of;
 use std::net::{Ipv4Addr, Ipv6Addr};
+
+#[derive(Default, Debug)]
+pub(super) struct BitMap(BytesMut);
+
+impl BitMap {
+    pub fn set_bit(&mut self, index: usize) {
+        let bytes_index = index / u8::BITS as usize;
+        let bit_index = index % u8::BITS as usize;
+        let bytes_len = self.0.len();
+        if bytes_len <= bytes_index {
+            self.0.resize(bytes_index + 1, 0);
+        }
+        self.0[bytes_index] |= 0b1000_0000 >> bit_index;
+    }
+}
+
+impl From<BitMap> for BytesMut {
+    fn from(bit_map: BitMap) -> BytesMut {
+        bit_map.0
+    }
+}
 
 impl Encoder {
     pub(super) fn u8(&mut self, n: u8) {
@@ -14,6 +35,16 @@ impl Encoder {
     pub(super) fn u16(&mut self, n: u16) {
         self.bytes.reserve(size_of::<u16>());
         self.bytes.put_u16(n)
+    }
+
+    pub(super) fn set_u8(&mut self, n: u8, index: usize) -> EncodeResult<()> {
+        let bytes_len = self.bytes.len();
+        if index + size_of::<u8>() - 1 < bytes_len {
+            self.bytes[index] = n;
+            Ok(())
+        } else {
+            Err(EncodeError::NotEnoughBytes(bytes_len, index))
+        }
     }
 
     fn set_u16(&mut self, n: u16, index: usize) -> EncodeResult<()> {
@@ -85,17 +116,34 @@ impl Encoder {
     }
 
     #[inline]
-    pub(super) fn create_length_index(&mut self) -> usize {
+    pub(super) fn create_length_index_u16(&mut self) -> usize {
         let length_index = self.bytes.len();
         self.u16(0);
         length_index
     }
 
     #[inline]
-    pub(super) fn set_length_index(&mut self, length_index: usize) -> EncodeResult<()> {
+    pub(super) fn set_length_index_u16(&mut self, length_index: usize) -> EncodeResult<()> {
         let length = self.bytes.len() - (length_index + size_of::<u16>());
         if let Ok(length) = length.try_into() {
             self.set_u16(length, length_index)
+        } else {
+            Err(EncodeError::Length(length))
+        }
+    }
+
+    #[inline]
+    pub(super) fn create_length_index_u8(&mut self) -> usize {
+        let length_index = self.bytes.len();
+        self.u8(0);
+        length_index
+    }
+
+    #[inline]
+    pub(super) fn set_length_index_u8(&mut self, length_index: usize) -> EncodeResult<()> {
+        let length = self.bytes.len() - (length_index + size_of::<u8>());
+        if let Ok(length) = length.try_into() {
+            self.set_u8(length, length_index)
         } else {
             Err(EncodeError::Length(length))
         }

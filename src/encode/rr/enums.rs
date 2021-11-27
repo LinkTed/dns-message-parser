@@ -57,6 +57,7 @@ impl Encoder {
             RR::EID(eid) => self.rr_eid(eid),
             RR::NIMLOC(nimloc) => self.rr_nimloc(nimloc),
             RR::DNSKEY(dnskey) => self.rr_dnskey(dnskey),
+            RR::NSEC(nsec) => self.rr_nsec(nsec),
             RR::DS(ds) => self.rr_ds(ds),
             RR::CAA(caa) => self.rr_caa(caa),
             RR::SVCB(svcb) => self.rr_service_binding(svcb),

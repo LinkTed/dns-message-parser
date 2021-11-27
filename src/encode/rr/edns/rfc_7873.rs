@@ -5,11 +5,11 @@ use crate::EncodeResult;
 impl Encoder {
     pub(super) fn rr_edns_cookie(&mut self, cookie: &Cookie) -> EncodeResult<()> {
         self.rr_edns_option_code(&EDNSOptionCode::Cookie);
-        let length_index = self.create_length_index();
+        let length_index = self.create_length_index_u16();
         self.vec(&cookie.client_cookie);
         if let Some(server_cookie) = cookie.get_server_cookie() {
             self.vec(server_cookie);
         }
-        self.set_length_index(length_index)
+        self.set_length_index_u16(length_index)
     }
 }

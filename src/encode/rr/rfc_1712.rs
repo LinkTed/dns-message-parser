@@ -8,11 +8,11 @@ impl Encoder {
         self.rr_type(&Type::GPOS);
         self.rr_class(&gpos.class);
         self.u32(gpos.ttl);
-        let length_index = self.create_length_index();
+        let length_index = self.create_length_index_u16();
         self.string(&gpos.longitude)?;
         self.string(&gpos.latitude)?;
         self.string(&gpos.altitude)?;
-        self.set_length_index(length_index)
+        self.set_length_index_u16(length_index)
     }
 }
 

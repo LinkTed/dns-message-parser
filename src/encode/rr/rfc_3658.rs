@@ -18,11 +18,11 @@ impl Encoder {
         self.rr_type(&Type::SSHFP);
         self.rr_class(&ssh_fp.class);
         self.u32(ssh_fp.ttl);
-        let length_index = self.create_length_index();
+        let length_index = self.create_length_index_u16();
         self.rr_sshfp_algorithm(&ssh_fp.algorithm);
         self.rr_sshfp_type(&ssh_fp.type_);
         self.vec(&ssh_fp.fp);
-        self.set_length_index(length_index)
+        self.set_length_index_u16(length_index)
     }
 }
 
