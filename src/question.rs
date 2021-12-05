@@ -10,12 +10,11 @@
 //! # Example
 //! ```rust
 //! use dns_message_parser::question::{Question, QType, QClass};
-//! use std::convert::TryInto;
 //!
 //! // Init A record
 //! let question = Question {
 //!     // The domain name of the question
-//!     domain_name: "example.org".try_into().unwrap(),
+//!     domain_name: "example.org".parse().unwrap(),
 //!     // The class of the question
 //!     q_class: QClass::IN,
 //!     // The type of the question

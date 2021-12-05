@@ -12,12 +12,11 @@
 //! # Example
 //! ```rust
 //! use dns_message_parser::rr::{RR, A};
-//! use std::convert::TryInto;
 //!
 //! // Init A record
 //! let a = A {
 //!     // The domain name of the A record
-//!     domain_name: "example.org".try_into().unwrap(),
+//!     domain_name: "example.org".parse().unwrap(),
 //!     // The time to live of the A record
 //!     ttl: 1000,
 //!     // The address of the A record

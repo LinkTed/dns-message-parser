@@ -1,20 +1,22 @@
-use std::convert::TryFrom;
-use std::net::{Ipv4Addr, Ipv6Addr};
-use std::str::FromStr;
-
-use crate::encode::encoder::Encoder;
-use crate::question::QType::{HTTPS, SVCB};
-use crate::question::{QClass, Question};
-use crate::rr::{ServiceBinding, ServiceBindingMode, ServiceParameter, RR};
-use crate::{Dns, DomainName, Flags, Opcode, RCode};
-use std::collections::BTreeSet;
+use crate::{
+    encode::encoder::Encoder,
+    question::QType::{HTTPS, SVCB},
+    question::{QClass, Question},
+    rr::{ServiceBinding, ServiceBindingMode, ServiceParameter, RR},
+    {Dns, DomainName, Flags, Opcode, RCode},
+};
+use std::{
+    collections::BTreeSet,
+    net::{Ipv4Addr, Ipv6Addr},
+    str::FromStr,
+};
 
 #[test]
 fn test_service_binding_encode_decode() {
     // given
     let mut encoder = Encoder::default();
-    let domain_name = DomainName::try_from("_8765._baz.api.test").unwrap();
-    let target_name = DomainName::try_from("svc4-baz.test").unwrap();
+    let domain_name = "_8765._baz.api.test".parse().unwrap();
+    let target_name = "svc4-baz.test".parse().unwrap();
     let service_binding = ServiceBinding {
         name: domain_name,
         ttl: 7200,
@@ -42,8 +44,8 @@ fn test_service_binding_encode_decode() {
 fn test_service_binding_alias_form() {
     // given
     let mut encoder = Encoder::default();
-    let domain_name = DomainName::try_from("example.com").unwrap();
-    let target_name = DomainName::try_from("foo.example.com").unwrap();
+    let domain_name = "example.com".parse().unwrap();
+    let target_name = "foo.example.com".parse().unwrap();
     let service_binding = ServiceBinding {
         name: domain_name,
         ttl: 300,
@@ -72,7 +74,7 @@ fn test_service_binding_alias_form() {
 fn test_service_binding_use_the_owername() {
     // given
     let mut encoder = Encoder::default();
-    let domain_name = DomainName::try_from("example.test").unwrap();
+    let domain_name = "example.test".parse().unwrap();
     let target_name = DomainName::default();
     let service_binding = ServiceBinding {
         name: domain_name,
@@ -97,8 +99,8 @@ fn test_service_binding_use_the_owername() {
 fn test_service_binding_map_port() {
     // given
     let mut encoder = Encoder::default();
-    let domain_name = DomainName::try_from("example.com").unwrap();
-    let target_name = DomainName::try_from("foo.example.com").unwrap();
+    let domain_name = "example.com".parse().unwrap();
+    let target_name = "foo.example.com".parse().unwrap();
     let service_binding = ServiceBinding {
         name: domain_name,
         ttl: 300,
@@ -131,8 +133,8 @@ fn test_service_binding_map_port() {
 fn test_service_binding_unregistered_key_value() {
     // given
     let mut encoder = Encoder::default();
-    let domain_name = DomainName::try_from("example.com").unwrap();
-    let target_name = DomainName::try_from("foo.example.com").unwrap();
+    let domain_name = "example.com".parse().unwrap();
+    let target_name = "foo.example.com".parse().unwrap();
     let service_binding = ServiceBinding {
         name: domain_name,
         ttl: 300,
@@ -168,8 +170,8 @@ fn test_service_binding_unregistered_key_value() {
 fn test_service_binding_unregistered_key_unquoted_value() {
     // given
     let mut encoder = Encoder::default();
-    let domain_name = DomainName::try_from("example.com").unwrap();
-    let target_name = DomainName::try_from("foo.example.com").unwrap();
+    let domain_name = "example.com".parse().unwrap();
+    let target_name = "foo.example.com".parse().unwrap();
     let service_binding = ServiceBinding {
         name: domain_name,
         ttl: 300,
@@ -205,8 +207,8 @@ fn test_service_binding_unregistered_key_unquoted_value() {
 fn test_service_binding_ipv6_hints() {
     // given
     let mut encoder = Encoder::default();
-    let domain_name = DomainName::try_from("example.com").unwrap();
-    let target_name = DomainName::try_from("foo.example.com").unwrap();
+    let domain_name = "example.com".parse().unwrap();
+    let target_name = "foo.example.com".parse().unwrap();
     let service_binding = ServiceBinding {
         name: domain_name,
         ttl: 300,
@@ -246,8 +248,8 @@ fn test_service_binding_ipv6_hints() {
 fn test_service_binding_ipv6_hint_in_ipv4_mapped_ipv6_presentation_format() {
     // given
     let mut encoder = Encoder::default();
-    let domain_name = DomainName::try_from("example.com").unwrap();
-    let target_name = DomainName::try_from("example.com").unwrap();
+    let domain_name = "example.com".parse().unwrap();
+    let target_name = "example.com".parse().unwrap();
     let service_binding = ServiceBinding {
         name: domain_name,
         ttl: 300,
@@ -282,8 +284,8 @@ fn test_service_binding_ipv6_hint_in_ipv4_mapped_ipv6_presentation_format() {
 fn test_service_binding_sort_multiple_parameters() {
     // given
     let mut encoder = Encoder::default();
-    let domain_name = DomainName::try_from("example.org").unwrap();
-    let target_name = DomainName::try_from("foo.example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
+    let target_name = "foo.example.org".parse().unwrap();
     let service_binding = ServiceBinding {
         name: domain_name,
         ttl: 300,
@@ -339,8 +341,8 @@ fn test_service_binding_sort_multiple_parameters() {
 fn test_service_binding_alpn_with_escaped_values() {
     // given
     let mut encoder = Encoder::default();
-    let domain_name = DomainName::try_from("example.org").unwrap();
-    let target_name = DomainName::try_from("foo.example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
+    let target_name = "foo.example.org".parse().unwrap();
     let service_binding = ServiceBinding {
         name: domain_name,
         ttl: 300,

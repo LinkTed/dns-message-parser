@@ -1,8 +1,9 @@
-use dns_message_parser::question::{QClass, QType, Question};
-use dns_message_parser::rr::edns::{EDNSOption, ECS};
-use dns_message_parser::rr::{Address, A, OPT, RR};
-use dns_message_parser::{Dns, DomainName, Flags, Opcode, RCode};
-use std::convert::TryFrom;
+use dns_message_parser::{
+    question::{QClass, QType, Question},
+    rr::edns::{EDNSOption, ECS},
+    rr::{Address, A, OPT, RR},
+    {Dns, Flags, Opcode, RCode},
+};
 
 fn main() {
     let id = 32042;
@@ -19,7 +20,7 @@ fn main() {
     };
 
     let q_a = {
-        let domain_name = DomainName::try_from("example.org.").unwrap();
+        let domain_name = "example.org.".parse().unwrap();
         let q_class = QClass::IN;
         let q_type = QType::A;
 
@@ -32,7 +33,7 @@ fn main() {
     let questions = vec![q_a];
 
     let rr_a = {
-        let domain_name = DomainName::try_from("example.org.").unwrap();
+        let domain_name = "example.org.".parse().unwrap();
         let ttl = 3600;
         let ipv4_addr = "10.0.0.10".parse().unwrap();
         let a = A {

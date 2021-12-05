@@ -1,5 +1,6 @@
 use crate::domain_name::DOMAIN_NAME_MAX_RECURSION;
 use crate::encode::Encoder;
+use crate::label::Label;
 use crate::{DomainName, EncodeError, EncodeResult};
 use std::collections::HashMap;
 
@@ -8,8 +9,8 @@ const COMPRESSION_BITS: u16 = 0b1100_0000_0000_0000;
 
 impl Encoder {
     #[inline]
-    fn compress(&mut self, domain_name_str: &str) -> EncodeResult<Option<usize>> {
-        if let Some((index, recursion)) = self.domain_name_index.get(domain_name_str) {
+    fn compress(&mut self, domain_name: &DomainName) -> EncodeResult<Option<usize>> {
+        if let Some((index, recursion)) = self.domain_name_index.get(domain_name) {
             let index = *index;
             if MAX_OFFSET < index {
                 return Err(EncodeError::Compression(index));
@@ -30,16 +31,16 @@ impl Encoder {
     }
 
     #[inline]
-    fn label(&mut self, label: &str) -> EncodeResult<u16> {
+    fn label(&mut self, label: &Label) -> EncodeResult<u16> {
         let index = self.get_offset()?;
-        self.string(label)?;
+        self.string(label.as_ref())?;
         Ok(index)
     }
 
     #[inline]
     fn merge_domain_name_index(
         &mut self,
-        domain_name_index: HashMap<String, u16>,
+        domain_name_index: HashMap<DomainName, u16>,
         recursion: usize,
     ) -> EncodeResult<()> {
         if recursion > DOMAIN_NAME_MAX_RECURSION {
@@ -55,15 +56,15 @@ impl Encoder {
 
     pub(super) fn domain_name(&mut self, domain_name: &DomainName) -> EncodeResult<()> {
         let mut domain_name_index = HashMap::new();
-        for (label, domain_name_str) in domain_name.iter() {
-            if let Some(recursion) = self.compress(domain_name_str)? {
+        for (label, domain_name) in domain_name.iter() {
+            if let Some(recursion) = self.compress(&domain_name)? {
                 self.merge_domain_name_index(domain_name_index, recursion + 1)?;
                 return Ok(());
             }
 
-            let index = self.label(label)?;
+            let index = self.label(&label)?;
             if index <= MAX_OFFSET {
-                domain_name_index.insert(domain_name_str.to_string(), index);
+                domain_name_index.insert(domain_name, index);
             }
         }
         self.string("")?;
@@ -74,35 +75,26 @@ impl Encoder {
 
 impl DomainName {
     fn iter(&self) -> DomainNameIter {
-        DomainNameIter {
-            domain_name_str: self.as_str(),
-        }
-    }
-
-    fn as_str(&self) -> &str {
-        &self.0
+        DomainNameIter { labels: &self.0 }
     }
 }
 
 struct DomainNameIter<'a> {
-    domain_name_str: &'a str,
+    labels: &'a [Label],
 }
 
 impl<'a> Iterator for DomainNameIter<'a> {
-    type Item = (&'a str, &'a str);
+    type Item = (Label, DomainName);
 
     fn next(&mut self) -> Option<Self::Item> {
-        let index = self.domain_name_str.find('.')?;
-        let (label, remain) = self.domain_name_str.split_at(index);
-        let remain = remain.get(1..)?;
-        let domain_name_str = self.domain_name_str;
-        self.domain_name_str = remain;
-        if label.is_empty() {
-            None
-        } else {
-            Some((label, domain_name_str))
+        if self.labels.is_empty() {
+            return None;
         }
+
+        let label = self.labels[0].clone();
+        let domain_name = DomainName(self.labels.to_vec());
+        self.labels = &self.labels[1..];
+        Some((label, domain_name))
     }
 }
-
 impl_encode!(DomainName, domain_name);

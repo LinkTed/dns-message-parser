@@ -1,17 +1,19 @@
-use std::convert::TryFrom;
-use std::net::{Ipv4Addr, Ipv6Addr};
-use std::str::FromStr;
-
-use crate::rr::{ServiceBinding, ServiceParameter};
-use crate::DomainName;
-use std::collections::BTreeSet;
+use crate::{
+    rr::{ServiceBinding, ServiceParameter},
+    DomainName,
+};
+use std::{
+    collections::BTreeSet,
+    net::{Ipv4Addr, Ipv6Addr},
+    str::FromStr,
+};
 
 /// Example from: https://github.com/MikeBishop/dns-alt-svc/blob/master/draft-ietf-dnsop-svcb-https.md#aliasform
 #[test]
 fn test_https_alias_form() {
     // given
-    let domain_name = DomainName::try_from("example.com").unwrap();
-    let target_name = DomainName::try_from("foo.example.com").unwrap();
+    let domain_name = "example.com".parse().unwrap();
+    let target_name = "foo.example.com".parse().unwrap();
     let service_binding = ServiceBinding {
         name: domain_name,
         ttl: 7200,
@@ -35,7 +37,7 @@ fn test_https_alias_form() {
 #[test]
 fn test_svcb_use_the_ownername() {
     // given
-    let domain_name = DomainName::try_from("example.com").unwrap();
+    let domain_name = "example.com".parse().unwrap();
     let target_name = DomainName::default();
     let service_binding = ServiceBinding {
         name: domain_name,
@@ -57,8 +59,8 @@ fn test_svcb_use_the_ownername() {
 #[test]
 fn test_https_map_port() {
     // given
-    let domain_name = DomainName::try_from("example.com").unwrap();
-    let target_name = DomainName::try_from("foo.example.com").unwrap();
+    let domain_name = "example.com".parse().unwrap();
+    let target_name = "foo.example.com".parse().unwrap();
     let service_binding = ServiceBinding {
         name: domain_name,
         ttl: 7200,
@@ -84,8 +86,8 @@ fn test_https_map_port() {
 #[test]
 fn test_svcb_unregistered_key_value() {
     // given
-    let domain_name = DomainName::try_from("example.com").unwrap();
-    let target_name = DomainName::try_from("foo.example.com").unwrap();
+    let domain_name = "example.com".parse().unwrap();
+    let target_name = "foo.example.com".parse().unwrap();
     let service_binding = ServiceBinding {
         name: domain_name,
         ttl: 300,
@@ -114,8 +116,8 @@ fn test_svcb_unregistered_key_value() {
 #[test]
 fn test_https_unregistered_key_escaped_value() {
     // given
-    let domain_name = DomainName::try_from("example.com").unwrap();
-    let target_name = DomainName::try_from("foo.example.com").unwrap();
+    let domain_name = "example.com".parse().unwrap();
+    let target_name = "foo.example.com".parse().unwrap();
     let service_binding = ServiceBinding {
         name: domain_name,
         ttl: 300,
@@ -144,8 +146,8 @@ fn test_https_unregistered_key_escaped_value() {
 #[test]
 fn test_svcb_ipv6_hints() {
     // given
-    let domain_name = DomainName::try_from("example.com").unwrap();
-    let target_name = DomainName::try_from("foo.example.com").unwrap();
+    let domain_name = "example.com".parse().unwrap();
+    let target_name = "foo.example.com".parse().unwrap();
     let service_binding = ServiceBinding {
         name: domain_name,
         ttl: 7200,
@@ -176,8 +178,8 @@ fn test_svcb_ipv6_hints() {
 #[test]
 fn test_https_ipv6_hint_in_ipv4_mapped_ipv6_format() {
     // given
-    let domain_name = DomainName::try_from("example.com").unwrap();
-    let target_name = DomainName::try_from("foo.example.com").unwrap();
+    let domain_name = "example.com".parse().unwrap();
+    let target_name = "foo.example.com".parse().unwrap();
     let service_binding = ServiceBinding {
         name: domain_name,
         ttl: 300,
@@ -205,8 +207,8 @@ fn test_https_ipv6_hint_in_ipv4_mapped_ipv6_format() {
 #[test]
 fn test_svcb_multiple_parameters_in_wrong_order() {
     // given
-    let domain_name = DomainName::try_from("example.org").unwrap();
-    let target_name = DomainName::try_from("foo.example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
+    let target_name = "foo.example.org".parse().unwrap();
     let service_binding = ServiceBinding {
         name: domain_name,
         ttl: 7200,
@@ -242,8 +244,8 @@ fn test_svcb_multiple_parameters_in_wrong_order() {
 #[test]
 fn test_https_alpn_with_escaped_values() {
     // given
-    let domain_name = DomainName::try_from("example.org").unwrap();
-    let target_name = DomainName::try_from("foo.example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
+    let target_name = "foo.example.org".parse().unwrap();
     let service_binding = ServiceBinding {
         name: domain_name,
         ttl: 300,

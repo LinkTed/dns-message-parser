@@ -21,7 +21,6 @@ dns-message-parser = "~0.6.0"
 use bytes::Bytes;
 use dns_message_parser::{Dns, DomainName, Flags, Opcode, RCode};
 use dns_message_parser::question::{QClass, QType, Question};
-use std::convert::TryFrom;
 
 fn decode_example() {
     let msg = b"\xdb\x1c\x85\x80\x00\x01\x00\x01\x00\x00\x00\x00\x07\x65\x78\x61\x6d\x70\x6c\x65\
@@ -48,7 +47,7 @@ fn encode_example() {
         rcode: RCode::NoError,
     };
     let question = {
-        let domain_name = DomainName::try_from("example.org.").unwrap();
+        let domain_name = "example.org.".parse().unwrap();
         let q_class = QClass::IN;
         let q_type = QType::A;
 

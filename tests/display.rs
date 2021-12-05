@@ -1,15 +1,20 @@
-use dns_message_parser::question::{QClass, QType, Question};
-use dns_message_parser::rr::edns::{Cookie, EDNSOption, Padding, ECS};
-use dns_message_parser::rr::{
-    APItem, Address, AlgorithmType, Class, DigestType, ISDNAddress, PSDNAddress, SSHFPAlgorithm,
-    SSHFPType, ServiceBinding, ServiceParameter, Tag, A, AAAA, APL, CAA, CNAME, DNAME, DNSKEY, DS,
-    EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32, L64, LP, MB, MD, MF, MG, MINFO, MR, MX, NID,
-    NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA, SOA, SRV, SSHFP, TXT, URI, X25,
+use dns_message_parser::{
+    question::{QClass, QType, Question},
+    rr::edns::{Cookie, EDNSOption, Padding, ECS},
+    rr::{
+        APItem, Address, AlgorithmType, Class, DigestType, ISDNAddress, PSDNAddress,
+        SSHFPAlgorithm, SSHFPType, ServiceBinding, ServiceParameter, Tag, A, AAAA, APL, CAA, CNAME,
+        DNAME, DNSKEY, DS, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32, L64, LP, MB, MD, MF, MG,
+        MINFO, MR, MX, NID, NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA, SOA, SRV, SSHFP, TXT, URI,
+        X25,
+    },
+    {Dns, Flags, Opcode, RCode},
 };
-use dns_message_parser::{Dns, DomainName, Flags, Opcode, RCode};
-use std::collections::BTreeSet;
-use std::convert::{TryFrom, TryInto};
-use std::fmt::Display;
+use std::{
+    collections::BTreeSet,
+    convert::{TryFrom, TryInto},
+    fmt::Display,
+};
 
 fn check_output<T>(t: &T, output: &str)
 where
@@ -21,7 +26,7 @@ where
 
 #[test]
 fn rr_a() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let ipv4_addr = "10.0.0.1".parse().unwrap();
     let rr = RR::A(A {
         domain_name,
@@ -33,9 +38,9 @@ fn rr_a() {
 
 #[test]
 fn rr_ns() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::CS;
-    let ns_d_name = DomainName::try_from("ns1.example.org").unwrap();
+    let ns_d_name = "ns1.example.org".parse().unwrap();
     let rr = RR::NS(NS {
         domain_name,
         ttl: 100,
@@ -47,9 +52,9 @@ fn rr_ns() {
 
 #[test]
 fn rr_cname() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::IN;
-    let c_name = DomainName::try_from("example.org").unwrap();
+    let c_name = "example.org".parse().unwrap();
     let rr = RR::CNAME(CNAME {
         domain_name,
         ttl: 100,
@@ -61,10 +66,10 @@ fn rr_cname() {
 
 #[test]
 fn rr_soa() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::CH;
-    let m_name = DomainName::try_from("ns1.example.org.").unwrap();
-    let r_name = DomainName::try_from("admin.example.org.").unwrap();
+    let m_name = "ns1.example.org.".parse().unwrap();
+    let r_name = "admin.example.org.".parse().unwrap();
     let serial = 1;
     let refresh = 10800;
     let retry = 3600;
@@ -90,9 +95,9 @@ fn rr_soa() {
 
 #[test]
 fn rr_mb() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::HS;
-    let mad_name = DomainName::try_from("mail.example.org").unwrap();
+    let mad_name = "mail.example.org".parse().unwrap();
     let rr = RR::MB(MB {
         domain_name,
         ttl: 100,
@@ -104,9 +109,9 @@ fn rr_mb() {
 
 #[test]
 fn rr_md() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::HS;
-    let mad_name = DomainName::try_from("mail.example.org").unwrap();
+    let mad_name = "mail.example.org".parse().unwrap();
     let rr = RR::MD(MD {
         domain_name,
         ttl: 100,
@@ -118,9 +123,9 @@ fn rr_md() {
 
 #[test]
 fn rr_mf() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::HS;
-    let mad_name = DomainName::try_from("mail.example.org").unwrap();
+    let mad_name = "mail.example.org".parse().unwrap();
     let rr = RR::MF(MF {
         domain_name,
         ttl: 100,
@@ -132,9 +137,9 @@ fn rr_mf() {
 
 #[test]
 fn rr_mg() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::IN;
-    let mgm_name = DomainName::try_from("mail.example.org").unwrap();
+    let mgm_name = "mail.example.org".parse().unwrap();
     let rr = RR::MG(MG {
         domain_name,
         ttl: 100,
@@ -146,9 +151,9 @@ fn rr_mg() {
 
 #[test]
 fn rr_mr() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::CS;
-    let new_name = DomainName::try_from("mail.example.org").unwrap();
+    let new_name = "mail.example.org".parse().unwrap();
     let rr = RR::MR(MR {
         domain_name,
         ttl: 100,
@@ -162,9 +167,9 @@ fn rr_mr() {
 
 #[test]
 fn rr_ptr() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::CH;
-    let ptr_d_name = DomainName::try_from("example.org").unwrap();
+    let ptr_d_name = "example.org".parse().unwrap();
     let rr = RR::PTR(PTR {
         domain_name,
         ttl: 100,
@@ -176,7 +181,7 @@ fn rr_ptr() {
 
 #[test]
 fn rr_hinfo() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::HS;
     let cpu = String::from("TEST");
     let os = String::from("Linux");
@@ -192,10 +197,10 @@ fn rr_hinfo() {
 
 #[test]
 fn rr_minfo() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::IN;
-    let r_mail_bx = DomainName::try_from("admin.example.org").unwrap();
-    let e_mail_bx = DomainName::try_from("error.example.org").unwrap();
+    let r_mail_bx = "admin.example.org".parse().unwrap();
+    let e_mail_bx = "error.example.org".parse().unwrap();
     let rr = RR::MINFO(MINFO {
         domain_name,
         ttl: 100,
@@ -211,10 +216,10 @@ fn rr_minfo() {
 
 #[test]
 fn rr_mx() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::CS;
     let preference = 10;
-    let exchange = DomainName::try_from("mail.example.org").unwrap();
+    let exchange = "mail.example.org".parse().unwrap();
     let rr = RR::MX(MX {
         domain_name,
         ttl: 100,
@@ -227,7 +232,7 @@ fn rr_mx() {
 
 #[test]
 fn rr_txt() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::CH;
     let strings = vec![String::from("Text\n")].try_into().unwrap();
     let rr = RR::TXT(TXT {
@@ -241,10 +246,10 @@ fn rr_txt() {
 
 #[test]
 fn rr_rp() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::HS;
-    let mbox_dname = DomainName::try_from("admin.example.org").unwrap();
-    let txt_dname = DomainName::try_from("error.example.org").unwrap();
+    let mbox_dname = "admin.example.org".parse().unwrap();
+    let txt_dname = "error.example.org".parse().unwrap();
     let rr = RR::RP(RP {
         domain_name,
         ttl: 100,
@@ -260,7 +265,7 @@ fn rr_rp() {
 
 #[test]
 fn rr_x25() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::IN;
     let psdn_address = PSDNAddress::try_from(String::from("311061700956")).unwrap();
     let rr = RR::X25(X25 {
@@ -274,7 +279,7 @@ fn rr_x25() {
 
 #[test]
 fn rr_isdn_1() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::CS;
     let isdn_address = ISDNAddress::try_from(String::from("150862028003217")).unwrap();
     let sa = Some(SA::try_from(String::from("004")).unwrap());
@@ -290,7 +295,7 @@ fn rr_isdn_1() {
 
 #[test]
 fn rr_isdn_2() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::CH;
     let isdn_address = ISDNAddress::try_from(String::from("150862028003217")).unwrap();
     let sa = None;
@@ -306,10 +311,10 @@ fn rr_isdn_2() {
 
 #[test]
 fn rr_rt() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::HS;
     let preference = 2;
-    let intermediate_host = DomainName::try_from("relay.example.org").unwrap();
+    let intermediate_host = "relay.example.org".parse().unwrap();
     let rr = RR::RT(RT {
         domain_name,
         ttl: 100,
@@ -322,11 +327,11 @@ fn rr_rt() {
 
 #[test]
 fn rr_px() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::IN;
     let preference = 10;
-    let map822 = DomainName::try_from("example.org").unwrap();
-    let mapx400 = DomainName::try_from("px400.example.org").unwrap();
+    let map822 = "example.org".parse().unwrap();
+    let mapx400 = "px400.example.org".parse().unwrap();
     let rr = RR::PX(PX {
         domain_name,
         ttl: 100,
@@ -343,7 +348,7 @@ fn rr_px() {
 
 #[test]
 fn rr_gpos() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::CS;
     let longitude = String::from("-32.0082");
     let latitude = String::from("120.0050");
@@ -361,7 +366,7 @@ fn rr_gpos() {
 
 #[test]
 fn rr_aaaa() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let ipv6_addr = "::1".parse().unwrap();
     let rr = RR::AAAA(AAAA {
         domain_name,
@@ -373,7 +378,7 @@ fn rr_aaaa() {
 
 #[test]
 fn rr_eid() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::CH;
     let data = Vec::from(&b"\xe3\x2c\x6f\x78\x16\x3a\x93\x48"[..]);
     let rr = RR::EID(EID {
@@ -387,7 +392,7 @@ fn rr_eid() {
 
 #[test]
 fn rr_nimloc() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::HS;
     let data = Vec::from(&b"\x32\x25\x1a\x03\x00\x67"[..]);
     let rr = RR::NIMLOC(NIMLOC {
@@ -401,12 +406,12 @@ fn rr_nimloc() {
 
 #[test]
 fn rr_srv() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::IN;
     let priority = 0;
     let weight = 1;
     let port = 80;
-    let target = DomainName::try_from("srv.example.org").unwrap();
+    let target = "srv.example.org".parse().unwrap();
     let rr = RR::SRV(SRV {
         domain_name,
         ttl: 100,
@@ -421,10 +426,10 @@ fn rr_srv() {
 
 #[test]
 fn rr_kx() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::CS;
     let preference = 10;
-    let exchanger = DomainName::try_from("kx.example.org").unwrap();
+    let exchanger = "kx.example.org".parse().unwrap();
     let rr = RR::KX(KX {
         domain_name,
         ttl: 100,
@@ -437,9 +442,9 @@ fn rr_kx() {
 
 #[test]
 fn rr_dname() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::CH;
-    let target = DomainName::try_from("dname.example.org").unwrap();
+    let target = "dname.example.org".parse().unwrap();
     let rr = RR::DNAME(DNAME {
         domain_name,
         ttl: 100,
@@ -451,7 +456,7 @@ fn rr_dname() {
 
 #[test]
 fn rr_sshfp() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::HS;
     let algorithm = SSHFPAlgorithm::DSS;
     let type_ = SSHFPType::Sha1;
@@ -473,7 +478,7 @@ fn rr_sshfp() {
 
 #[test]
 fn rr_nid() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::CH;
     let preference = 10;
     let node_id = 0xffeeddccbbaa9988;
@@ -489,7 +494,7 @@ fn rr_nid() {
 
 #[test]
 fn rr_l32() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::HS;
     let preference = 10;
     let locator_32 = 0x0a000001;
@@ -505,7 +510,7 @@ fn rr_l32() {
 
 #[test]
 fn rr_l64() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::IN;
     let preference = 100;
     let locator_64 = 0x2021222324252627;
@@ -521,10 +526,10 @@ fn rr_l64() {
 
 #[test]
 fn rr_lp() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::CS;
     let preference = 200;
-    let fqdn = DomainName::try_from("l64-subnet.example.org.").unwrap();
+    let fqdn = "l64-subnet.example.org.".parse().unwrap();
     let rr = RR::LP(LP {
         domain_name,
         ttl: 100,
@@ -537,7 +542,7 @@ fn rr_lp() {
 
 #[test]
 fn rr_eui48() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::CS;
     let eui_48 = b"\x00\x11\x22\x33\x44\x55".to_owned();
     let rr = RR::EUI48(EUI48 {
@@ -551,7 +556,7 @@ fn rr_eui48() {
 
 #[test]
 fn rr_eui64() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::CH;
     let eui_64 = b"\x00\x11\x22\x33\x44\x55\x66\x77".to_owned();
     let rr = RR::EUI64(EUI64 {
@@ -565,7 +570,7 @@ fn rr_eui64() {
 
 #[test]
 fn rr_uri() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::IN;
     let uri = "https://example.org/".to_string();
     let rr = RR::URI(URI {
@@ -656,7 +661,7 @@ fn rr_opt_padding() {
 
 #[test]
 fn rr_apl_1() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let apitems = Vec::new();
     let rr = RR::APL(APL {
         domain_name,
@@ -668,7 +673,7 @@ fn rr_apl_1() {
 
 #[test]
 fn rr_apl_2() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let mut apitems = Vec::new();
     let address = Address::Ipv4("10.0.0.0".parse().unwrap());
     let apitem = APItem::new(8, false, address).unwrap();
@@ -686,7 +691,7 @@ fn rr_apl_2() {
 
 #[test]
 fn rr_apl_3() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let address = Address::Ipv6("1122:3344::".parse().unwrap());
     let apitem = APItem::new(64, true, address).unwrap();
     let apitems = vec![apitem];
@@ -700,7 +705,7 @@ fn rr_apl_3() {
 
 #[test]
 fn rr_dnskey() {
-    let domain_name = DomainName::try_from("example.org").unwrap();
+    let domain_name = "example.org".parse().unwrap();
     let class = Class::IN;
     let zone_key_flag = true;
     let secure_entry_point_flag = true;
@@ -725,7 +730,7 @@ fn rr_dnskey() {
 
 #[test]
 fn rr_ds() {
-    let domain_name = DomainName::try_from("dskey.example.org").unwrap();
+    let domain_name = "dskey.example.org".parse().unwrap();
     let class = Class::CS;
     let key_tag = 5583;
     let algorithm_type = AlgorithmType::Ed448;
@@ -751,7 +756,7 @@ fn rr_ds() {
 
 #[test]
 fn rr_caa() {
-    let domain_name = DomainName::try_from("caa.example.org").unwrap();
+    let domain_name = "caa.example.org".parse().unwrap();
     let class = Class::IN;
     let flags = 0x80;
     let tag = Tag::try_from("tag".to_string()).unwrap();
@@ -770,8 +775,8 @@ fn rr_caa() {
 #[test]
 fn rr_svcb_alias() {
     // given
-    let domain_name = DomainName::try_from("_8443._foo.api.example.com").unwrap();
-    let target_name = DomainName::try_from("svc4.example.net.").unwrap();
+    let domain_name = "_8443._foo.api.example.com".parse().unwrap();
+    let target_name = "svc4.example.net.".parse().unwrap();
     let service_binding = ServiceBinding {
         name: domain_name,
         ttl: 7200,
@@ -794,8 +799,8 @@ fn rr_svcb_alias() {
 #[test]
 fn rr_svcb_service() {
     // given
-    let domain_name = DomainName::try_from("svc4.example.net.").unwrap();
-    let target_name = DomainName::try_from("svc4.example.net.").unwrap();
+    let domain_name = "svc4.example.net.".parse().unwrap();
+    let target_name = "svc4.example.net.".parse().unwrap();
     let application_layer_protocol_negotiation = ServiceParameter::ALPN {
         alpn_ids: vec!["bar".to_string()],
     };
@@ -828,8 +833,8 @@ fn rr_svcb_service() {
 #[test]
 fn rr_https_alias_default() {
     // given
-    let domain_name = DomainName::try_from("example.com").unwrap();
-    let target_name = DomainName::try_from("svc.example.net").unwrap();
+    let domain_name = "example.com".parse().unwrap();
+    let target_name = "svc.example.net".parse().unwrap();
     let service_binding = ServiceBinding {
         name: domain_name,
         ttl: 7200,
@@ -852,8 +857,8 @@ fn rr_https_alias_default() {
 #[test]
 fn rr_https_alias_alternative_port() {
     // given
-    let domain_name = DomainName::try_from("_8443._https.example.com").unwrap();
-    let target_name = DomainName::try_from("svc.example.net").unwrap();
+    let domain_name = "_8443._https.example.com".parse().unwrap();
+    let target_name = "svc.example.net".parse().unwrap();
     let service_binding = ServiceBinding {
         name: domain_name,
         ttl: 7200,
@@ -878,8 +883,8 @@ fn rr_https_alias_alternative_port() {
 #[test]
 fn rr_https_quic_to_udp() {
     // given
-    let domain_name = DomainName::try_from("svc.example.net").unwrap();
-    let target_name = DomainName::try_from("svc3.example.net").unwrap();
+    let domain_name = "svc.example.net".parse().unwrap();
+    let target_name = "svc3.example.net".parse().unwrap();
     let application_layer_protocol_negotiation = ServiceParameter::ALPN {
         alpn_ids: vec!["h3".to_string()],
     };
@@ -910,8 +915,8 @@ fn rr_https_quic_to_udp() {
 #[test]
 fn rr_https_h2_to_tcp() {
     // given
-    let domain_name = DomainName::try_from("svc.example.net").unwrap();
-    let target_name = DomainName::try_from("svc2.example.net").unwrap();
+    let domain_name = "svc.example.net".parse().unwrap();
+    let target_name = "svc2.example.net".parse().unwrap();
     let application_layer_protocol_negotiation = ServiceParameter::ALPN {
         alpn_ids: vec!["h2".to_string()],
     };
@@ -969,7 +974,7 @@ fn q_class_none() {
 
 #[test]
 fn question() {
-    let domain_name = DomainName::try_from("example.org.").unwrap();
+    let domain_name = "example.org.".parse().unwrap();
     let q_class = QClass::IN;
     let q_type = QType::A;
     let question = Question {
@@ -1015,7 +1020,7 @@ fn dns() {
         rcode,
     };
     let questions = {
-        let domain_name = DomainName::try_from("cname.example.org.").unwrap();
+        let domain_name = "cname.example.org.".parse().unwrap();
         let q_class = QClass::IN;
         let q_type = QType::CNAME;
         let question = Question {
@@ -1026,10 +1031,10 @@ fn dns() {
         vec![question]
     };
     let answers = {
-        let domain_name = DomainName::try_from("cname.example.org.").unwrap();
+        let domain_name = "cname.example.org.".parse().unwrap();
         let class = Class::IN;
         let ttl = 3600;
-        let c_name = DomainName::try_from("example.org.").unwrap();
+        let c_name = "example.org.".parse().unwrap();
         let c_name = CNAME {
             domain_name,
             ttl,
@@ -1039,10 +1044,10 @@ fn dns() {
         vec![RR::CNAME(c_name)]
     };
     let authorities = {
-        let domain_name = DomainName::try_from("ns1.example.org.").unwrap();
+        let domain_name = "ns1.example.org.".parse().unwrap();
         let class = Class::IN;
         let ttl = 3600;
-        let ns_d_name = DomainName::try_from("example.org.").unwrap();
+        let ns_d_name = "example.org.".parse().unwrap();
         let ns = NS {
             domain_name,
             ttl,
@@ -1052,7 +1057,7 @@ fn dns() {
         vec![RR::NS(ns)]
     };
     let additionals = {
-        let domain_name = DomainName::try_from("example.org.").unwrap();
+        let domain_name = "example.org.".parse().unwrap();
         let ttl = 3600;
         let ipv4_addr = "10.0.0.10".parse().unwrap();
         let a = A {

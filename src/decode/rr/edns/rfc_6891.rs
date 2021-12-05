@@ -36,7 +36,7 @@ impl<'a, 'b: 'a> Decoder<'b, 'b> {
     }
 
     pub(in super::super) fn rr_opt(&'a mut self, header: Header) -> DecodeResult<OPT> {
-        if header.domain_name != "." {
+        if !header.domain_name.is_root() {
             return Err(DecodeError::OPTDomainName(header.domain_name));
         }
         let requestor_payload_size = header.class;

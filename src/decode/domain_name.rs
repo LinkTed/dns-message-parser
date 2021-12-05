@@ -1,6 +1,6 @@
-use crate::decode::Decoder;
-use crate::domain_name::DOMAIN_NAME_MAX_RECURSION;
-use crate::{DecodeError, DecodeResult, DomainName};
+use crate::{
+    decode::Decoder, domain_name::DOMAIN_NAME_MAX_RECURSION, DecodeError, DecodeResult, DomainName,
+};
 use std::str::from_utf8;
 
 const COMPRESSION_BITS: u8 = 0b1100_0000;
@@ -42,6 +42,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
             } else {
                 let buffer = self.read(length as usize)?;
                 let label = from_utf8(buffer.as_ref())?;
+                let label = label.parse()?;
                 domain_name.append_label(label)?;
                 length = self.u8()?;
             }

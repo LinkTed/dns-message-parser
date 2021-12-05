@@ -1,6 +1,7 @@
-use dns_message_parser::question::{QClass, QType, Question};
-use dns_message_parser::{Dns, DomainName, Flags, Opcode, RCode};
-use std::convert::TryFrom;
+use dns_message_parser::{
+    question::{QClass, QType, Question},
+    {Dns, Flags, Opcode, RCode},
+};
 
 fn main() {
     let id = 56092;
@@ -16,7 +17,7 @@ fn main() {
         rcode: RCode::NoError,
     };
     let question = {
-        let domain_name = DomainName::try_from("example.org.").unwrap();
+        let domain_name = "example.org.".parse().unwrap();
         let q_class = QClass::IN;
         let q_type = QType::A;
 

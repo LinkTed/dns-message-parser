@@ -1,12 +1,15 @@
 use super::Header;
-use crate::decode::decoder::Decoder;
-use crate::decode::error::DecodeError::ECHLengthMismatch;
-use crate::rr::ServiceParameter;
-use crate::{DecodeError, DomainName};
+use crate::{
+    decode::decoder::Decoder,
+    decode::error::DecodeError::ECHLengthMismatch,
+    rr::ServiceParameter,
+    {DecodeError, DomainName},
+};
 use bytes::Bytes;
-use std::convert::TryFrom;
-use std::net::{Ipv4Addr, Ipv6Addr};
-use std::str::FromStr;
+use std::{
+    net::{Ipv4Addr, Ipv6Addr},
+    str::FromStr,
+};
 
 #[test]
 fn header_get_class_error() {
@@ -27,7 +30,7 @@ fn test_service_binding_alias_form() {
     bytes.extend_from_slice(b"\x03foo\x07example\x03com\x00"); // target
     let mut decoder = Decoder::main(Bytes::from(bytes));
     let header = Header {
-        domain_name: DomainName::try_from("test.example.com").unwrap(),
+        domain_name: "test.example.com".parse().unwrap(),
         class: 1,
         ttl: 7200,
     };
@@ -37,15 +40,9 @@ fn test_service_binding_alias_form() {
 
     // then
     assert_eq!(result.priority, 0);
-    assert_eq!(
-        result.target_name,
-        DomainName::try_from("foo.example.com").unwrap()
-    );
+    assert_eq!(result.target_name, "foo.example.com".parse().unwrap());
     assert_eq!(result.ttl, 7200);
-    assert_eq!(
-        result.name,
-        DomainName::try_from("test.example.com").unwrap()
-    );
+    assert_eq!(result.name, "test.example.com".parse().unwrap());
     assert!(result.parameters.is_empty());
     assert!(result.to_string().ends_with("0 foo.example.com."));
 }
@@ -59,7 +56,7 @@ fn test_service_binding_use_the_ownername() {
     bytes.extend_from_slice(b"\x00"); // target (root label)
     let mut decoder = Decoder::main(Bytes::from(bytes));
     let header = Header {
-        domain_name: DomainName::try_from("test.example.com").unwrap(),
+        domain_name: "test.example.com".parse().unwrap(),
         class: 1,
         ttl: 7200,
     };
@@ -69,12 +66,9 @@ fn test_service_binding_use_the_ownername() {
 
     // then
     assert_eq!(result.priority, 1);
-    assert_eq!(result.target_name, DomainName::try_from(".").unwrap());
+    assert_eq!(result.target_name, DomainName::default());
     assert_eq!(result.ttl, 7200);
-    assert_eq!(
-        result.name,
-        DomainName::try_from("test.example.com").unwrap()
-    );
+    assert_eq!(result.name, "test.example.com".parse().unwrap());
     assert!(result.parameters.is_empty());
     assert!(result.to_string().ends_with("1 ."));
 }
@@ -91,7 +85,7 @@ fn test_service_binding_map_port() {
     bytes.extend_from_slice(b"\x00\x35"); // value: 53
     let mut decoder = Decoder::main(Bytes::from(bytes));
     let header = Header {
-        domain_name: DomainName::try_from("test.example.com").unwrap(),
+        domain_name: "test.example.com".parse().unwrap(),
         class: 1,
         ttl: 7200,
     };
@@ -101,15 +95,9 @@ fn test_service_binding_map_port() {
 
     // then
     assert_eq!(result.priority, 16);
-    assert_eq!(
-        result.target_name,
-        DomainName::try_from("foo.example.com").unwrap()
-    );
+    assert_eq!(result.target_name, "foo.example.com".parse().unwrap());
     assert_eq!(result.ttl, 7200);
-    assert_eq!(
-        result.name,
-        DomainName::try_from("test.example.com").unwrap()
-    );
+    assert_eq!(result.name, "test.example.com".parse().unwrap());
     assert_eq!(result.parameters.len(), 1);
     assert!(matches!(result.parameters.iter().next().unwrap(),
         ServiceParameter::PORT {port} if *port == 53));
@@ -128,7 +116,7 @@ fn test_service_binding_unregistered_key() {
     bytes.extend_from_slice(b"hello"); // value
     let mut decoder = Decoder::main(Bytes::from(bytes));
     let header = Header {
-        domain_name: DomainName::try_from("test.example.com").unwrap(),
+        domain_name: "test.example.com".parse().unwrap(),
         class: 1,
         ttl: 7200,
     };
@@ -138,15 +126,9 @@ fn test_service_binding_unregistered_key() {
 
     // then
     assert_eq!(result.priority, 1);
-    assert_eq!(
-        result.target_name,
-        DomainName::try_from("foo.example.com").unwrap()
-    );
+    assert_eq!(result.target_name, "foo.example.com".parse().unwrap());
     assert_eq!(result.ttl, 7200);
-    assert_eq!(
-        result.name,
-        DomainName::try_from("test.example.com").unwrap()
-    );
+    assert_eq!(result.name, "test.example.com".parse().unwrap());
     assert_eq!(result.parameters.len(), 1);
     assert!(matches!(result.parameters.iter().next().unwrap(),
             ServiceParameter::PRIVATE { number, wire_data, } if *number == 667
@@ -165,7 +147,7 @@ fn test_service_binding_unregistered_key_escaped_value() {
     bytes.extend_from_slice(b"hello\xd2qoo"); // value
     let mut decoder = Decoder::main(Bytes::from(bytes));
     let header = Header {
-        domain_name: DomainName::try_from("test.example.com").unwrap(),
+        domain_name: "test.example.com".parse().unwrap(),
         class: 1,
         ttl: 7200,
     };
@@ -175,15 +157,9 @@ fn test_service_binding_unregistered_key_escaped_value() {
 
     // then
     assert_eq!(result.priority, 1);
-    assert_eq!(
-        result.target_name,
-        DomainName::try_from("foo.example.com").unwrap()
-    );
+    assert_eq!(result.target_name, "foo.example.com".parse().unwrap());
     assert_eq!(result.ttl, 7200);
-    assert_eq!(
-        result.name,
-        DomainName::try_from("test.example.com").unwrap()
-    );
+    assert_eq!(result.name, "test.example.com".parse().unwrap());
     assert_eq!(result.parameters.len(), 1);
     assert!(matches!(result.parameters.iter().next().unwrap(),
             ServiceParameter::PRIVATE { number, wire_data, } if *number == 667
@@ -203,7 +179,7 @@ fn test_service_binding_ipv6_hints() {
     bytes.extend_from_slice(b"\x20\x01\x0d\xb8\x00\x00\x00\x00\x00\x00\x00\x00\x00\x53\x00\x01"); // second address
     let mut decoder = Decoder::main(Bytes::from(bytes));
     let header = Header {
-        domain_name: DomainName::try_from("test.example.com").unwrap(),
+        domain_name: "test.example.com".parse().unwrap(),
         class: 1,
         ttl: 7200,
     };
@@ -213,15 +189,9 @@ fn test_service_binding_ipv6_hints() {
 
     // then
     assert_eq!(result.priority, 1);
-    assert_eq!(
-        result.target_name,
-        DomainName::try_from("foo.example.com").unwrap()
-    );
+    assert_eq!(result.target_name, "foo.example.com".parse().unwrap());
     assert_eq!(result.ttl, 7200);
-    assert_eq!(
-        result.name,
-        DomainName::try_from("test.example.com").unwrap()
-    );
+    assert_eq!(result.name, "test.example.com".parse().unwrap());
     assert_eq!(result.parameters.len(), 1);
     assert!(matches!(result.parameters.iter().next().unwrap(),
             ServiceParameter::IPV6_HINT { hints } if hints.len() == 2
@@ -241,7 +211,7 @@ fn test_service_binding_ipv6_in_ipv4_mapped_ipv6_format() {
     bytes.extend_from_slice(b"\x20\x01\x0d\xb8\xff\xff\xff\xff\xff\xff\xff\xff\xc6\x33\x64\x64"); // address
     let mut decoder = Decoder::main(Bytes::from(bytes));
     let header = Header {
-        domain_name: DomainName::try_from("test.example.com").unwrap(),
+        domain_name: "test.example.com".parse().unwrap(),
         class: 1,
         ttl: 7200,
     };
@@ -251,15 +221,9 @@ fn test_service_binding_ipv6_in_ipv4_mapped_ipv6_format() {
 
     // then
     assert_eq!(result.priority, 1);
-    assert_eq!(
-        result.target_name,
-        DomainName::try_from("example.com").unwrap()
-    );
+    assert_eq!(result.target_name, "example.com".parse().unwrap());
     assert_eq!(result.ttl, 7200);
-    assert_eq!(
-        result.name,
-        DomainName::try_from("test.example.com").unwrap()
-    );
+    assert_eq!(result.name, "test.example.com".parse().unwrap());
     assert_eq!(result.parameters.len(), 1);
     assert!(matches!(result.parameters.iter().next().unwrap(),
              ServiceParameter::IPV6_HINT { hints } if hints.len() == 1 && hints[0] == Ipv6Addr::from_str("2001:db8:ffff:ffff:ffff:ffff:198.51.100.100").unwrap()))
@@ -289,7 +253,7 @@ fn test_service_binding_multiple_parameters() {
     bytes.extend_from_slice(b"\xc0\x00\x02\x01"); // IPv4 address
     let mut decoder = Decoder::main(Bytes::from(bytes));
     let header = Header {
-        domain_name: DomainName::try_from("test.example.com").unwrap(),
+        domain_name: "test.example.com".parse().unwrap(),
         class: 1,
         ttl: 7200,
     };
@@ -299,15 +263,9 @@ fn test_service_binding_multiple_parameters() {
 
     // then
     assert_eq!(result.priority, 16);
-    assert_eq!(
-        result.target_name,
-        DomainName::try_from("foo.example.org").unwrap()
-    );
+    assert_eq!(result.target_name, "foo.example.org".parse().unwrap());
     assert_eq!(result.ttl, 7200);
-    assert_eq!(
-        result.name,
-        DomainName::try_from("test.example.com").unwrap()
-    );
+    assert_eq!(result.name, "test.example.com".parse().unwrap());
     assert_eq!(result.parameters.len(), 3);
     let mut parameters = result.parameters.iter();
     assert!(matches!(parameters.next().unwrap(),
@@ -334,7 +292,7 @@ fn test_service_binding_escaped_presentation_format() {
     let mut decoder = Decoder::main(Bytes::from(bytes));
 
     let header = Header {
-        domain_name: DomainName::try_from("test.example.com").unwrap(),
+        domain_name: "test.example.com".parse().unwrap(),
         class: 1,
         ttl: 7200,
     };
@@ -344,15 +302,9 @@ fn test_service_binding_escaped_presentation_format() {
 
     // then
     assert_eq!(result.priority, 16);
-    assert_eq!(
-        result.target_name,
-        DomainName::try_from("foo.example.org").unwrap()
-    );
+    assert_eq!(result.target_name, "foo.example.org".parse().unwrap());
     assert_eq!(result.ttl, 7200);
-    assert_eq!(
-        result.name,
-        DomainName::try_from("test.example.com").unwrap()
-    );
+    assert_eq!(result.name, "test.example.com".parse().unwrap());
     assert_eq!(result.parameters.len(), 1);
     assert!(matches!(result.parameters.iter().next().unwrap(),
             ServiceParameter::ALPN { alpn_ids } if alpn_ids.len() == 2 && alpn_ids[0] == "f\\oo,bar" && alpn_ids[1] == "h2"));
@@ -370,7 +322,7 @@ fn test_service_binding_ech_length_mismatch() {
     bytes.extend_from_slice(b"Hello"); // value
     let mut decoder = Decoder::main(Bytes::from(bytes));
     let header = Header {
-        domain_name: DomainName::try_from("test.example.com").unwrap(),
+        domain_name: "test.example.com".parse().unwrap(),
         class: 1,
         ttl: 7200,
     };

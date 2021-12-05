@@ -1,14 +1,17 @@
 use bytes::Bytes;
-use dns_message_parser::question::{QClass, QType, Question};
-use dns_message_parser::rr::{Class, Type, A, RR};
-use dns_message_parser::DomainName;
-use std::convert::TryFrom;
+use dns_message_parser::{
+    question::{QClass, QType, Question},
+    rr::{Class, Type, A, RR},
+    {DomainName, Label},
+};
 use std::net::Ipv4Addr;
 
 fn get_question_example_org() -> Question {
     let mut domain_name = DomainName::default();
-    domain_name.append_label("example").unwrap();
-    domain_name.append_label("org").unwrap();
+    domain_name
+        .append_label("example".parse().unwrap())
+        .unwrap();
+    domain_name.append_label("org".parse().unwrap()).unwrap();
 
     let q_class = QClass::IN;
     let q_type = QType::A;
@@ -34,8 +37,10 @@ fn question() {
 #[test]
 fn resource_record() {
     let mut domain_name = DomainName::default();
-    domain_name.append_label("example").unwrap();
-    domain_name.append_label("org").unwrap();
+    domain_name
+        .append_label("example".parse().unwrap())
+        .unwrap();
+    domain_name.append_label("org".parse().unwrap()).unwrap();
     let ipv4_addr = Ipv4Addr::new(10, 0, 0, 10);
     let ttl_1 = 3600;
     let rr_1 = RR::A(A {
@@ -51,40 +56,6 @@ fn resource_record() {
         &b"\x07\x65\x78\x61\x6d\x70\x6c\x65\x03\x6f\x72\x67\x00\x00\x01\x00\x01\x00\x00\x0e\x10\
         \x00\x04\x0a\x00\x00\x0a"[..]
     );
-}
-
-#[test]
-fn label_64() {
-    let mut domain_name = DomainName::default();
-    let result = domain_name
-        .append_label("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    assert!(result.is_err());
-}
-
-#[test]
-fn domain_name_max_length() {
-    let mut domain_name = DomainName::default();
-    domain_name
-        .append_label("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-        .unwrap();
-    domain_name
-        .append_label("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-        .unwrap();
-    domain_name
-        .append_label("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-        .unwrap();
-    domain_name
-        .append_label("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-        .unwrap();
-    let result = domain_name.append_label("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    assert!(result.is_err());
-}
-
-#[test]
-fn domain_name_regex() {
-    let mut domain_name = DomainName::default();
-    let result = domain_name.append_label(".");
-    assert!(result.is_err());
 }
 
 #[test]
@@ -117,24 +88,24 @@ fn decode_class_error() {
 
 #[test]
 fn domain_name_eq() {
-    let domain_name_1 = DomainName::try_from("Example.OrG.").unwrap();
-    let domain_name_2 = DomainName::try_from("example.org").unwrap();
-    let domain_name_3 = DomainName::try_from("example.com.").unwrap();
+    let domain_name_1: DomainName = "Example.OrG.".parse().unwrap();
+    let domain_name_2 = "example.org".parse().unwrap();
+    let domain_name_3 = "example.com.".parse().unwrap();
     assert_eq!(domain_name_1, domain_name_2);
     assert_ne!(domain_name_1, domain_name_3);
 }
 
 #[test]
-fn domain_name_string_eq() {
-    let domain_name = DomainName::try_from("Example.OrG.").unwrap();
-    assert_eq!(domain_name, "example.org.");
-    assert_eq!(domain_name.as_ref(), "Example.OrG.");
-    assert_ne!(domain_name, "example.com.");
+fn label_eq() {
+    let label: Label = "Example".parse().unwrap();
+    assert_eq!(label, "example");
+    assert_eq!(label.as_ref(), "Example");
+    assert_eq!(label, "example");
 }
 
 #[test]
-fn domain_name_from_string() {
-    let domain_name = DomainName::try_from("Example.OrG.").unwrap();
-    let domain_name = String::from(domain_name);
+fn domain_name_to_string() {
+    let domain_name: DomainName = "Example.OrG.".parse().unwrap();
+    let domain_name = domain_name.to_string();
     assert_eq!(&domain_name, "Example.OrG.");
 }

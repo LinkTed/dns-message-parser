@@ -1,6 +1,6 @@
 use crate::rr::edns::CookieError;
 use crate::rr::{AddressError, Class, ISDNError, PSDNAddressError, TagError, Type};
-use crate::{Dns, DomainName, DomainNameError};
+use crate::{Dns, DomainName, DomainNameError, LabelError};
 use hex::FromHexError;
 use std::str::Utf8Error;
 use thiserror::Error;
@@ -29,6 +29,8 @@ pub enum DecodeError {
     QClass(u16),
     #[error("Could not decode string as UTF-8: {0}")]
     Utf8Error(#[from] Utf8Error),
+    #[error("Could not decode label: {0}")]
+    LabelError(#[from] LabelError),
     #[error("Could not decode domain name: {0}")]
     DomainNameError(#[from] DomainNameError),
     #[error("Decode of type {0} is not yet implemented")]

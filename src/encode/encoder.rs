@@ -1,11 +1,11 @@
-use crate::{EncodeError, EncodeResult};
+use crate::{DomainName, EncodeError, EncodeResult};
 use bytes::BytesMut;
 use std::collections::HashMap;
 use std::convert::TryInto;
 
 pub(crate) struct Encoder {
     pub bytes: BytesMut,
-    pub domain_name_index: HashMap<String, (u16, usize)>,
+    pub domain_name_index: HashMap<DomainName, (u16, usize)>,
 }
 
 impl Encoder {
