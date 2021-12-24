@@ -1,6 +1,8 @@
-use crate::decode::Decoder;
-use crate::question::{QClass, QType, Question};
-use crate::{DecodeError, DecodeResult};
+use crate::{
+    decode::Decoder,
+    question::{QClass, QType, Question},
+    {DecodeError, DecodeResult},
+};
 use std::convert::TryFrom;
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {

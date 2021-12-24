@@ -19,6 +19,18 @@ pub enum LabelError {
 #[derive(Debug, Clone, Eq)]
 pub struct Label(pub(super) String);
 
+#[inline]
+fn check_label(label: &str) -> Result<(), LabelError> {
+    let label_length = label.len();
+    if label_length == 0 {
+        Err(LabelError::Empty)
+    } else if label_length < LABEL_MAX_LENGTH {
+        Ok(())
+    } else {
+        Err(LabelError::Length(label_length))
+    }
+}
+
 impl Label {
     pub fn len(&self) -> usize {
         self.0.len()
@@ -29,14 +41,8 @@ impl TryFrom<String> for Label {
     type Error = LabelError;
 
     fn try_from(label: String) -> Result<Self, <Self as TryFrom<String>>::Error> {
-        let label_length = label.len();
-        if label_length == 0 {
-            Err(LabelError::Empty)
-        } else if label_length < LABEL_MAX_LENGTH {
-            Ok(Label(label))
-        } else {
-            Err(LabelError::Length(label_length))
-        }
+        check_label(&label)?;
+        Ok(Label(label))
     }
 }
 
@@ -44,14 +50,8 @@ impl FromStr for Label {
     type Err = LabelError;
 
     fn from_str(label: &str) -> Result<Self, <Self as FromStr>::Err> {
-        let label_length = label.len();
-        if label_length == 0 {
-            Err(LabelError::Empty)
-        } else if label_length < LABEL_MAX_LENGTH {
-            Ok(Label(label.to_owned()))
-        } else {
-            Err(LabelError::Length(label_length))
-        }
+        check_label(label)?;
+        Ok(Label(label.to_owned()))
     }
 }
 

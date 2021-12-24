@@ -1,6 +1,9 @@
 use bytes::Bytes;
-use dns_message_parser::rr::{AddressError, Class, TagError};
-use dns_message_parser::{DecodeError, Dns, Flags};
+use dns_message_parser::{
+    question::{QClass, QType, Question},
+    rr::{AddressError, Class, TagError},
+    Opcode, RCode, MAXIMUM_DNS_PACKET_SIZE, {DecodeError, Dns, Flags},
+};
 
 fn decode_msg_error(msg: &[u8], e: DecodeError) {
     // Decode BytesMut to message
@@ -48,6 +51,60 @@ fn flags_4() {
 fn flags_5() {
     let msg = b"\x80\x0f";
     decode_flags_error(msg, DecodeError::RCode(15));
+}
+
+#[test]
+fn dns_not_enough_bytes() {
+    let msg = b"";
+    decode_msg_error(&msg[..], DecodeError::NotEnoughBytes(0, 12));
+}
+
+#[test]
+fn dns_packet_too_big() {
+    let msg = vec![0; MAXIMUM_DNS_PACKET_SIZE + 1];
+    decode_msg_error(
+        msg.as_ref(),
+        DecodeError::DnsPacketTooBig(MAXIMUM_DNS_PACKET_SIZE + 1),
+    );
+}
+
+#[test]
+fn request() {
+    let msg = b"\xdb\x1c\x01\x20\x00\x01\x00\x00\x00\x00\x00\x00\x07\x65\x78\x61\x6d\x70\x6c\x65\
+    \x03\x6f\x72\x67\x00\x00\x01\x00\x01\x00";
+    let id = 56092;
+    let flags = Flags {
+        qr: false,
+        opcode: Opcode::Query,
+        aa: false,
+        tc: false,
+        rd: true,
+        ra: false,
+        ad: true,
+        cd: false,
+        rcode: RCode::NoError,
+    };
+    let question = {
+        let domain_name = "example.org.".parse().unwrap();
+        let q_class = QClass::IN;
+        let q_type = QType::A;
+
+        Question {
+            domain_name,
+            q_class,
+            q_type,
+        }
+    };
+    let questions = vec![question];
+    let dns = Dns {
+        id,
+        flags,
+        questions,
+        answers: Vec::new(),
+        authorities: Vec::new(),
+        additionals: Vec::new(),
+    };
+    decode_msg_error(msg.as_ref(), DecodeError::RemainingBytes(29, dns));
 }
 
 #[test]
