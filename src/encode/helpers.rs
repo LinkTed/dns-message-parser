@@ -26,6 +26,10 @@ impl From<BitMap> for BytesMut {
     }
 }
 
+pub(super) struct LengthIndexU8(usize);
+
+pub(super) struct LengthIndexU16(usize);
+
 impl Encoder {
     pub(super) fn u8(&mut self, n: u8) {
         self.bytes.reserve(size_of::<u8>());
@@ -116,34 +120,39 @@ impl Encoder {
     }
 
     #[inline]
-    pub(super) fn create_length_index_u16(&mut self) -> usize {
+    pub(super) fn create_length_index_u8(&mut self) -> LengthIndexU8 {
         let length_index = self.bytes.len();
-        self.u16(0);
-        length_index
+        self.u8(0);
+        LengthIndexU8(length_index)
     }
 
     #[inline]
-    pub(super) fn set_length_index_u16(&mut self, length_index: usize) -> EncodeResult<()> {
-        let length = self.bytes.len() - (length_index + size_of::<u16>());
+    pub(super) fn set_length_index_u8(&mut self, length_index: LengthIndexU8) -> EncodeResult<()> {
+        let length_index = length_index.0;
+        let length = self.bytes.len() - (length_index + size_of::<u8>());
         if let Ok(length) = length.try_into() {
-            self.set_u16(length, length_index)
+            self.set_u8(length, length_index)
         } else {
             Err(EncodeError::Length(length))
         }
     }
 
     #[inline]
-    pub(super) fn create_length_index_u8(&mut self) -> usize {
+    pub(super) fn create_length_index_u16(&mut self) -> LengthIndexU16 {
         let length_index = self.bytes.len();
-        self.u8(0);
-        length_index
+        self.u16(0);
+        LengthIndexU16(length_index)
     }
 
     #[inline]
-    pub(super) fn set_length_index_u8(&mut self, length_index: usize) -> EncodeResult<()> {
-        let length = self.bytes.len() - (length_index + size_of::<u8>());
+    pub(super) fn set_length_index_u16(
+        &mut self,
+        length_index: LengthIndexU16,
+    ) -> EncodeResult<()> {
+        let length_index = length_index.0;
+        let length = self.bytes.len() - (length_index + size_of::<u16>());
         if let Ok(length) = length.try_into() {
-            self.set_u8(length, length_index)
+            self.set_u16(length, length_index)
         } else {
             Err(EncodeError::Length(length))
         }
