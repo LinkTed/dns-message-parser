@@ -1,7 +1,9 @@
 use super::Header;
+use crate::decode::helpers::BitMap;
 use crate::decode::Decoder;
-use crate::rr::{Class, A, HINFO, SOA, TXT, WKS};
+use crate::rr::{Class, NonEmptyBTreeSet, A, HINFO, MAXIMUM_WKS_BIT_MAP, SOA, TXT, WKS};
 use crate::{DecodeError, DecodeResult};
+use std::collections::BTreeSet;
 use std::convert::TryInto;
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
@@ -62,18 +64,40 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
 
     impl_decode_rr_vec!(NULL, data, rr_null);
 
+    fn rr_wks_ports(&mut self) -> DecodeResult<NonEmptyBTreeSet<u16>> {
+        let bytes = self.bytes()?;
+        let bytes_len = bytes.len();
+
+        if bytes_len == 0 {
+            return Err(DecodeError::WKSPortsBitMapEmpty);
+        }
+
+        if MAXIMUM_WKS_BIT_MAP < bytes_len {
+            return Err(DecodeError::WKSPortsBitMapTooBig(bytes_len));
+        }
+
+        let mut ports = BTreeSet::new();
+        for port in BitMap::from(bytes) {
+            ports.insert(port as u16);
+        }
+
+        ports
+            .try_into()
+            .map_err(|_| DecodeError::WKSPortsBitMapEmpty)
+    }
+
     pub(super) fn rr_wks(&mut self, header: Header) -> DecodeResult<WKS> {
         match header.get_class()? {
             Class::IN => {
                 let ipv4_addr = self.ipv4_addr()?;
                 let protocol = self.u8()?;
-                let bit_map = self.vec()?;
+                let ports = self.rr_wks_ports()?;
                 let wks = WKS {
                     domain_name: header.domain_name,
                     ttl: header.ttl,
                     ipv4_addr,
                     protocol,
-                    bit_map,
+                    ports,
                 };
                 Ok(wks)
             }

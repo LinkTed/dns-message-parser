@@ -3,7 +3,6 @@ use crate::{
     rr::{AlgorithmType, DigestType, NonEmptyBTreeSet, Type, DNSKEY, DS, NSEC},
     EncodeResult,
 };
-use bytes::BytesMut;
 use std::{collections::btree_set::Iter, iter::Peekable};
 
 impl Encoder {
@@ -14,14 +13,12 @@ impl Encoder {
     ) -> EncodeResult<()> {
         let start = (window_block_number as u16) << u8::BITS;
         let end = start + u8::MAX as u16;
-
         let mut bit_map = BitMap::default();
         while let Some(&r#type) = iter.next_if(|&&x| start <= x as u16 && x as u16 <= end) {
             let index = (r#type as u16 - start) as usize;
             bit_map.set_bit(index);
         }
-        let bytes: BytesMut = bit_map.into();
-        self.bytes.extend(bytes);
+        self.bit_map(&bit_map);
         Ok(())
     }
 

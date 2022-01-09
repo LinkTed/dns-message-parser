@@ -119,6 +119,10 @@ impl Encoder {
         self.bytes.extend_from_slice(v);
     }
 
+    pub(super) fn bit_map(&mut self, bit_map: &BitMap) {
+        self.bytes.extend(&bit_map.0);
+    }
+
     #[inline]
     pub(super) fn create_length_index_u8(&mut self) -> LengthIndexU8 {
         let length_index = self.bytes.len();

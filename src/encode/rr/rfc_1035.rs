@@ -1,4 +1,4 @@
-use crate::encode::Encoder;
+use crate::encode::{helpers::BitMap, Encoder};
 use crate::rr::{Class, Type, A, HINFO, SOA, TXT, WKS};
 use crate::EncodeResult;
 
@@ -53,7 +53,11 @@ impl Encoder {
         let length_index = self.create_length_index_u16();
         self.ipv4_addr(&wks.ipv4_addr);
         self.u8(wks.protocol);
-        self.vec(&wks.bit_map);
+        let mut bit_map = BitMap::default();
+        for &port in wks.ports.iter() {
+            bit_map.set_bit(port as usize);
+        }
+        self.bit_map(&bit_map);
         self.set_length_index_u16(length_index)
     }
 

@@ -1,5 +1,7 @@
 use crate::rr::edns::CookieError;
-use crate::rr::{AddressError, Class, ISDNError, PSDNAddressError, TagError, Type};
+use crate::rr::{
+    AddressError, Class, ISDNError, PSDNAddressError, TagError, Type, MAXIMUM_WKS_BIT_MAP,
+};
 use crate::{Dns, DomainName, DomainNameError, LabelError};
 use hex::FromHexError;
 use std::str::Utf8Error;
@@ -43,6 +45,10 @@ pub enum DecodeError {
     AClass(Class),
     #[error("Class is not IN for WKS record: {0}")]
     WKSClass(Class),
+    #[error("The ports Bit Map of the WKS is empty")]
+    WKSPortsBitMapEmpty,
+    #[error("The ports Bit Map of the WKS is too big: {MAXIMUM_WKS_BIT_MAP} < {0}")]
+    WKSPortsBitMapTooBig(usize),
     #[error("The RData of the TXT is empty")]
     TXTEmpty,
     #[error("Could not decode AFSDBSubtype: {0}")]

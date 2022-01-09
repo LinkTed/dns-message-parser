@@ -1,4 +1,4 @@
-use super::{Class, NonEmptyVec};
+use super::{Class, NonEmptyBTreeSet, NonEmptyVec};
 use crate::DomainName;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::net::Ipv4Addr;
@@ -128,6 +128,9 @@ struct_vec!(
     data
 );
 
+/// The maximum size of the WKS bit map.
+pub const MAXIMUM_WKS_BIT_MAP: usize = u16::MAX as usize / u8::BITS as usize;
+
 /// The [well known service] description resource record type.
 ///
 /// [well known service]: https://tools.ietf.org/html/rfc1035#section-3.4.2
@@ -137,19 +140,22 @@ pub struct WKS {
     pub ttl: u32,
     pub ipv4_addr: Ipv4Addr,
     pub protocol: u8,
-    pub bit_map: Vec<u8>,
+    pub ports: NonEmptyBTreeSet<u16>,
 }
 
 impl_to_type!(WKS);
 
 impl Display for WKS {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-        // TODO
         write!(
             f,
-            "{} {} IN WKS {} {:x?}",
-            self.domain_name, self.ttl, self.protocol, self.bit_map
-        )
+            "{} {} IN WKS {} (",
+            self.domain_name, self.ttl, self.protocol,
+        )?;
+        for &port in self.ports.iter() {
+            write!(f, " {}", port)?;
+        }
+        write!(f, " )")
     }
 }
 
