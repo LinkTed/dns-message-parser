@@ -1,6 +1,8 @@
-use crate::encode::{helpers::BitMap, Encoder};
-use crate::rr::{Class, Type, A, HINFO, SOA, TXT, WKS};
-use crate::EncodeResult;
+use crate::{
+    encode::{helpers::BitMap, Encoder},
+    rr::{Class, Type, A, HINFO, SOA, TXT, WKS},
+    EncodeResult,
+};
 
 impl Encoder {
     pub(super) fn rr_a(&mut self, a: &A) -> EncodeResult<()> {

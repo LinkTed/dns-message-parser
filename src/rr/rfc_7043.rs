@@ -1,5 +1,4 @@
-use crate::rr::Class;
-use crate::DomainName;
+use crate::{rr::Class, DomainName};
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]

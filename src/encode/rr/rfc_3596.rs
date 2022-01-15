@@ -1,6 +1,8 @@
-use crate::encode::Encoder;
-use crate::rr::{Class, Type, AAAA};
-use crate::EncodeResult;
+use crate::{
+    encode::Encoder,
+    rr::{Class, Type, AAAA},
+    EncodeResult,
+};
 
 impl Encoder {
     pub(super) fn rr_aaaa(&mut self, aaaa: &AAAA) -> EncodeResult<()> {

@@ -1,6 +1,8 @@
-use crate::encode::Encoder;
-use crate::rr::{AFSDBSubtype, ISDNAddress, PSDNAddress, Type, AFSDB, ISDN, SA, X25};
-use crate::EncodeResult;
+use crate::{
+    encode::Encoder,
+    rr::{AFSDBSubtype, ISDNAddress, PSDNAddress, Type, AFSDB, ISDN, SA, X25},
+    EncodeResult,
+};
 
 impl Encoder {
     impl_encode_rr_domain_name_domain_name!(RP, mbox_dname, txt_dname, rr_rp);

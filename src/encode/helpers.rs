@@ -1,9 +1,13 @@
-use crate::encode::Encoder;
-use crate::{EncodeError, EncodeResult};
+use crate::{
+    encode::Encoder,
+    {EncodeError, EncodeResult},
+};
 use bytes::{BufMut, BytesMut};
-use std::convert::TryInto;
-use std::mem::size_of;
-use std::net::{Ipv4Addr, Ipv6Addr};
+use std::{
+    convert::TryInto,
+    mem::size_of,
+    net::{Ipv4Addr, Ipv6Addr},
+};
 
 #[derive(Default, Debug)]
 pub(super) struct BitMap(BytesMut);

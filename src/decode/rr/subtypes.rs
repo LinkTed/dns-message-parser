@@ -1,9 +1,13 @@
-use crate::decode::Decoder;
-use crate::rr::{Address, AddressFamilyNumber};
-use crate::{DecodeError, DecodeResult};
-use std::convert::TryFrom;
-use std::mem::size_of;
-use std::net::{Ipv4Addr, Ipv6Addr};
+use crate::{
+    decode::Decoder,
+    rr::{Address, AddressFamilyNumber},
+    {DecodeError, DecodeResult},
+};
+use std::{
+    convert::TryFrom,
+    mem::size_of,
+    net::{Ipv4Addr, Ipv6Addr},
+};
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
     pub(super) fn rr_address_family_number(&mut self) -> DecodeResult<AddressFamilyNumber> {

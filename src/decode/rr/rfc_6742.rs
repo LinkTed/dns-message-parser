@@ -1,7 +1,5 @@
 use super::Header;
-use crate::decode::Decoder;
-use crate::rr::L32;
-use crate::DecodeResult;
+use crate::{decode::Decoder, rr::L32, DecodeResult};
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
     impl_decode_rr_u16_u64!(NID, preference, node_id, rr_nid);

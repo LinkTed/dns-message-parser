@@ -1,7 +1,9 @@
 use super::Header;
-use crate::decode::Decoder;
-use crate::rr::{Class, AAAA};
-use crate::{DecodeError, DecodeResult};
+use crate::{
+    decode::Decoder,
+    rr::{Class, AAAA},
+    {DecodeError, DecodeResult},
+};
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
     pub(super) fn rr_aaaa(&mut self, header: Header) -> DecodeResult<AAAA> {

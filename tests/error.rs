@@ -1,5 +1,7 @@
-use dns_message_parser::rr::edns::{Cookie, CookieError, ECS};
-use dns_message_parser::rr::{Address, AddressError};
+use dns_message_parser::rr::{
+    edns::{Cookie, CookieError, ECS},
+    Address, AddressError,
+};
 use std::net::{Ipv4Addr, Ipv6Addr};
 
 #[test]

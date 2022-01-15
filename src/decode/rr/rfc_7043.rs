@@ -1,7 +1,9 @@
 use super::Header;
-use crate::decode::Decoder;
-use crate::rr::{EUI48, EUI64};
-use crate::DecodeResult;
+use crate::{
+    decode::Decoder,
+    rr::{EUI48, EUI64},
+    DecodeResult,
+};
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
     pub(super) fn rr_eui48(&mut self, header: Header) -> DecodeResult<EUI48> {

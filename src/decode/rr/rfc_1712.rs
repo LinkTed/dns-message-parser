@@ -1,7 +1,9 @@
 use super::Header;
-use crate::decode::Decoder;
-use crate::rr::GPOS;
-use crate::{DecodeError, DecodeResult};
+use crate::{
+    decode::Decoder,
+    rr::GPOS,
+    {DecodeError, DecodeResult},
+};
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
     pub(super) fn rr_gpos(&mut self, header: Header) -> DecodeResult<GPOS> {

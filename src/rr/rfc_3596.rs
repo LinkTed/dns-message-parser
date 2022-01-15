@@ -1,6 +1,8 @@
 use crate::DomainName;
-use std::fmt::{Display, Formatter, Result as FmtResult};
-use std::net::Ipv6Addr;
+use std::{
+    fmt::{Display, Formatter, Result as FmtResult},
+    net::Ipv6Addr,
+};
 
 /// The [IPv6] [host address] resource record type.
 ///

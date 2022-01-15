@@ -1,5 +1,7 @@
-use crate::decode::Decoder;
-use crate::{DecodeError, DecodeResult, Dns, Flags, Opcode, RCode, MAXIMUM_DNS_PACKET_SIZE};
+use crate::{
+    decode::Decoder,
+    {DecodeError, DecodeResult, Dns, Flags, Opcode, RCode, MAXIMUM_DNS_PACKET_SIZE},
+};
 use std::convert::TryFrom;
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {

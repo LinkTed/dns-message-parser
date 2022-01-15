@@ -1,6 +1,8 @@
 use super::subtypes::NonEmptyBTreeSet;
-use crate::rr::{Class, Type};
-use crate::DomainName;
+use crate::{
+    rr::{Class, Type},
+    DomainName,
+};
 use base64::encode;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 

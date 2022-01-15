@@ -1,9 +1,9 @@
-use crate::decode::error::DecodeError::ECHLengthMismatch;
-use crate::decode::Decoder;
-use crate::rr::{ServiceBinding, ServiceParameter};
-use crate::DecodeResult;
-
 use super::Header;
+use crate::{
+    decode::{DecodeError, Decoder},
+    rr::{ServiceBinding, ServiceParameter},
+    DecodeResult,
+};
 use std::collections::BTreeSet;
 
 impl<'a, 'b: 'a> Decoder<'b, 'b> {
@@ -92,7 +92,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
                 let length = self.u16()? as usize;
                 let config_list = self.vec()?;
                 if config_list.len() != length {
-                    return Err(ECHLengthMismatch(length, config_list.len()));
+                    return Err(DecodeError::ECHLengthMismatch(length, config_list.len()));
                 }
                 ServiceParameter::ECH { config_list }
             }

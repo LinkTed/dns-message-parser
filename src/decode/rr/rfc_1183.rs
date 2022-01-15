@@ -1,7 +1,9 @@
 use super::Header;
-use crate::decode::Decoder;
-use crate::rr::{AFSDBSubtype, ISDNAddress, PSDNAddress, AFSDB, ISDN, SA, X25};
-use crate::{DecodeError, DecodeResult};
+use crate::{
+    decode::Decoder,
+    rr::{AFSDBSubtype, ISDNAddress, PSDNAddress, AFSDB, ISDN, SA, X25},
+    {DecodeError, DecodeResult},
+};
 use std::convert::TryFrom;
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {

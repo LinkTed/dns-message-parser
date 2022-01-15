@@ -1,7 +1,9 @@
 use super::Header;
-use crate::decode::Decoder;
-use crate::rr::{APItem, Class, APL, APL_NEGATION_MASK};
-use crate::{DecodeError, DecodeResult};
+use crate::{
+    decode::Decoder,
+    rr::{APItem, Class, APL, APL_NEGATION_MASK},
+    {DecodeError, DecodeResult},
+};
 
 const ADDRESS_LENGTH_MASK: u8 = 0b0111_1111;
 

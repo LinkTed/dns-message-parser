@@ -1,8 +1,10 @@
 use super::Class;
 use crate::DomainName;
 use hex::encode;
-use std::convert::{AsRef, TryFrom};
-use std::fmt::{Display, Formatter, Result as FmtResult};
+use std::{
+    convert::{AsRef, TryFrom},
+    fmt::{Display, Formatter, Result as FmtResult},
+};
 use thiserror::Error;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Error)]

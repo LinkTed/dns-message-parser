@@ -1,6 +1,8 @@
-use crate::encode::Encoder;
-use crate::rr::{Type, LOC};
-use crate::EncodeResult;
+use crate::{
+    encode::Encoder,
+    rr::{Type, LOC},
+    EncodeResult,
+};
 
 impl Encoder {
     pub(super) fn rr_loc(&mut self, loc: &LOC) -> EncodeResult<()> {

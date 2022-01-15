@@ -1,7 +1,9 @@
-use crate::encode::Encoder;
-use crate::rr::edns::{EDNSOption, EDNSOptionCode, EDNS_DNSSEC_MASK};
-use crate::rr::{Type, OPT};
-use crate::{DomainName, EncodeResult};
+use crate::{
+    encode::Encoder,
+    rr::edns::{EDNSOption, EDNSOptionCode, EDNS_DNSSEC_MASK},
+    rr::{Type, OPT},
+    {DomainName, EncodeResult},
+};
 
 fn rr_opt_ttl(extend_rcode: u8, version: u8, dnssec: bool) -> u32 {
     let mut result = 0;

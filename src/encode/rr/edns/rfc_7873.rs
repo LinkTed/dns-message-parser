@@ -1,6 +1,8 @@
-use crate::encode::Encoder;
-use crate::rr::edns::{Cookie, EDNSOptionCode};
-use crate::EncodeResult;
+use crate::{
+    encode::Encoder,
+    rr::edns::{Cookie, EDNSOptionCode},
+    EncodeResult,
+};
 
 impl Encoder {
     pub(super) fn rr_edns_cookie(&mut self, cookie: &Cookie) -> EncodeResult<()> {

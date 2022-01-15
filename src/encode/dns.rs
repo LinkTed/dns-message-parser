@@ -1,5 +1,7 @@
-use crate::encode::Encoder;
-use crate::{Dns, EncodeResult, Flags};
+use crate::{
+    encode::Encoder,
+    {Dns, EncodeResult, Flags},
+};
 
 impl Encoder {
     pub(super) fn flags(&mut self, flags: &Flags) {

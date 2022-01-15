@@ -1,6 +1,8 @@
-use crate::encode::Encoder;
-use crate::rr::{Tag, Type, CAA};
-use crate::EncodeResult;
+use crate::{
+    encode::Encoder,
+    rr::{Tag, Type, CAA},
+    EncodeResult,
+};
 
 impl Encoder {
     fn rr_caa_tag(&mut self, tag: &Tag) -> EncodeResult<()> {

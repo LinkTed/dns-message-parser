@@ -1,8 +1,9 @@
-use crate::encode::Encoder;
-use crate::rr::{APItem, Class, Type, APL, APL_NEGATION_MASK};
-use crate::{EncodeError, EncodeResult};
-use std::convert::TryInto;
-use std::mem::size_of;
+use crate::{
+    encode::Encoder,
+    rr::{APItem, Class, Type, APL, APL_NEGATION_MASK},
+    {EncodeError, EncodeResult},
+};
+use std::{convert::TryInto, mem::size_of};
 
 impl Encoder {
     #[inline]

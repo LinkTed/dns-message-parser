@@ -1,8 +1,9 @@
-use crate::rr::Class;
-use crate::DomainName;
-use std::convert::TryFrom;
-use std::fmt::{Display, Formatter, Result as FmtResult};
-use std::ops::Deref;
+use crate::{rr::Class, DomainName};
+use std::{
+    convert::TryFrom,
+    fmt::{Display, Formatter, Result as FmtResult},
+    ops::Deref,
+};
 use thiserror::Error;
 
 struct_domain_name_domain_name!(

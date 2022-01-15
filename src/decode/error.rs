@@ -1,8 +1,8 @@
-use crate::rr::edns::CookieError;
-use crate::rr::{
-    AddressError, Class, ISDNError, PSDNAddressError, TagError, Type, MAXIMUM_WKS_BIT_MAP,
+use crate::{
+    rr::edns::CookieError,
+    rr::{AddressError, Class, ISDNError, PSDNAddressError, TagError, Type, MAXIMUM_WKS_BIT_MAP},
+    {Dns, DomainName, DomainNameError, LabelError},
 };
-use crate::{Dns, DomainName, DomainNameError, LabelError};
 use hex::FromHexError;
 use std::str::Utf8Error;
 use thiserror::Error;

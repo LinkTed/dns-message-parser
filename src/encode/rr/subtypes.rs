@@ -1,5 +1,7 @@
-use crate::encode::Encoder;
-use crate::rr::{Address, AddressFamilyNumber};
+use crate::{
+    encode::Encoder,
+    rr::{Address, AddressFamilyNumber},
+};
 use std::net::{Ipv4Addr, Ipv6Addr};
 
 impl Encoder {

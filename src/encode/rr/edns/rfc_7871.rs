@@ -1,6 +1,8 @@
-use crate::encode::Encoder;
-use crate::rr::edns::{EDNSOptionCode, ECS};
-use crate::EncodeResult;
+use crate::{
+    encode::Encoder,
+    rr::edns::{EDNSOptionCode, ECS},
+    EncodeResult,
+};
 
 impl Encoder {
     pub(super) fn rr_edns_ecs(&mut self, ecs: &ECS) -> EncodeResult<()> {

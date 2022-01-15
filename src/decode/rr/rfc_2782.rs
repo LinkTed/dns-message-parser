@@ -1,7 +1,5 @@
 use super::Header;
-use crate::decode::Decoder;
-use crate::rr::SRV;
-use crate::DecodeResult;
+use crate::{decode::Decoder, rr::SRV, DecodeResult};
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
     pub(super) fn rr_srv(&mut self, header: Header) -> DecodeResult<SRV> {

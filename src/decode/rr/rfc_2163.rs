@@ -1,7 +1,5 @@
 use super::Header;
-use crate::decode::Decoder;
-use crate::rr::PX;
-use crate::DecodeResult;
+use crate::{decode::Decoder, rr::PX, DecodeResult};
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
     pub(super) fn rr_px(&mut self, header: Header) -> DecodeResult<PX> {

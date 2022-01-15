@@ -1,5 +1,7 @@
-use crate::encode::Encoder;
-use crate::rr::edns::{EDNSOptionCode, Padding};
+use crate::{
+    encode::Encoder,
+    rr::edns::{EDNSOptionCode, Padding},
+};
 
 impl Encoder {
     pub(super) fn rr_edns_padding(&mut self, padding: &Padding) {

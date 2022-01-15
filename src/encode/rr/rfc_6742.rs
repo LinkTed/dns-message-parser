@@ -1,6 +1,8 @@
-use crate::encode::Encoder;
-use crate::rr::{Type, L32};
-use crate::EncodeResult;
+use crate::{
+    encode::Encoder,
+    rr::{Type, L32},
+    EncodeResult,
+};
 
 impl Encoder {
     impl_encode_rr_u16_u64!(NID, preference, node_id, rr_nid);

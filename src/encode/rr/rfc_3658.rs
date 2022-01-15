@@ -1,6 +1,8 @@
-use crate::encode::Encoder;
-use crate::rr::{SSHFPAlgorithm, SSHFPType, Type, SSHFP};
-use crate::EncodeResult;
+use crate::{
+    encode::Encoder,
+    rr::{SSHFPAlgorithm, SSHFPType, Type, SSHFP},
+    EncodeResult,
+};
 
 impl Encoder {
     #[inline]

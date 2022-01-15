@@ -1,6 +1,8 @@
-use crate::encode::Encoder;
-use crate::rr::{Type, SRV};
-use crate::EncodeResult;
+use crate::{
+    encode::Encoder,
+    rr::{Type, SRV},
+    EncodeResult,
+};
 
 impl Encoder {
     pub(super) fn rr_srv(&mut self, srv: &SRV) -> EncodeResult<()> {

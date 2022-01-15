@@ -1,6 +1,8 @@
-use crate::encode::Encoder;
-use crate::rr::{Type, EUI48, EUI64};
-use crate::EncodeResult;
+use crate::{
+    encode::Encoder,
+    rr::{Type, EUI48, EUI64},
+    EncodeResult,
+};
 
 impl Encoder {
     pub(super) fn rr_eui48(&mut self, eui_48: &EUI48) -> EncodeResult<()> {

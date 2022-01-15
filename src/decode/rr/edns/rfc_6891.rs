@@ -1,8 +1,12 @@
 use super::super::Header;
-use crate::decode::Decoder;
-use crate::rr::edns::{EDNSOption, EDNSOptionCode, EDNS_DNSSEC_MASK};
-use crate::rr::OPT;
-use crate::{DecodeError, DecodeResult};
+use crate::{
+    decode::Decoder,
+    rr::{
+        edns::{EDNSOption, EDNSOptionCode, EDNS_DNSSEC_MASK},
+        OPT,
+    },
+    {DecodeError, DecodeResult},
+};
 use std::convert::TryFrom;
 
 fn rr_opt_ttl(ttl: u32) -> DecodeResult<(u8, u8, bool)> {

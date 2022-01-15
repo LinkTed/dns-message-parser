@@ -1,7 +1,9 @@
 use super::{Class, NonEmptyBTreeSet, NonEmptyVec};
 use crate::DomainName;
-use std::fmt::{Display, Formatter, Result as FmtResult};
-use std::net::Ipv4Addr;
+use std::{
+    fmt::{Display, Formatter, Result as FmtResult},
+    net::Ipv4Addr,
+};
 
 /// The [IPv4] [host address] resource record type.
 ///

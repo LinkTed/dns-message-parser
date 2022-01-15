@@ -1,7 +1,9 @@
 use super::Header;
-use crate::decode::Decoder;
-use crate::rr::{SSHFPAlgorithm, SSHFPType, SSHFP};
-use crate::{DecodeError, DecodeResult};
+use crate::{
+    decode::Decoder,
+    rr::{SSHFPAlgorithm, SSHFPType, SSHFP},
+    {DecodeError, DecodeResult},
+};
 use std::convert::TryFrom;
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {

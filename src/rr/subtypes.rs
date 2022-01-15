@@ -1,9 +1,11 @@
-use std::cmp::Ordering;
-use std::collections::{btree_set::Iter as BTreeSetIter, BTreeSet};
-use std::convert::TryFrom;
-use std::fmt::{Display, Formatter, Result as FmtResult};
-use std::net::{Ipv4Addr, Ipv6Addr};
-use std::slice::Iter as SliceIter;
+use std::{
+    cmp::Ordering,
+    collections::{btree_set::Iter as BTreeSetIter, BTreeSet},
+    convert::TryFrom,
+    fmt::{Display, Formatter, Result as FmtResult},
+    net::{Ipv4Addr, Ipv6Addr},
+    slice::Iter as SliceIter,
+};
 use thiserror::Error;
 
 const MASK: u8 = 0b1111_1111;

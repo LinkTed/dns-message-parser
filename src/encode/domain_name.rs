@@ -1,7 +1,8 @@
-use crate::domain_name::DOMAIN_NAME_MAX_RECURSION;
-use crate::encode::Encoder;
-use crate::label::Label;
-use crate::{DomainName, EncodeError, EncodeResult};
+use crate::{
+    domain_name::DOMAIN_NAME_MAX_RECURSION,
+    encode::Encoder,
+    {DomainName, EncodeError, EncodeResult, Label},
+};
 use std::collections::HashMap;
 
 const MAX_OFFSET: u16 = 0b0011_1111_1111_1111;

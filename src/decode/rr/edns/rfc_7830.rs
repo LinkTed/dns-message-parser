@@ -1,6 +1,8 @@
-use crate::decode::Decoder;
-use crate::rr::edns::Padding;
-use crate::{DecodeError, DecodeResult};
+use crate::{
+    decode::Decoder,
+    rr::edns::Padding,
+    {DecodeError, DecodeResult},
+};
 use std::convert::TryInto;
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {

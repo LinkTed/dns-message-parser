@@ -1,6 +1,8 @@
-use crate::decode::Decoder;
-use crate::rr::{Class, Type, RR};
-use crate::{DecodeError, DecodeResult, DomainName};
+use crate::{
+    decode::Decoder,
+    rr::{Class, Type, RR},
+    {DecodeError, DecodeResult, DomainName},
+};
 use std::convert::TryFrom;
 
 pub(super) struct Header {

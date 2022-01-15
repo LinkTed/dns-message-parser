@@ -1,6 +1,8 @@
-use crate::encode::Encoder;
-use crate::rr::{Type, PX};
-use crate::EncodeResult;
+use crate::{
+    encode::Encoder,
+    rr::{Type, PX},
+    EncodeResult,
+};
 
 impl Encoder {
     pub(super) fn rr_px(&mut self, px: &PX) -> EncodeResult<()> {

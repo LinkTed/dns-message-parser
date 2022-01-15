@@ -1,10 +1,11 @@
 use super::Header;
-use crate::decode::helpers::BitMap;
-use crate::decode::Decoder;
-use crate::rr::{Class, NonEmptyBTreeSet, A, HINFO, MAXIMUM_WKS_BIT_MAP, SOA, TXT, WKS};
-use crate::{DecodeError, DecodeResult};
-use std::collections::BTreeSet;
-use std::convert::TryInto;
+use crate::{
+    decode::helpers::BitMap,
+    decode::Decoder,
+    rr::{Class, NonEmptyBTreeSet, A, HINFO, MAXIMUM_WKS_BIT_MAP, SOA, TXT, WKS},
+    {DecodeError, DecodeResult},
+};
+use std::{collections::BTreeSet, convert::TryInto};
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
     pub(super) fn rr_a(&mut self, header: Header) -> DecodeResult<A> {

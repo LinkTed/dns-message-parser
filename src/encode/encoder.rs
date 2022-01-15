@@ -1,7 +1,6 @@
 use crate::{DomainName, EncodeError, EncodeResult};
 use bytes::BytesMut;
-use std::collections::HashMap;
-use std::convert::TryInto;
+use std::{collections::HashMap, convert::TryInto};
 
 pub(crate) struct Encoder {
     pub bytes: BytesMut,

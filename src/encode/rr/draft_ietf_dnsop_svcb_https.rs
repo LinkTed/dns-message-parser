@@ -1,6 +1,8 @@
-use crate::encode::Encoder;
-use crate::rr::{Class, ServiceBinding, ServiceBindingMode, ServiceParameter, Type};
-use crate::{EncodeError, EncodeResult};
+use crate::{
+    encode::Encoder,
+    rr::{Class, ServiceBinding, ServiceBindingMode, ServiceParameter, Type},
+    {EncodeError, EncodeResult},
+};
 
 impl Encoder {
     /// Encode a service binding (SVCB or HTTPS) resource record

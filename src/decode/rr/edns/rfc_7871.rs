@@ -1,6 +1,4 @@
-use crate::decode::Decoder;
-use crate::rr::edns::ECS;
-use crate::DecodeResult;
+use crate::{decode::Decoder, rr::edns::ECS, DecodeResult};
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
     pub(super) fn rr_edns_ecs(&mut self) -> DecodeResult<ECS> {

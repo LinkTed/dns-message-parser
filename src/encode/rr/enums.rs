@@ -1,6 +1,8 @@
-use crate::encode::Encoder;
-use crate::rr::{Class, Type, RR};
-use crate::EncodeResult;
+use crate::{
+    encode::Encoder,
+    rr::{Class, Type, RR},
+    EncodeResult,
+};
 
 impl Encoder {
     #[inline]

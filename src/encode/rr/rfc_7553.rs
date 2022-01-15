@@ -1,6 +1,8 @@
-use crate::encode::Encoder;
-use crate::rr::{Type, URI};
-use crate::EncodeResult;
+use crate::{
+    encode::Encoder,
+    rr::{Type, URI},
+    EncodeResult,
+};
 
 impl Encoder {
     pub(super) fn rr_uri(&mut self, uri: &URI) -> EncodeResult<()> {

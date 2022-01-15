@@ -1,6 +1,8 @@
-use crate::encode::Encoder;
-use crate::rr::{Type, GPOS};
-use crate::EncodeResult;
+use crate::{
+    encode::Encoder,
+    rr::{Type, GPOS},
+    EncodeResult,
+};
 
 impl Encoder {
     pub(super) fn rr_gpos(&mut self, gpos: &GPOS) -> EncodeResult<()> {

@@ -1,5 +1,4 @@
-use crate::decode::Decoder;
-use crate::DecodeError;
+use crate::{decode::Decoder, DecodeError};
 use bytes::Bytes;
 use std::str::from_utf8;
 

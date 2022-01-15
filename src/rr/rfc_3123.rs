@@ -1,5 +1,7 @@
-use crate::rr::{Address, AddressError};
-use crate::DomainName;
+use crate::{
+    rr::{Address, AddressError},
+    DomainName,
+};
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
 pub const APL_NEGATION_MASK: u8 = 0b1000_0000;

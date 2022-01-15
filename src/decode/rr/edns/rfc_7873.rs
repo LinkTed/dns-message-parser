@@ -1,8 +1,10 @@
-use crate::decode::Decoder;
-use crate::rr::edns::{
-    Cookie, CLIENT_COOKIE_LENGTH, MAXIMUM_SERVER_COOKIE_LENGTH, MINIMUM_SERVER_COOKIE_LENGTH,
+use crate::{
+    decode::Decoder,
+    rr::edns::{
+        Cookie, CLIENT_COOKIE_LENGTH, MAXIMUM_SERVER_COOKIE_LENGTH, MINIMUM_SERVER_COOKIE_LENGTH,
+    },
+    {DecodeError, DecodeResult},
 };
-use crate::{DecodeError, DecodeResult};
 use std::convert::TryInto;
 
 const MINIMUM_COOKIE_LENGTH: usize = CLIENT_COOKIE_LENGTH + MINIMUM_SERVER_COOKIE_LENGTH;

@@ -1,12 +1,17 @@
-use std::cmp::Ordering;
-use std::fmt::{Display, Formatter, Result as FmtResult};
-use std::hash::{Hash, Hasher};
-use std::net::{Ipv4Addr, Ipv6Addr};
-
-use crate::rr::draft_ietf_dnsop_svcb_https::ServiceBindingMode::{Alias, Service};
-use crate::rr::{ToType, Type};
-use crate::DomainName;
-use std::collections::BTreeSet;
+use crate::{
+    rr::{
+        draft_ietf_dnsop_svcb_https::ServiceBindingMode::{Alias, Service},
+        ToType, Type,
+    },
+    DomainName,
+};
+use std::{
+    cmp::Ordering,
+    collections::BTreeSet,
+    fmt::{Display, Formatter, Result as FmtResult},
+    hash::{Hash, Hasher},
+    net::{Ipv4Addr, Ipv6Addr},
+};
 
 /// A Service Binding record for locating alternative endpoints for a service.
 ///
@@ -79,8 +84,8 @@ impl ServiceBinding {
 pub enum ServiceParameter {
     /// Mandatory keys in this resource record (service mode only)
     MANDATORY {
-        /// the key IDs the client must support in order for this resource record to function properly
-        /// RFC section 7
+        /// the key IDs the client must support in order for this resource record to function
+        /// properly RFC section 7
         key_ids: Vec<u16>,
     },
     /// Additional supported protocols
