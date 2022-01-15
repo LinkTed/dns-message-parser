@@ -2,7 +2,7 @@
 name = "dns-message-parser"
 version = "0.6.0"
 authors = ["LinkTed <link.ted@mailbox.org>"]
-edition = "2018"
+edition = "2021"
 readme = "README.md"
 keywords = ["dns", "parser", "encode", "decode"]
 description = "Libary to encode and decode DNS packets"

@@ -1,6 +1,5 @@
 use crate::{rr::Class, DomainName};
 use std::{
-    convert::TryFrom,
     fmt::{Display, Formatter, Result as FmtResult},
     ops::Deref,
 };

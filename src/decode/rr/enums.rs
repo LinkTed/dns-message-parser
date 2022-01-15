@@ -3,7 +3,6 @@ use crate::{
     rr::{Class, Type, RR},
     {DecodeError, DecodeResult, DomainName},
 };
-use std::convert::TryFrom;
 
 pub(super) struct Header {
     pub(super) domain_name: DomainName,

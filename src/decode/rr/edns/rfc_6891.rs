@@ -7,7 +7,6 @@ use crate::{
     },
     {DecodeError, DecodeResult},
 };
-use std::convert::TryFrom;
 
 fn rr_opt_ttl(ttl: u32) -> DecodeResult<(u8, u8, bool)> {
     let extend_rcode = ((ttl >> 24) & 0xff) as u8;

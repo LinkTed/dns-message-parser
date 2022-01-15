@@ -10,10 +10,7 @@ use crate::{
         DecodeError,
     },
 };
-use std::{
-    collections::BTreeSet,
-    convert::{TryFrom, TryInto},
-};
+use std::collections::BTreeSet;
 
 impl<'a, 'b: 'a> Decoder<'b, 'b> {
     fn rr_nsec_type_window_block(

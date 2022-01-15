@@ -4,7 +4,6 @@ use crate::{
     rr::{Tag, CAA},
     DecodeResult,
 };
-use std::convert::TryFrom;
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
     fn rr_caa_tag(&mut self) -> DecodeResult<Tag> {

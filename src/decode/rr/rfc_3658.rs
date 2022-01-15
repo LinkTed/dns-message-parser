@@ -4,7 +4,6 @@ use crate::{
     rr::{SSHFPAlgorithm, SSHFPType, SSHFP},
     {DecodeError, DecodeResult},
 };
-use std::convert::TryFrom;
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
     fn rr_sshfp_algorithm(&mut self) -> DecodeResult<SSHFPAlgorithm> {

@@ -1,5 +1,4 @@
 use dns_message_parser::{DomainName, DomainNameError, Label, LabelError};
-use std::convert::TryFrom;
 
 #[test]
 fn label() {

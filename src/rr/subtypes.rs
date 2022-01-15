@@ -1,7 +1,6 @@
 use std::{
     cmp::Ordering,
     collections::{btree_set::Iter as BTreeSetIter, BTreeSet},
-    convert::TryFrom,
     fmt::{Display, Formatter, Result as FmtResult},
     net::{Ipv4Addr, Ipv6Addr},
     slice::Iter as SliceIter,

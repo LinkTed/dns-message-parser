@@ -2,7 +2,7 @@ use super::Class;
 use crate::DomainName;
 use hex::encode;
 use std::{
-    convert::{AsRef, TryFrom},
+    convert::AsRef,
     fmt::{Display, Formatter, Result as FmtResult},
 };
 use thiserror::Error;

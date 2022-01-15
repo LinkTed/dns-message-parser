@@ -4,10 +4,7 @@ use dns_message_parser::rr::{
     MF, MG, MINFO, MR, MX, NID, NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA, SOA, SRV, SSHFP, TXT,
     URI, X25,
 };
-use std::{
-    collections::BTreeSet,
-    convert::{TryFrom, TryInto},
-};
+use std::collections::BTreeSet;
 
 #[test]
 fn a() {

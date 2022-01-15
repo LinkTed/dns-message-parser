@@ -4,7 +4,6 @@ use crate::{
     {DecodeError, DecodeResult},
 };
 use std::{
-    convert::TryFrom,
     mem::size_of,
     net::{Ipv4Addr, Ipv6Addr},
 };

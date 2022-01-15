@@ -10,11 +10,7 @@ use dns_message_parser::{
     },
     {Dns, Flags, Opcode, RCode},
 };
-use std::{
-    collections::BTreeSet,
-    convert::{TryFrom, TryInto},
-    fmt::Display,
-};
+use std::{collections::BTreeSet, fmt::Display};
 
 fn check_output<T>(t: &T, output: &str)
 where

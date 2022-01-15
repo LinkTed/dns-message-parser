@@ -1,5 +1,4 @@
 use std::{
-    convert::TryFrom,
     fmt::{Display, Formatter, Result as FmtResult},
     hash::{Hash, Hasher},
     str::FromStr,

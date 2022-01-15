@@ -4,7 +4,6 @@ use crate::{
     rr::{AFSDBSubtype, ISDNAddress, PSDNAddress, AFSDB, ISDN, SA, X25},
     {DecodeError, DecodeResult},
 };
-use std::convert::TryFrom;
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
     impl_decode_rr_domain_name_domain_name!(RP, mbox_dname, txt_dname, rr_rp);

@@ -3,7 +3,6 @@ use crate::{
     question::{QClass, QType, Question},
     {DecodeError, DecodeResult},
 };
-use std::convert::TryFrom;
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
     pub fn q_type(&mut self) -> DecodeResult<QType> {
