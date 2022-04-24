@@ -1,6 +1,6 @@
 use dns_message_parser::{
     question::{QClass, QType, Question},
-    rr::edns::{Cookie, EDNSOption, Padding, ECS},
+    rr::edns::{Cookie, EDNSOption, Expire, Padding, ECS},
     rr::{
         APItem, Address, AlgorithmType, Class, DigestType, ISDNAddress, PSDNAddress,
         SSHFPAlgorithm, SSHFPType, ServiceBinding, ServiceParameter, Tag, A, AAAA, APL, CAA, CNAME,
@@ -606,6 +606,34 @@ fn rr_opt_ecs_2() {
         edns_options: vec![EDNSOption::ECS(ecs)],
     });
     check_output(&rr, ". OPT 1024 0 0 false ECS 24 24 10::");
+}
+
+#[test]
+fn rr_opt_expire_1() {
+    let expire = Expire { seconds: None };
+    let rr = RR::OPT(OPT {
+        requestor_payload_size: 1024,
+        dnssec: false,
+        version: 0,
+        extend_rcode: 0,
+        edns_options: vec![EDNSOption::Expire(expire)],
+    });
+    check_output(&rr, ". OPT 1024 0 0 false Expire");
+}
+
+#[test]
+fn rr_opt_expire_2() {
+    let expire = Expire {
+        seconds: Some(1234),
+    };
+    let rr = RR::OPT(OPT {
+        requestor_payload_size: 1024,
+        dnssec: false,
+        version: 0,
+        extend_rcode: 0,
+        edns_options: vec![EDNSOption::Expire(expire)],
+    });
+    check_output(&rr, ". OPT 1024 0 0 false Expire 1234");
 }
 
 #[test]

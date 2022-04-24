@@ -31,6 +31,7 @@ impl<'a, 'b: 'a> Decoder<'b, 'b> {
         let mut ends_option_data = self.sub(edns_option_length)?;
         let edns_option = match edns_option_code {
             EDNSOptionCode::ECS => EDNSOption::ECS(ends_option_data.rr_edns_ecs()?),
+            EDNSOptionCode::Expire => EDNSOption::Expire(ends_option_data.rr_edns_expire()?),
             EDNSOptionCode::Cookie => EDNSOption::Cookie(ends_option_data.rr_edns_cookie()?),
             EDNSOptionCode::Padding => EDNSOption::Padding(ends_option_data.rr_edns_padding()?),
         };

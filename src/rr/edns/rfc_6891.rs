@@ -1,4 +1,4 @@
-use super::{Cookie, Padding, ECS};
+use super::{Cookie, Expire, Padding, ECS};
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
 pub const EDNS_DNSSEC_MASK: u8 = 0x80;
@@ -8,6 +8,7 @@ try_from_enum_to_integer! {
     #[derive(Debug, Clone, Copy, PartialEq)]
     pub enum EDNSOptionCode {
         ECS = 0x00008,
+        Expire = 0x0009,
         Cookie = 0x000a,
         Padding = 0x000c,
     }
@@ -16,6 +17,7 @@ try_from_enum_to_integer! {
 #[derive(Debug, PartialEq, Clone, Eq, Hash)]
 pub enum EDNSOption {
     ECS(ECS),
+    Expire(Expire),
     Cookie(Cookie),
     Padding(Padding),
 }
@@ -24,6 +26,7 @@ impl Display for EDNSOption {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         match self {
             EDNSOption::ECS(ecs) => ecs.fmt(f),
+            EDNSOption::Expire(expire) => expire.fmt(f),
             EDNSOption::Cookie(cookie) => cookie.fmt(f),
             EDNSOption::Padding(padding) => padding.fmt(f),
         }

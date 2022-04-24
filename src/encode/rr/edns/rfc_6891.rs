@@ -24,6 +24,7 @@ impl Encoder {
     fn rr_edns_option(&mut self, edns_option: &EDNSOption) -> EncodeResult<()> {
         match edns_option {
             EDNSOption::ECS(ecs) => self.rr_edns_ecs(ecs)?,
+            EDNSOption::Expire(expire) => self.rr_edns_expire(expire),
             EDNSOption::Cookie(cookie) => self.rr_edns_cookie(cookie)?,
             EDNSOption::Padding(padding) => self.rr_edns_padding(padding),
         }

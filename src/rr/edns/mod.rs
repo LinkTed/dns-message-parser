@@ -1,10 +1,12 @@
 pub(crate) mod rfc_6891;
+mod rfc_7314;
 mod rfc_7830;
 mod rfc_7871;
 mod rfc_7873;
 
 //pub use rfc_6891::OPT;
 pub use rfc_6891::{EDNSOption, EDNSOptionCode, EDNS_DNSSEC_MASK};
+pub use rfc_7314::Expire;
 pub use rfc_7830::Padding;
 pub use rfc_7871::ECS;
 pub use rfc_7873::{
