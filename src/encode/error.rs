@@ -1,7 +1,7 @@
 use crate::rr::APL_NEGATION_MASK;
 use thiserror::Error;
 
-#[derive(Debug, PartialEq, Error)]
+#[derive(Debug, PartialEq, Error, Eq)]
 pub enum EncodeError {
     #[error("String too big to be encoded as u8: {0}")]
     String(usize),

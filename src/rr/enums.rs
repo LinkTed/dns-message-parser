@@ -236,7 +236,7 @@ pub trait ToType {
     fn to_type(&self) -> Type;
 }
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Eq)]
 pub enum RR {
     A(A),
     NS(NS),
