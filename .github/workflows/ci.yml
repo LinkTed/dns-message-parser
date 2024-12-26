@@ -54,10 +54,7 @@ jobs:
           toolchain: ${{ matrix.rust_channel }}
       - uses: actions/checkout@v4
       - name: Run cargo test
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --all-features
+        run: cargo test --no-default-features --features "${{ matrix.features }}"
 
   code-coverage:
     name: Job code coverage
