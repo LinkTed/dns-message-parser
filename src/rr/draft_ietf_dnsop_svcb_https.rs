@@ -1,12 +1,12 @@
-use std::cmp::Ordering;
-use std::fmt::{Display, Formatter, Result as FmtResult};
-use std::hash::{Hash, Hasher};
-use std::net::{Ipv4Addr, Ipv6Addr};
-
 use crate::rr::draft_ietf_dnsop_svcb_https::ServiceBindingMode::{Alias, Service};
 use crate::rr::{ToType, Type};
 use crate::DomainName;
+use base64::{engine::general_purpose::STANDARD as Base64Standard, Engine};
+use std::cmp::Ordering;
 use std::collections::BTreeSet;
+use std::fmt::{Display, Formatter, Result as FmtResult};
+use std::hash::{Hash, Hasher};
+use std::net::{Ipv4Addr, Ipv6Addr};
 
 /// A Service Binding record for locating alternative endpoints for a service.
 ///
@@ -227,7 +227,7 @@ impl Display for ServiceParameter {
                 )
             }
             ServiceParameter::ECH { config_list } => {
-                write!(f, "ech={}", base64::encode(config_list))
+                write!(f, "ech={}", Base64Standard.encode(config_list))
             }
             ServiceParameter::IPV6_HINT { hints } => {
                 write!(
@@ -261,7 +261,7 @@ impl Display for ServiceParameter {
                     if let Ok(value) = String::from_utf8(escaped) {
                         write!(f, "{}=\"{}\"", key, value)
                     } else {
-                        write!(f, "{}=\"{}\"", key, base64::encode(wire_data))
+                        write!(f, "{}=\"{}\"", key, Base64Standard.encode(wire_data))
                     }
                 }
             }

@@ -22,13 +22,13 @@ categories = [
     ]
 
 [dependencies]
-base64 = "0.13.0"
-bytes = "1.2.1"
-hex = "0.4.3"
-thiserror = "1.0.32"
+base64 = "0.22"
+bytes = "1"
+hex = "0.4"
+thiserror = "2"
 
 [dev-dependencies]
-criterion = "0.3.6"
+criterion = "0.5"
 
 [[bench]]
 name = "message"
