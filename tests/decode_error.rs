@@ -69,6 +69,13 @@ fn domain_name_1() {
 }
 
 #[test]
+fn domain_name_2() {
+    let msg =
+        b"\xc0\x02\xc0\x04\xc0\x06\xc0\x08\xc0\x0a\xc0\x0c\xc0\x0e\xc0\x10\xc0\x12\xc0\x14\xc0\x16\xc0\x18\xc0\x1a\xc0\x1c\xc0\x1e\xc0\x20\xc0\x22";
+    decode_domain_name_error(msg, DecodeError::MaxRecursion(17));
+}
+
+#[test]
 fn dns_not_enough_bytes() {
     let msg = b"";
     decode_msg_error(&msg[..], DecodeError::NotEnoughBytes(0, 12));
