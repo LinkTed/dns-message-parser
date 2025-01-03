@@ -2,7 +2,7 @@ use bytes::Bytes;
 use dns_message_parser::{
     question::{QClass, QType, Question},
     rr::{AddressError, Class, TagError},
-    Opcode, RCode, MAXIMUM_DNS_PACKET_SIZE, {DecodeError, Dns, Flags},
+    DecodeError, Dns, DomainName, Flags, Opcode, RCode, MAXIMUM_DNS_PACKET_SIZE,
 };
 
 fn decode_msg_error(msg: &[u8], e: DecodeError) {
@@ -21,6 +21,15 @@ fn decode_flags_error(msg: &[u8], e: DecodeError) {
     let flags = Flags::decode(bytes);
     // Check the result
     assert_eq!(flags, Err(e))
+}
+
+fn decode_domain_name_error(msg: &[u8], e: DecodeError) {
+    // Decode BytesMut to message
+    let bytes = Bytes::copy_from_slice(msg);
+    // Decode the domain name
+    let domain_name = DomainName::decode(bytes);
+    // Check the result
+    assert_eq!(domain_name, Err(e))
 }
 
 #[test]
@@ -51,6 +60,12 @@ fn flags_4() {
 fn flags_5() {
     let msg = b"\x80\x0f";
     decode_flags_error(msg, DecodeError::RCode(15));
+}
+
+#[test]
+fn domain_name_1() {
+    let msg = b"\xc0\x02\xc0\x00";
+    decode_domain_name_error(msg, DecodeError::EndlessRecursion(2));
 }
 
 #[test]
