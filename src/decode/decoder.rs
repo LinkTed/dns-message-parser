@@ -38,7 +38,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         }
     }
 
-    pub(super) const fn get_main(&'a self) -> &Decoder<'a, 'b> {
+    pub(super) const fn get_main(&self) -> &Decoder<'a, 'b> {
         let mut root = self;
         loop {
             match root.parent {
