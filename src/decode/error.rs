@@ -90,7 +90,7 @@ pub enum DecodeError {
     #[error("Could not decode the domain name, the because maximum recursion is reached: {0}")]
     MaxRecursion(usize),
     #[error("Could not decode the domain name, because an endless recursion was detected: {0}")]
-    EndlessRecursion(usize),
+    EndlessRecursion(u16),
     #[error("The are remaining bytes, which was not parsed")]
     RemainingBytes(usize, Dns),
     #[error("Padding is not zero: {0}")]
