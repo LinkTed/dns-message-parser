@@ -1,6 +1,6 @@
 use crate::{DecodeError, DecodeResult};
 use bytes::Bytes;
-use std::cmp::Ordering;
+use std::{cmp::Ordering, u16};
 
 pub(crate) struct Decoder<'a, 'b: 'a> {
     pub parent: Option<&'a Decoder<'b, 'b>>,
@@ -29,12 +29,12 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         }
     }
 
-    pub(super) fn new_main_offset(&self, offset: usize) -> Decoder<'static, 'static> {
+    pub(super) fn new_main_offset(&self, offset: u16) -> Decoder<'static, 'static> {
         let main = self.get_main();
         Decoder {
             parent: None,
             bytes: main.bytes.clone(),
-            offset,
+            offset: offset as usize,
         }
     }
 
