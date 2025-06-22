@@ -8,19 +8,19 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         let class = header.get_class()?;
 
         // TODO String value check
-        let longitude = self.string()?;
+        let longitude = self.string_with_len()?;
         let longitude_len = longitude.len();
         if !(1..=256).contains(&longitude_len) {
             return Err(DecodeError::GPOS);
         }
 
-        let latitude = self.string()?;
+        let latitude = self.string_with_len()?;
         let latitude_len = latitude.len();
         if !(1..=256).contains(&latitude_len) {
             return Err(DecodeError::GPOS);
         }
 
-        let altitude = self.string()?;
+        let altitude = self.string_with_len()?;
         let altitude_len = altitude.len();
         if !(1..=256).contains(&altitude_len) {
             return Err(DecodeError::GPOS);

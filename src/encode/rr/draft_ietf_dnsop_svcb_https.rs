@@ -44,7 +44,7 @@ impl Encoder {
             }
             ServiceParameter::ALPN { alpn_ids } => {
                 for alpn_id in alpn_ids {
-                    self.string(alpn_id)?;
+                    self.string_with_len(alpn_id)?;
                 }
             }
             ServiceParameter::NO_DEFAULT_ALPN => {}

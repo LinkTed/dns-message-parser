@@ -57,6 +57,14 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         }
     }
 
+    pub(super) fn remaining(&self) -> DecodeResult<usize> {
+        let bytes_len = self.bytes.len();
+        match bytes_len.checked_sub(self.offset) {
+            Some(remaining) => Ok(remaining),
+            None => Err(DecodeError::NotEnoughBytes(bytes_len, self.offset)),
+        }
+    }
+
     pub(super) fn finished(self) -> DecodeResult<()> {
         match self.is_finished()? {
             true => Ok(()),

@@ -72,7 +72,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
             1 => {
                 let mut alpn_ids = vec![];
                 while !self.is_finished()? {
-                    alpn_ids.push(self.string()?);
+                    alpn_ids.push(self.string_with_len()?);
                 }
                 ServiceParameter::ALPN { alpn_ids }
             }

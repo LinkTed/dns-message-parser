@@ -31,7 +31,7 @@ fn u32_error() {
 fn string_error_1() {
     let bytes = Bytes::copy_from_slice(&b""[..]);
     let mut decoder = Decoder::main(bytes);
-    let result = decoder.string();
+    let result = decoder.string_with_len();
     assert_eq!(result, Err(DecodeError::NotEnoughBytes(0, 1)));
 }
 
@@ -39,7 +39,7 @@ fn string_error_1() {
 fn string_error_2() {
     let bytes = Bytes::copy_from_slice(&b"\x0f\x41\x42"[..]);
     let mut decoder = Decoder::main(bytes);
-    let result = decoder.string();
+    let result = decoder.string_with_len();
     assert_eq!(result, Err(DecodeError::NotEnoughBytes(3, 16)));
 }
 
@@ -47,7 +47,7 @@ fn string_error_2() {
 fn string_error_3() {
     let bytes = Bytes::copy_from_slice(&b"\x02\x00\xff"[..]);
     let mut decoder = Decoder::main(bytes);
-    let result = decoder.string();
+    let result = decoder.string_with_len();
     let bytes = Bytes::copy_from_slice(&b"\x02\x00\xff"[..]);
     let excepted = from_utf8(&bytes[1..]).unwrap_err();
     assert_eq!(result, Err(DecodeError::Utf8Error(excepted)));
