@@ -13,7 +13,7 @@ A library to encode and decode DNS packets ([RFC1035](https://tools.ietf.org/htm
 Add this to your `Cargo.toml`:
 ```toml
 [dependencies]
-dns-message-parser = "0.7.0"
+dns-message-parser = "0.9.0"
 ```
 
 ## Example
