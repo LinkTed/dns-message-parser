@@ -1,7 +1,7 @@
 use crate::{
     decode::Decoder, domain_name::DOMAIN_NAME_MAX_RECURSION, DecodeError, DecodeResult, DomainName,
 };
-use std::{collections::HashSet, str::from_utf8, usize};
+use std::{collections::HashSet, str::from_utf8};
 
 const COMPRESSION_BITS: u8 = 0b1100_0000;
 const COMPRESSION_BITS_REV: u8 = 0b0011_1111;

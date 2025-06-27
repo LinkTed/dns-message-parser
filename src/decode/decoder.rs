@@ -1,6 +1,6 @@
 use crate::{DecodeError, DecodeResult};
 use bytes::Bytes;
-use std::{cmp::Ordering, u16};
+use std::cmp::Ordering;
 
 pub(crate) struct Decoder<'a, 'b: 'a> {
     pub parent: Option<&'a Decoder<'b, 'b>>,
