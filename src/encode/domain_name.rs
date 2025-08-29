@@ -74,7 +74,7 @@ impl Encoder {
 }
 
 impl DomainName {
-    fn iter(&self) -> DomainNameIter {
+    fn iter(&self) -> DomainNameIter<'_> {
         DomainNameIter { labels: &self.0 }
     }
 }
