@@ -51,8 +51,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
     /// Decode a single service parameter
     ///
     /// Parameters:
-    /// - `service_parameter_key` - the IANA-controlled numeric identifier as defined in section
-    ///                             14.3 of the RFC
+    /// - `service_parameter_key` - the IANA-controlled numeric identifier as defined in section 14.3 of the RFC
     ///
     /// Returns:
     /// - `Ok(ServiceParameter)` - if there were no issues decoding the value
@@ -72,7 +71,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
             1 => {
                 let mut alpn_ids = vec![];
                 while !self.is_finished()? {
-                    alpn_ids.push(self.string()?);
+                    alpn_ids.push(self.string_with_len()?);
                 }
                 ServiceParameter::ALPN { alpn_ids }
             }

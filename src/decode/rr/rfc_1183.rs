@@ -31,7 +31,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
 
     pub(super) fn rr_x25(&mut self, header: Header) -> DecodeResult<X25> {
         let class = header.get_class()?;
-        let psdn_address = self.string()?;
+        let psdn_address = self.string_with_len()?;
         let psdn_address = PSDNAddress::try_from(psdn_address)?;
 
         let x25 = X25 {
@@ -45,13 +45,13 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
 
     pub(super) fn rr_isdn(&mut self, header: Header) -> DecodeResult<ISDN> {
         let class = header.get_class()?;
-        let isdn_address = self.string()?;
+        let isdn_address = self.string_with_len()?;
         let isdn_address = ISDNAddress::try_from(isdn_address)?;
 
         let sa = if self.is_finished()? {
             None
         } else {
-            let sa = self.string()?;
+            let sa = self.string_with_len()?;
             let sa = SA::try_from(sa)?;
             Some(sa)
         };

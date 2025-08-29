@@ -4,7 +4,7 @@ use crate::EncodeResult;
 
 impl Encoder {
     fn rr_caa_tag(&mut self, tag: &Tag) -> EncodeResult<()> {
-        self.string(tag.as_ref())
+        self.string_with_len(tag.as_ref())
     }
 
     pub(super) fn rr_caa(&mut self, caa: &CAA) -> EncodeResult<()> {

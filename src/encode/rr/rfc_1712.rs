@@ -9,9 +9,9 @@ impl Encoder {
         self.rr_class(&gpos.class);
         self.u32(gpos.ttl);
         let length_index = self.create_length_index();
-        self.string(&gpos.longitude)?;
-        self.string(&gpos.latitude)?;
-        self.string(&gpos.altitude)?;
+        self.string_with_len(&gpos.longitude)?;
+        self.string_with_len(&gpos.latitude)?;
+        self.string_with_len(&gpos.altitude)?;
         self.set_length_index(length_index)
     }
 }

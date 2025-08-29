@@ -1,14 +1,17 @@
 use dns_message_parser::{
     question::{QClass, QType, Question},
-    rr::edns::{Cookie, EDNSOption, Padding, ECS},
     rr::{
+        edns::{
+            Cookie, EDNSOption, ExtendedDNSErrorCodes, ExtendedDNSErrorExtraText,
+            ExtendedDNSErrors, Padding, ECS,
+        },
         APItem, Address, AlgorithmType, Class, DigestType, ISDNAddress, PSDNAddress,
         SSHFPAlgorithm, SSHFPType, ServiceBinding, ServiceParameter, Tag, A, AAAA, APL, CAA, CNAME,
         DNAME, DNSKEY, DS, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32, L64, LP, MB, MD, MF, MG,
         MINFO, MR, MX, NID, NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA, SOA, SRV, SSHFP, TXT, URI,
         X25,
     },
-    {Dns, Flags, Opcode, RCode},
+    Dns, Flags, Opcode, RCode,
 };
 use std::{
     collections::BTreeSet,
@@ -1081,5 +1084,24 @@ fn dns() {
         answers [cname.example.org. 3600 IN CNAME example.org., ] \
         authorities [ns1.example.org. 3600 IN NS example.org., ] \
         additionals [example.org. 3600 IN A 10.0.0.10, ]",
+    );
+}
+
+#[test]
+fn rr_opt_extended_dns_errors() {
+    let extended_dns_errors = ExtendedDNSErrors {
+        info_code: ExtendedDNSErrorCodes::UnsupportedDNSKEYAlgorithm,
+        extra_text: ExtendedDNSErrorExtraText::try_from("TEST").unwrap(),
+    };
+    let rr = RR::OPT(OPT {
+        requestor_payload_size: 1024,
+        dnssec: false,
+        version: 0,
+        extend_rcode: 0,
+        edns_options: vec![EDNSOption::ExtendedDNSErrors(extended_dns_errors)],
+    });
+    check_output(
+        &rr,
+        ". OPT 1024 0 0 false Extended DNS Errors UnsupportedDNSKEYAlgorithm TEST",
     );
 }

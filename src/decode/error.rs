@@ -1,4 +1,4 @@
-use crate::rr::edns::CookieError;
+use crate::rr::edns::{CookieError, ExtendedDNSErrorExtraTextError};
 use crate::rr::{AddressError, Class, ISDNError, PSDNAddressError, TagError, Type};
 use crate::{Dns, DomainName, DomainNameError, LabelError};
 use hex::FromHexError;
@@ -69,6 +69,10 @@ pub enum DecodeError {
     CookieError(#[from] CookieError),
     #[error("Could not decode AddressNumber: {0}")]
     EcsAddressNumber(u16),
+    #[error("Could not decode EcsAddressNumber: {0}")]
+    ExtendedDNSErrorCodes(u16),
+    #[error("Could not decode ExtendedDNSErrorExtraText: {0}")]
+    ExtendedDNSErrorExtraTextError(#[from] ExtendedDNSErrorExtraTextError),
     #[error("The IPv4 Address is too big: {0}")]
     EcsTooBigIpv4Address(usize),
     #[error("The IPv6 Address is too big: {0}")]
@@ -90,7 +94,7 @@ pub enum DecodeError {
     #[error("Could not decode the domain name, the because maximum recursion is reached: {0}")]
     MaxRecursion(usize),
     #[error("Could not decode the domain name, because an endless recursion was detected: {0}")]
-    EndlessRecursion(usize),
+    EndlessRecursion(u16),
     #[error("The are remaining bytes, which was not parsed")]
     RemainingBytes(usize, Dns),
     #[error("Padding is not zero: {0}")]

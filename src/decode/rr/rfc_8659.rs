@@ -6,7 +6,7 @@ use std::convert::TryFrom;
 
 impl<'a, 'b: 'a> Decoder<'a, 'b> {
     fn rr_caa_tag(&mut self) -> DecodeResult<Tag> {
-        let tag = self.string()?;
+        let tag = self.string_with_len()?;
         let tag = Tag::try_from(tag)?;
         Ok(tag)
     }

@@ -68,13 +68,17 @@ impl Encoder {
         self.u8(octets[15]);
     }
 
-    pub(super) fn string(&mut self, s: &str) -> EncodeResult<()> {
+    pub(super) fn string_with_len(&mut self, s: &str) -> EncodeResult<()> {
         let length = s.len();
         if length > 255 {
             return Err(EncodeError::String(length));
         }
 
         self.u8(length as u8);
+        self.string(s)
+    }
+
+    pub(super) fn string(&mut self, s: &str) -> EncodeResult<()> {
         self.bytes.extend_from_slice(s.as_bytes());
 
         Ok(())
@@ -100,4 +104,11 @@ impl Encoder {
             Err(EncodeError::Length(length))
         }
     }
+}
+
+#[test]
+fn string_with_len() {
+    let mut encoder = Encoder::default();
+    let result = encoder.string_with_len("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    assert_eq!(result, Err(EncodeError::String(256)));
 }

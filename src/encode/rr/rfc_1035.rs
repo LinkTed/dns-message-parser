@@ -65,8 +65,8 @@ impl Encoder {
         self.rr_class(&hinfo.class);
         self.u32(hinfo.ttl);
         let length_index = self.create_length_index();
-        self.string(&hinfo.cpu)?;
-        self.string(&hinfo.os)?;
+        self.string_with_len(&hinfo.cpu)?;
+        self.string_with_len(&hinfo.os)?;
         self.set_length_index(length_index)
     }
 
@@ -81,7 +81,7 @@ impl Encoder {
         self.u32(txt.ttl);
         let length_index = self.create_length_index();
         for string in txt.strings.iter() {
-            self.string(string)?;
+            self.string_with_len(string)?;
         }
         self.set_length_index(length_index)
     }

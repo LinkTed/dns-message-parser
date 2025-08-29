@@ -85,8 +85,8 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
 
     pub(super) fn rr_hinfo(&mut self, header: Header) -> DecodeResult<HINFO> {
         let class = header.get_class()?;
-        let cpu = self.string()?;
-        let os = self.string()?;
+        let cpu = self.string_with_len()?;
+        let os = self.string_with_len()?;
         let hinfo = HINFO {
             domain_name: header.domain_name,
             ttl: header.ttl,
@@ -105,7 +105,7 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         let class = header.get_class()?;
         let mut strings = Vec::new();
         while !self.is_finished()? {
-            strings.push(self.string()?);
+            strings.push(self.string_with_len()?);
         }
         let strings = strings.try_into().map_err(|_| DecodeError::TXTEmpty)?;
         let txt = TXT {

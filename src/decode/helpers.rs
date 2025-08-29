@@ -27,8 +27,12 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         Ok(buffer.get_u64())
     }
 
-    pub(super) fn string(&mut self) -> DecodeResult<String> {
+    pub(super) fn string_with_len(&mut self) -> DecodeResult<String> {
         let length = self.u8()? as usize;
+        self.string(length)
+    }
+
+    pub(super) fn string(&mut self, length: usize) -> DecodeResult<String> {
         let buffer = self.read(length)?;
         let string = from_utf8(buffer.as_ref())?;
         Ok(String::from(string))

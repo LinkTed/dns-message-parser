@@ -25,13 +25,16 @@ impl<'a, 'b: 'a> Decoder<'b, 'b> {
     fn rr_edns_option(&'a mut self) -> DecodeResult<EDNSOption> {
         let edns_option_code = self.rr_edns_option_code()?;
         let edns_option_length = self.u16()?;
-        let mut ends_option_data = self.sub(edns_option_length)?;
+        let mut edns_option_data = self.sub(edns_option_length)?;
         let edns_option = match edns_option_code {
-            EDNSOptionCode::ECS => EDNSOption::ECS(ends_option_data.rr_edns_ecs()?),
-            EDNSOptionCode::Cookie => EDNSOption::Cookie(ends_option_data.rr_edns_cookie()?),
-            EDNSOptionCode::Padding => EDNSOption::Padding(ends_option_data.rr_edns_padding()?),
+            EDNSOptionCode::ECS => EDNSOption::ECS(edns_option_data.rr_edns_ecs()?),
+            EDNSOptionCode::Cookie => EDNSOption::Cookie(edns_option_data.rr_edns_cookie()?),
+            EDNSOptionCode::Padding => EDNSOption::Padding(edns_option_data.rr_edns_padding()?),
+            EDNSOptionCode::ExtendedDnsError => {
+                EDNSOption::ExtendedDNSErrors(edns_option_data.rr_edns_extended_dns_errors()?)
+            }
         };
-        ends_option_data.finished()?;
+        edns_option_data.finished()?;
         Ok(edns_option)
     }
 

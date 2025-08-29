@@ -29,12 +29,12 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
         }
     }
 
-    pub(super) fn new_main_offset(&self, offset: usize) -> Decoder<'static, 'static> {
+    pub(super) fn new_main_offset(&self, offset: u16) -> Decoder<'static, 'static> {
         let main = self.get_main();
         Decoder {
             parent: None,
             bytes: main.bytes.clone(),
-            offset,
+            offset: offset as usize,
         }
     }
 
@@ -54,6 +54,14 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
             Ordering::Less => Ok(false),
             Ordering::Equal => Ok(true),
             Ordering::Greater => Err(DecodeError::NotEnoughBytes(bytes_len, self.offset)),
+        }
+    }
+
+    pub(super) fn remaining(&self) -> DecodeResult<usize> {
+        let bytes_len = self.bytes.len();
+        match bytes_len.checked_sub(self.offset) {
+            Some(remaining) => Ok(remaining),
+            None => Err(DecodeError::NotEnoughBytes(bytes_len, self.offset)),
         }
     }
 

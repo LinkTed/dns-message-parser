@@ -33,7 +33,7 @@ impl Encoder {
     #[inline]
     fn label(&mut self, label: &Label) -> EncodeResult<u16> {
         let index = self.get_offset()?;
-        self.string(label.as_ref())?;
+        self.string_with_len(label.as_ref())?;
         Ok(index)
     }
 
@@ -67,14 +67,14 @@ impl Encoder {
                 domain_name_index.insert(domain_name, index);
             }
         }
-        self.string("")?;
+        self.string_with_len("")?;
         self.merge_domain_name_index(domain_name_index, 0)?;
         Ok(())
     }
 }
 
 impl DomainName {
-    fn iter(&self) -> DomainNameIter {
+    fn iter(&self) -> DomainNameIter<'_> {
         DomainNameIter { labels: &self.0 }
     }
 }
