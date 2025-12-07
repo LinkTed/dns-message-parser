@@ -1,7 +1,7 @@
 pub use super::{
     A, AAAA, AFSDB, APL, CAA, CNAME, DNAME, DNSKEY, DS, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX,
-    L32, L64, LOC, LP, MB, MD, MF, MG, MINFO, MR, MX, NID, NIMLOC, NS, NSAP, NULL, OPT, PTR, PX,
-    RP, RT, SOA, SRV, SSHFP, TXT, URI, WKS, X25,
+    L32, L64, LOC, LP, MB, MD, MF, MG, MINFO, MR, MX, NID, NIMLOC, NS, NSAP, NSEC, NULL, OPT, PTR,
+    PX, RP, RT, SOA, SRV, SSHFP, TXT, URI, WKS, X25,
 };
 use crate::rr::draft_ietf_dnsop_svcb_https::ServiceBinding;
 use std::fmt::{Display, Formatter, Result as FmtResult};
@@ -31,7 +31,7 @@ try_from_enum_to_integer! {
     ///
     /// [type]: https://tools.ietf.org/html/rfc1035#section-3.2.2
     /// [resource records]: crate::rr::RR
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
     pub enum Type {
         /// The [IPv4] [host address] type.
         ///
@@ -176,10 +176,10 @@ try_from_enum_to_integer! {
         /// The [DNSKEY] type.
         ///
         /// [DNSKEY]: https://tools.ietf.org/html/rfc4034#section-2
-        DNSKEY = 48,
-        DHCID = 49,
-        NSEC3 = 50,
-        NSEC3PARAM = 51,
+    DNSKEY = 48,
+    DHCID = 49,
+    NSEC3 = 50,
+    NSEC3PARAM = 51,
         TLSA = 52,
         SMIMEA = 53,
 
@@ -280,6 +280,7 @@ pub enum RR {
     EUI48(EUI48),
     EUI64(EUI64),
     DS(DS),
+    NSEC(NSEC),
     DNSKEY(DNSKEY),
     CAA(CAA),
     SVCB(ServiceBinding),
@@ -331,6 +332,7 @@ impl RR {
             RR::URI(uri) => Some(uri.ttl),
             RR::EID(eid) => Some(eid.ttl),
             RR::DS(ds) => Some(ds.ttl),
+            RR::NSEC(nsec) => Some(nsec.ttl),
             RR::DNSKEY(dnskey) => Some(dnskey.ttl),
             RR::CAA(caa) => Some(caa.ttl),
             RR::SVCB(svcb) => Some(svcb.ttl),
@@ -382,6 +384,7 @@ impl RR {
             RR::URI(uri) => Some(uri.class),
             RR::EID(eid) => Some(eid.class),
             RR::DS(ds) => Some(ds.class),
+            RR::NSEC(nsec) => Some(nsec.class),
             RR::DNSKEY(dnskey) => Some(dnskey.class),
             RR::CAA(caa) => Some(caa.class),
             RR::SVCB(_) => Some(Class::IN),
@@ -435,6 +438,7 @@ impl Display for RR {
             RR::URI(uri) => uri.fmt(f),
             RR::EID(eid) => eid.fmt(f),
             RR::DS(ds) => ds.fmt(f),
+            RR::NSEC(nsec) => nsec.fmt(f),
             RR::DNSKEY(dnskey) => dnskey.fmt(f),
             RR::CAA(caa) => caa.fmt(f),
             RR::SVCB(svcb) => svcb.fmt(f),

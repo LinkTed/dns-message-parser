@@ -83,6 +83,8 @@ pub enum DecodeError {
     SSHFPAlgorithm(u8),
     #[error("Could not decode SSHFPType: {0}")]
     SSHFPType(u8),
+    #[error("The bitmap length must be between 1 and 32 bytes: {0}")]
+    NSECBitmapLength(u8),
     #[error("Could not decode AlgorithmType: {0}")]
     AlgorithmType(u8),
     #[error("Could not decode DigestType: {0}")]

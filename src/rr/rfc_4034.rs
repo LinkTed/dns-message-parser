@@ -1,6 +1,8 @@
 use crate::rr::Class;
+use crate::rr::Type;
 use crate::DomainName;
 use hex::encode;
+use std::collections::BTreeSet;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 
 /// The bit at offset 7 of the DNSKEY flags field is the [Zone Key flag].
@@ -113,6 +115,33 @@ impl Display for DS {
             self.algorithm_type as u8,
             self.digest_type as u8,
             encode(&self.digest),
+        )
+    }
+}
+
+#[derive(Debug, PartialEq, Clone, Eq, Hash)]
+pub struct NSEC {
+    pub domain_name: DomainName,
+    pub ttl: u32,
+    pub class: Class,
+    pub next_domain_name: DomainName,
+    pub type_bit_maps: BTreeSet<Type>,
+}
+
+impl Display for NSEC {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        write!(
+            f,
+            "{} {} {} NSEC {} {}",
+            self.domain_name,
+            self.ttl,
+            self.class,
+            self.next_domain_name,
+            self.type_bit_maps
+                .iter()
+                .map(|type_| format!("{:?}", type_))
+                .collect::<Vec<_>>()
+                .join(" ")
         )
     }
 }

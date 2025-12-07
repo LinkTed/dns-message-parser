@@ -6,10 +6,10 @@ use dns_message_parser::{
             ExtendedDNSErrors, Padding, ECS,
         },
         APItem, Address, AlgorithmType, Class, DigestType, ISDNAddress, PSDNAddress,
-        SSHFPAlgorithm, SSHFPType, ServiceBinding, ServiceParameter, Tag, A, AAAA, APL, CAA, CNAME,
-        DNAME, DNSKEY, DS, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32, L64, LP, MB, MD, MF, MG,
-        MINFO, MR, MX, NID, NIMLOC, NS, OPT, PTR, PX, RP, RR, RT, SA, SOA, SRV, SSHFP, TXT, URI,
-        X25,
+        SSHFPAlgorithm, SSHFPType, ServiceBinding, ServiceParameter, Tag, Type, A, AAAA, APL, CAA,
+        CNAME, DNAME, DNSKEY, DS, EID, EUI48, EUI64, GPOS, HINFO, ISDN, KX, L32, L64, LP, MB, MD,
+        MF, MG, MINFO, MR, MX, NID, NIMLOC, NS, NSEC, OPT, PTR, PX, RP, RR, RT, SA, SOA, SRV,
+        SSHFP, TXT, URI, X25,
     },
     Dns, Flags, Opcode, RCode,
 };
@@ -755,6 +755,20 @@ fn rr_ds() {
         "dskey.example.org. 4321 CS DS 5583 16 2 89048b1c99a28e3eb5425a92d50b778b8fb4a5d978f0f5cba\
         b430604adcf73ba",
     );
+}
+
+#[test]
+fn rr_nsec() {
+    let domain_name = "example.org".parse().unwrap();
+    let next_domain_name = "ns.example.org".parse().unwrap();
+    let rr = RR::NSEC(NSEC {
+        domain_name,
+        ttl: 3600,
+        class: Class::IN,
+        next_domain_name,
+        type_bit_maps: BTreeSet::from([Type::A, Type::MX, Type::RRSIG]),
+    });
+    check_output(&rr, "example.org. 3600 IN NSEC ns.example.org. A MX RRSIG");
 }
 
 #[test]

@@ -71,6 +71,22 @@ impl Encoder {
         self.merge_domain_name_index(domain_name_index, 0)?;
         Ok(())
     }
+
+    pub(super) fn domain_name_without_compression(
+        &mut self,
+        domain_name: &DomainName,
+    ) -> EncodeResult<()> {
+        let mut domain_name_index = HashMap::new();
+        for (label, domain_name) in domain_name.iter() {
+            let index = self.label(&label)?;
+            if index <= MAX_OFFSET {
+                domain_name_index.insert(domain_name, index);
+            }
+        }
+        self.string_with_len("")?;
+        self.merge_domain_name_index(domain_name_index, 0)?;
+        Ok(())
+    }
 }
 
 impl DomainName {

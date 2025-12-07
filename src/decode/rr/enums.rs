@@ -70,6 +70,7 @@ impl<'a, 'b: 'a> Decoder<'b, 'b> {
             Type::URI => RR::URI(r_data.rr_uri(header)?),
             Type::EID => RR::EID(r_data.rr_eid(header)?),
             Type::NIMLOC => RR::NIMLOC(r_data.rr_nimloc(header)?),
+            Type::NSEC => RR::NSEC(r_data.rr_nsec(header)?),
             Type::DNSKEY => RR::DNSKEY(r_data.rr_dnskey(header)?),
             Type::DS => RR::DS(r_data.rr_ds(header)?),
             Type::CAA => RR::CAA(r_data.rr_caa(header)?),

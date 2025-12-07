@@ -1,5 +1,10 @@
 use bytes::Bytes;
-use dns_message_parser::{Dns, Flags, Opcode, RCode};
+use dns_message_parser::{
+    question::{QClass, QType, Question},
+    rr::{Class, Type, NSEC, RR},
+    Dns, DomainName, Flags, Opcode, RCode,
+};
+use std::collections::BTreeSet;
 
 fn decode_msg(msg: &[u8]) -> Dns {
     // Decode BytesMut to message
@@ -15,6 +20,26 @@ fn decode_encode_decode(msg: &[u8]) {
     let dns_2 = decode_msg(bytes.as_ref());
     // Check if is equal
     assert_eq!(dns_1, dns_2);
+}
+
+fn skip_name(bytes: &[u8], mut offset: usize) -> usize {
+    loop {
+        let length = bytes[offset];
+        offset += 1;
+
+        if length & 0xc0 == 0xc0 {
+            offset += 1;
+            break;
+        }
+
+        if length == 0 {
+            break;
+        }
+
+        offset += length as usize;
+    }
+
+    offset
 }
 
 #[test]
@@ -767,4 +792,103 @@ fn example_net_edns_ede_forged() {
     \x3a\x80\x00\x1e\xc0\x1d\x05\x65\x6d\x61\x69\x6c\xc0\x1d\x00\x00\x00\x02\x00\x09\x3a\x80\x00\x01\x51\x80\x00\x24\
     \xea\x00\x00\x09\x3a\x80\x00\x00\x29\x04\xd0\x00\x00\x00\x00\x00\x06\x00\x0f\x00\x02\x00\x12";
     decode_encode_decode(&msg[..]);
+}
+
+#[test]
+fn nsec_response_roundtrip() {
+    let domain_name: DomainName = "example.org".parse().unwrap();
+    let next_domain_name: DomainName = "ns.example.org".parse().unwrap();
+    let flags = Flags {
+        qr: true,
+        opcode: Opcode::Query,
+        aa: true,
+        tc: false,
+        rd: false,
+        ra: false,
+        ad: false,
+        cd: false,
+        rcode: RCode::NoError,
+    };
+
+    let dns = Dns {
+        id: 0x6b6a,
+        flags,
+        questions: vec![Question {
+            domain_name: domain_name.clone(),
+            q_class: QClass::IN,
+            q_type: QType::NSEC,
+        }],
+        answers: vec![RR::NSEC(NSEC {
+            domain_name,
+            ttl: 3600,
+            class: Class::IN,
+            next_domain_name,
+            type_bit_maps: BTreeSet::from([Type::RRSIG, Type::A, Type::MX]),
+        })],
+        authorities: Vec::new(),
+        additionals: Vec::new(),
+    };
+
+    let msg = dns.encode().unwrap();
+    decode_encode_decode(msg.as_ref());
+}
+
+#[test]
+fn nsec_next_domain_not_compressed() {
+    let domain_name: DomainName = "example.org".parse().unwrap();
+    let next_domain_name: DomainName = "ns.example.org".parse().unwrap();
+    let flags = Flags {
+        qr: true,
+        opcode: Opcode::Query,
+        aa: true,
+        tc: false,
+        rd: false,
+        ra: false,
+        ad: false,
+        cd: false,
+        rcode: RCode::NoError,
+    };
+
+    let dns = Dns {
+        id: 0x6b6a,
+        flags,
+        questions: vec![Question {
+            domain_name: domain_name.clone(),
+            q_class: QClass::IN,
+            q_type: QType::NSEC,
+        }],
+        answers: vec![RR::NSEC(NSEC {
+            domain_name,
+            ttl: 3600,
+            class: Class::IN,
+            next_domain_name: next_domain_name.clone(),
+            type_bit_maps: BTreeSet::from([Type::RRSIG, Type::A, Type::MX]),
+        })],
+        authorities: Vec::new(),
+        additionals: Vec::new(),
+    };
+
+    let msg = dns.encode().unwrap();
+
+    let mut offset = 12; // header
+    offset = skip_name(msg.as_ref(), offset); // question name
+    offset += 4; // qtype + qclass
+
+    offset = skip_name(msg.as_ref(), offset); // answer name
+    offset += 2; // type
+    offset += 2; // class
+    offset += 4; // ttl
+
+    let rdlength = u16::from_be_bytes([msg[offset], msg[offset + 1]]) as usize;
+    offset += 2;
+
+    let expected_next_domain = next_domain_name.encode().unwrap();
+    assert!(msg.len() >= offset + expected_next_domain.len());
+    assert_ne!(msg[offset] & 0xc0, 0xc0);
+    assert_eq!(
+        &msg[offset..offset + expected_next_domain.len()],
+        expected_next_domain.as_ref()
+    );
+
+    assert!(rdlength >= expected_next_domain.len());
 }
