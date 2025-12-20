@@ -114,3 +114,32 @@ impl_encode!(
     domain_name_without_compression,
     encode_without_compression
 );
+
+#[test]
+fn domain_name_without_compression_1() {
+    let domain_name: DomainName = "example.org.".parse().unwrap();
+    let mut encoder = Encoder::default();
+    encoder
+        .domain_name_without_compression(&domain_name)
+        .unwrap();
+    encoder
+        .domain_name_without_compression(&domain_name)
+        .unwrap();
+    assert_eq!(
+        encoder.bytes,
+        &b"\x07example\x03org\0\x07example\x03org\0"[..]
+    );
+}
+
+#[test]
+fn domain_name_without_compression_2() {
+    let domain_name = DomainName::default();
+    let mut encoder = Encoder::default();
+    encoder
+        .domain_name_without_compression(&domain_name)
+        .unwrap();
+    encoder
+        .domain_name_without_compression(&domain_name)
+        .unwrap();
+    assert_eq!(encoder.bytes, &b"\0\0"[..]);
+}
