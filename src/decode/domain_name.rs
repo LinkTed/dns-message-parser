@@ -106,3 +106,58 @@ impl_decode!(
     domain_name_without_compression,
     decode_without_compression
 );
+
+#[test]
+fn domain_name_without_compression_1() {
+    let domain_name: DomainName = "example.org.".parse().unwrap();
+    let mut decoder = Decoder::main(bytes::Bytes::copy_from_slice(
+        &b"\x07example\x03org\0\x07example\x03org\0"[..],
+    ));
+    assert_eq!(
+        decoder.domain_name_without_compression().unwrap(),
+        domain_name
+    );
+    assert_eq!(
+        decoder.domain_name_without_compression().unwrap(),
+        domain_name
+    );
+    assert!(decoder.is_finished().unwrap());
+}
+
+#[test]
+fn domain_name_without_compression_2() {
+    let domain_name: DomainName = "example.org.".parse().unwrap();
+    let mut decoder = Decoder::main(bytes::Bytes::copy_from_slice(
+        &b"\x07example\x03org\0\x07example\x03org\0"[..],
+    ));
+    assert_eq!(
+        decoder.domain_name_without_compression().unwrap(),
+        domain_name
+    );
+    assert_eq!(
+        decoder.domain_name_without_compression().unwrap(),
+        domain_name
+    );
+    assert!(decoder.is_finished().unwrap());
+}
+
+#[test]
+fn domain_name_without_compression_3() {
+    let domain_name: DomainName = "example.org.".parse().unwrap();
+    let mut decoder = Decoder::main(bytes::Bytes::copy_from_slice(
+        &b"\x07example\x03org\0\x07example\x03org\0\xc0\r"[..],
+    ));
+    assert_eq!(
+        decoder.domain_name_without_compression().unwrap(),
+        domain_name
+    );
+    assert_eq!(
+        decoder.domain_name_without_compression().unwrap(),
+        domain_name
+    );
+    assert_eq!(
+        decoder.domain_name_without_compression(),
+        Err(DecodeError::DomainNameCompressed(13))
+    );
+    assert!(decoder.is_finished().unwrap());
+}
