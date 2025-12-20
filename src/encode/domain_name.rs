@@ -71,6 +71,17 @@ impl Encoder {
         self.merge_domain_name_index(domain_name_index, 0)?;
         Ok(())
     }
+
+    pub(super) fn domain_name_without_compression(
+        &mut self,
+        domain_name: &DomainName,
+    ) -> EncodeResult<()> {
+        for (label, _) in domain_name.iter() {
+            self.label(&label)?;
+        }
+        self.string_with_len("")?;
+        Ok(())
+    }
 }
 
 impl DomainName {
@@ -98,3 +109,8 @@ impl<'a> Iterator for DomainNameIter<'a> {
     }
 }
 impl_encode!(DomainName, domain_name);
+impl_encode!(
+    DomainName,
+    domain_name_without_compression,
+    encode_without_compression
+);
