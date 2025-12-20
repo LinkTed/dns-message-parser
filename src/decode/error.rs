@@ -105,4 +105,6 @@ pub enum DecodeError {
     TagError(#[from] TagError),
     #[error("ECH length mismatch. Expected {0} got {1}")]
     ECHLengthMismatch(usize, usize),
+    #[error("The domain name is compressed: {0}")]
+    DomainNameCompressed(u16),
 }

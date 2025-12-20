@@ -82,6 +82,27 @@ impl<'a, 'b: 'a> Decoder<'a, 'b> {
             }
         }
     }
+
+    pub(super) fn domain_name_without_compression(&mut self) -> DecodeResult<DomainName> {
+        let mut domain_name = DomainName::default();
+
+        loop {
+            match self.domain_name_length()? {
+                DomainNameLength::Compressed(offset) => {
+                    return Err(DecodeError::DomainNameCompressed(offset))
+                }
+                DomainNameLength::Label(0) => return Ok(domain_name),
+                DomainNameLength::Label(length) => {
+                    self.domain_name_label(&mut domain_name, length)?
+                }
+            }
+        }
+    }
 }
 
 impl_decode!(DomainName, domain_name);
+impl_decode!(
+    DomainName,
+    domain_name_without_compression,
+    decode_without_compression
+);
